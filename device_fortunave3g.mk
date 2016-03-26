@@ -29,6 +29,12 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 	
+# Init files
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/ramdisk/fstab.qcom:root/fstab.qcom \
+	$(LOCAL_PATH)/ramdisk/init.qcom.rc:root/init.qcom.rc \
+	$(LOCAL_PATH)/ueventd.qcom.rc:root/ueventd.qcom.rc	
+	
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/keylayouts/ft5x06_ts.kl:system/usr/keylayout/ft5x06_ts.kl \

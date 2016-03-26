@@ -136,7 +136,6 @@ BOARD_SEPOLICY_DIRS += \
     $(LOCAL_PATH)/sepolicy
 
 BOARD_SEPOLICY_UNION += \
-    bluetooth_loader.te \
     file_contexts \
     mediaserver.te \
     property_contexts \
