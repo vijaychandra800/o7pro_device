@@ -201,7 +201,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_TAGS += dalvik.gc.type-precise
 
 # Common qcom
-$(call inherit-product, device/samsung/qcom-common/qcom-common.mk)	
+$(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
 # Dalvik heap config
 include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
