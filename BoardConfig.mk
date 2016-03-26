@@ -129,8 +129,26 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
 
+# Recovery
+TARGET_RECOVERY_FSTAB 				:= $(LOCAL_PATH)/rootdir/fstab.qcom
+TARGET_USERIMAGES_USE_EXT4 			:= true
+BOARD_HAS_LARGE_FILESYSTEM			:= true
+TARGET_RECOVERY_DENSITY 			:= hdpi	
+	
+# Misc.
+TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
+
+# Dex
+ifeq ($(HOST_OS),linux)
+  ifeq ($(TARGET_BUILD_VARIANT),user)
+    ifeq ($(WITH_DEXPREOPT),)
+      WITH_DEXPREOPT := true
+    endif
+  endif
+endif
+
 BOARD_SEPOLICY_DIRS += \
-    $(LOCAL_PATH)/sepolicy
+   device/samsung/fortunave3g/sepolicy
 
 BOARD_SEPOLICY_UNION += \
     bluetooth_loader.te \
@@ -149,21 +167,3 @@ BOARD_SEPOLICY_UNION += \
     system_server.te \
     ueventd.te \
     wcnss_service.te
-	
-# Recovery
-TARGET_RECOVERY_FSTAB 				:= $(LOCAL_PATH)/rootdir/fstab.qcom
-TARGET_USERIMAGES_USE_EXT4 			:= true
-BOARD_HAS_LARGE_FILESYSTEM			:= true
-TARGET_RECOVERY_DENSITY 			:= hdpi	
-	
-# Misc.
-TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
-
-# Dex
-ifeq ($(HOST_OS),linux)
-  ifeq ($(TARGET_BUILD_VARIANT),user)
-    ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
-    endif
-  endif
-endif
