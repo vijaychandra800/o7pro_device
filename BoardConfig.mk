@@ -129,13 +129,11 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
 
-# SELinux
-include device/qcom/sepolicy/sepolicy.mk
-
 BOARD_SEPOLICY_DIRS += \
     $(LOCAL_PATH)/sepolicy
 
 BOARD_SEPOLICY_UNION += \
+    bluetooth_loader.te \
     file_contexts \
     mediaserver.te \
     property_contexts \
