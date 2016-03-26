@@ -2,7 +2,7 @@
 -include device/samsung/qcom-common/BoardConfigCommon.mk
 
 # Inherit from the proprietary version
--include vendor/samsung/fortunaxx3g/BoardConfigVendor.mk
+-include vendor/samsung/fortunave3g/BoardConfigVendor.mk
 
 LOCAL_PATH := device/samsung/fortunave3g
 
