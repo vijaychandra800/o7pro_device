@@ -207,6 +207,14 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=SamsungGrandPrimeRIL
+	
+# For userdebug builds
+ADDITIONAL_DEFAULT_PROPERTIES += \
+    ro.secure=0 \
+    ro.adb.secure=0 \
+    ro.debuggable=1 \
+    persist.radio.multisim.config=dsds \
+    persist.service.adb.enable=1	
 
 # We have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise

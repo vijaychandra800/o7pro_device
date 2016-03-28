@@ -25,9 +25,9 @@ TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 # Kernel
 BOARD_CUSTOM_BOOTIMG_MK      := $(LOCAL_PATH)/mkbootimg.mk
 BOARD_KERNEL_CMDLINE         := console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
-BOARD_KERNEL_BASE            := 0x80000000
-BOARD_RAMDISK_OFFSET         := 0x02000000
-BOARD_KERNEL_TAGS_OFFSET     := 0x01e00000
+BOARD_KERNEL_BASE            := 0x80008000
+BOARD_RAMDISK_OFFSET         := 0x82000000
+BOARD_KERNEL_TAGS_OFFSET     := 0x81E00000
 BOARD_KERNEL_SEPARATED_DT    := true
 BOARD_KERNEL_PAGESIZE        := 2048
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
@@ -50,19 +50,28 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 5731479552
 BOARD_FLASH_BLOCK_SIZE             := 131072
 
 # Wifi
-BOARD_HAS_QCOM_WLAN 		     := true
-BOARD_HAS_QCOM_WLAN_SDK 	     := true
-BOARD_HOSTAPD_DRIVER 		     := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB 	     := lib_driver_cmd_qcwcn
-BOARD_WLAN_DEVICE 		     := qcwcn
-BOARD_WPA_SUPPLICANT_DRIVER 	     := NL80211
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB     := lib_driver_cmd_qcwcn
-TARGET_PROVIDES_WCNSS_QMI            := true
-TARGET_USES_QCOM_WCNSS_QMI 	     := true
-TARGET_USES_WCNSS_CTRL 		     := true
-WIFI_DRIVER_FW_PATH_AP 		     := "ap"
-WIFI_DRIVER_FW_PATH_STA 	     := "sta"
-WPA_SUPPLICANT_VERSION 		     := VER_0_8_X
+BOARD_HAS_QCOM_WLAN              := true
+BOARD_HAS_QCOM_WLAN_SDK          := true
+BOARD_WLAN_DEVICE                := qcwcn
+BOARD_HOSTAPD_DRIVER             := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+TARGET_PROVIDES_WCNSS_QMI        := true
+TARGET_USES_QCOM_WCNSS_QMI       := true
+TARGET_USES_WCNSS_CTRL           := true
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
+WIFI_DRIVER_FW_PATH_STA          := "sta"
+WIFI_DRIVER_FW_PATH_AP           := "ap"
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
+WIFI_DRIVER_MODULE_NAME          := "wlan"
+
+WLAN_MODULES:
+	mkdir -p $(KERNEL_MODULES_OUT)/pronto
+	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
+	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
+
+TARGET_KERNEL_MODULES += WLAN_MODULES
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
@@ -80,18 +89,22 @@ EXTENDED_FONT_FOOTPRINT := true
 # malloc implementation
 MALLOC_IMPL := dlmalloc
 
+# Init
+TARGET_INIT_VENDOR_LIB				:= libinit_msm
+TARGET_LIBINIT_DEFINES_FILE			:= $(LOCAL_PATH)/init/init_fortunave3g.c
+
 # Audio
-TARGET_QCOM_AUDIO_VARIANT := caf
-BOARD_USES_ALSA_AUDIO := true
-AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
+TARGET_QCOM_AUDIO_VARIANT           := caf
+BOARD_USES_ALSA_AUDIO               := true
+AUDIO_FEATURE_LOW_LATENCY_PRIMARY   := true
 
 # Charger
-BOARD_CHARGER_SHOW_PERCENTAGE := true
-BOARD_CHARGER_ENABLE_SUSPEND := true
+BOARD_CHARGER_SHOW_PERCENTAGE       := true
+BOARD_CHARGER_ENABLE_SUSPEND        := true
 
 # Enable QCOM FM feature
-TARGET_QCOM_NO_FM_FIRMWARE := true
-AUDIO_FEATURE_ENABLED_FM := true
+TARGET_QCOM_NO_FM_FIRMWARE          := true
+AUDIO_FEATURE_ENABLED_FM            := true
 
 # Enable HW based full disk encryption
 TARGET_HW_DISK_ENCRYPTION := true
@@ -100,13 +113,13 @@ TARGET_HW_DISK_ENCRYPTION := true
 TARGET_POWERHAL_VARIANT := qcom
 
 # Vold
-TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
-#BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS := true
-#BOARD_VOLD_MAX_PARTITIONS 			:= 28
+TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
+BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
+BOARD_VOLD_MAX_PARTITIONS 			 := 28
 
 # Camera
-TARGET_PROVIDES_CAMERA_HAL := true
-USE_DEVICE_SPECIFIC_CAMERA := true
+TARGET_PROVIDES_CAMERA_HAL           := true
+USE_DEVICE_SPECIFIC_CAMERA           := true
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
