@@ -89,9 +89,10 @@ EXTENDED_FONT_FOOTPRINT := true
 # malloc implementation
 MALLOC_IMPL := dlmalloc
 
-# Init
-TARGET_INIT_VENDOR_LIB				:= libinit_msm
-TARGET_LIBINIT_DEFINES_FILE			:= $(LOCAL_PATH)/init/init_fortunave3g.c
+# Vendor Init
+TARGET_UNIFIED_DEVICE               := true
+TARGET_INIT_VENDOR_LIB              := libinit_msm
+TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
 TARGET_QCOM_AUDIO_VARIANT           := caf

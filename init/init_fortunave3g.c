@@ -1,6 +1,6 @@
 /*
    Copyright (c) 2013, The Linux Foundation. All rights reserved.
-   Copyright (c) 2015, The fortunaFiWn.
+
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
    met:
@@ -46,10 +46,6 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     UNUSED(board_type);
 
     rc = property_get("ro.board.platform", platform);
-    
-    assert(r != NULL);
-    
     if (!rc || !ISMATCH(platform, ANDROID_TARGET))
         return;
 }
-
