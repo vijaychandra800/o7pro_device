@@ -7,7 +7,7 @@
 LOCAL_PATH := device/samsung/fortunave3g
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := fortunave3g,fortuna3g
+#TARGET_OTA_ASSERT_DEVICE := fortunave3g,fortuna3g
 
 # Platform
 TARGET_BOARD_PLATFORM := msm8916
