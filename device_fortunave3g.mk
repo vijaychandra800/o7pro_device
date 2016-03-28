@@ -116,6 +116,9 @@ PRODUCT_PACKAGES += \
     gralloc.msm8916 \
     hwcomposer.msm8916 \
     memtrack.msm8916 \
+    liboverlay \
+    libqdutils \
+    libqservice \
     libtinyxml
 
 # Power
@@ -141,6 +144,7 @@ PRODUCT_PACKAGES += \
 
 # OMX
 PRODUCT_PACKAGES += \
+    libc2dcolorconvert \	
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
