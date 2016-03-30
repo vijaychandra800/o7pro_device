@@ -19,7 +19,8 @@ TARGET_GLOBAL_CFLAGS            += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS          += -mfpu=neon -mfloat-abi=softfp
 TARGET_CPU_VARIANT              := cortex-a53
 TARGET_CPU_CORTEX_A53           := true
-ARCH_ARM_HAVE_TLS_REGISTER 	:= true
+ARCH_ARM_HAVE_TLS_REGISTER      := true
+TARGET_BOARD_SUFFIX             := _32
 
 # Qcom
 BOARD_USES_QC_TIME_SERVICES        := true
@@ -32,17 +33,17 @@ TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
 # Kernel
 BOARD_CUSTOM_BOOTIMG_MK      := $(LOCAL_PATH)/mkbootimg.mk
-BOARD_KERNEL_CMDLINE         := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
+BOARD_KERNEL_BASE            := 0x80000000
+BOARD_KERNEL_CMDLINE         := console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
 BOARD_KERNEL_TAGS_OFFSET     := 0x01E00000
 BOARD_RAMDISK_OFFSET         := 0x02000000
-BOARD_KERNEL_BASE 	     := 0x80000000
 BOARD_KERNEL_PAGESIZE        := 2048
 BOARD_KERNEL_SEPARATED_DT    := true
-
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
-#TARGET_KERNEL_CONFIG         := cyanogen_fortunave3g_defconfig
-TARGET_KERNEL_CONFIG          := cyanogenmod_fortunave3g_defconfig
-TARGET_KERNEL_SELINUX_CONFIG  := selinux_defconfig
+
+TARGET_KERNEL_CONFIG                := msm8916_sec_defconfig
+TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_defconfig
+TARGET_KERNEL_SELINUX_CONFIG        := selinux_defconfig
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
@@ -129,9 +130,9 @@ TARGET_POWERHAL_VARIANT              := qcom
 # Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
-#BOARD_VOLD_MAX_PARTITIONS 	     := 28
+BOARD_VOLD_MAX_PARTITIONS 	         := 65
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR     := true
-BOARD_SUPPRESS_EMMC_WIPE 	     := true
+BOARD_SUPPRESS_EMMC_WIPE 	         := true
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL           := true
@@ -156,6 +157,10 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
 MAX_EGL_CACHE_KEY_SIZE              := 12*1024
 MAX_EGL_CACHE_SIZE                  := 2048*1024
 #OVERRIDE_RS_DRIVER                 := libRSDriver_adreno.so
+
+# Boot animation
+TARGET_SCREEN_WIDTH                 := 540
+TARGET_SCREEN_HEIGHT                := 960
 
 # Recovery
 TARGET_RECOVERY_FSTAB 				:= $(LOCAL_PATH)/rootdir/fstab.qcom
