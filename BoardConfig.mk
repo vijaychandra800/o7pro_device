@@ -10,15 +10,33 @@ LOCAL_PATH := device/samsung/fortunave3g
 TARGET_OTA_ASSERT_DEVICE := samsung_sm_g530h,fortunave3g,fortuna3g
 
 # Platform
-TARGET_BOARD_PLATFORM := msm8916
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno306
-TARGET_BOOTLOADER_BOARD_NAME := MSM8916
+TARGET_BOARD_PLATFORM                 := msm8916
+TARGET_BOARD_PLATFORM_GPU             := qcom-adreno306
+TARGET_BOOTLOADER_BOARD_NAME          := msm8916
+TARGET_USE_QCOM_BIONIC_OPTIMIZATION   := true
+TARGET_USES_QCOM_BSP 				  := true
 
 # Arch
-TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_CPU_VARIANT := cortex-a53
-TARGET_CPU_CORTEX_A53 := true
+TARGET_GLOBAL_CFLAGS            += -mfpu=neon -mfloat-abi=softfp
+TARGET_GLOBAL_CPPFLAGS          += -mfpu=neon -mfloat-abi=softfp
+COMMON_GLOBAL_CFLAGS            += -DNO_SECURE_DISCARD
+TARGET_CPU_VARIANT              := cortex-a53
+TARGET_CPU_CORTEX_A53           := true
+TARGET_ARCH 					:= arm
+TARGET_ARCH_VARIANT 			:= armv7-a-neon
+TARGET_CPU_ABI 					:= armeabi-v7a
+TARGET_CPU_ABI2 				:= armeabi
+ARCH_ARM_HAVE_NEON				:= true
+ARCH_ARM_HAVE_VFP 				:= true
+ARCH_ARM_HAVE_TLS_REGISTER 		:= true
+WITH_DEXPREOPT 					:= true
+
+# Qcom
+BOARD_USES_QC_TIME_SERVICES := true
+TARGET_USES_QCOM_BSP := true
+TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
+HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE := true
+COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
@@ -113,7 +131,9 @@ TARGET_POWERHAL_VARIANT := qcom
 # Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
-BOARD_VOLD_MAX_PARTITIONS 	     := 28
+#BOARD_VOLD_MAX_PARTITIONS 	         := 28
+BOARD_VOLD_EMMC_SHARES_DEV_MAJOR 	 := true
+BOARD_SUPPRESS_EMMC_WIPE 			 := true
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL           := true
@@ -125,33 +145,39 @@ BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
 # Workaround to avoid issues with legacy liblights on QCOM platforms
 TARGET_PROVIDES_LIBLIGHT := true
 
-# Qcom
-BOARD_USES_QC_TIME_SERVICES := true
-TARGET_USES_QCOM_BSP := true
-TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
-HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE := true
-COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
-
 # Media
 TARGET_QCOM_MEDIA_VARIANT := caf
 TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 
 # Display
-TARGET_QCOM_DISPLAY_VARIANT := caf
-TARGET_CONTINUOUS_SPLASH_ENABLED := true
-NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
-MAX_EGL_CACHE_KEY_SIZE := 12*1024
-MAX_EGL_CACHE_SIZE := 2048*1024
-#OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+TARGET_QCOM_DISPLAY_VARIANT         := caf
+#TARGET_CONTINUOUS_SPLASH_ENABLED    := true
+TARGET_USES_ION                     := true
+TARGET_USES_NEW_ION_API 			:= true
+TARGET_HAVE_HDMI_OUT 				:= false
+USE_OPENGL_RENDERER                 := true
+NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
+MAX_EGL_CACHE_KEY_SIZE              := 12*1024
+MAX_EGL_CACHE_SIZE                  := 2048*1024
+#OVERRIDE_RS_DRIVER                 := libRSDriver_adreno.so
 
 # Recovery
 TARGET_RECOVERY_FSTAB 				:= $(LOCAL_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 			:= true
 BOARD_HAS_LARGE_FILESYSTEM			:= true
-TARGET_RECOVERY_DENSITY 			:= hdpi	
+TARGET_RECOVERY_DENSITY 			:= hdpi
+BOARD_HAS_NO_MISC_PARTITION 		:= true
+BOARD_HAS_NO_SELECT_BUTTON 			:= true
+BOARD_RECOVERY_SWIPE 				:= true
+BOARD_USE_CUSTOM_RECOVERY_FONT 		:= \"roboto_23x41.h\"
+BOARD_USES_MMCUTILS 				:= true
+RECOVERY_VARIANT				    := cm
 	
 # Misc.
 TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
+
+# Releasetools
+TARGET_RELEASETOOLS_EXTENSIONS      := $(LOCAL_PATH)
 
 # Dex
 ifeq ($(HOST_OS),linux)
