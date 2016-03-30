@@ -34,7 +34,8 @@ TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 # Kernel
 BOARD_CUSTOM_BOOTIMG_MK      := $(LOCAL_PATH)/mkbootimg.mk
 BOARD_KERNEL_BASE            := 0x80000000
-BOARD_KERNEL_CMDLINE         := console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE         := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
+
 BOARD_KERNEL_TAGS_OFFSET     := 0x01E00000
 BOARD_RAMDISK_OFFSET         := 0x02000000
 BOARD_KERNEL_PAGESIZE        := 2048
@@ -42,7 +43,7 @@ BOARD_KERNEL_SEPARATED_DT    := true
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 
 TARGET_KERNEL_CONFIG                := msm8916_sec_defconfig
-TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_defconfig
+TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortuna3g_eur_defconfig
 TARGET_KERNEL_SELINUX_CONFIG        := selinux_defconfig
 
 # Partition sizes
@@ -75,10 +76,10 @@ WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
 WIFI_DRIVER_MODULE_NAME          := "wlan"
 
-WLAN_MODULES:
-	mkdir -p $(KERNEL_MODULES_OUT)/pronto
-	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
-	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
+#WLAN_MODULES:
+#	mkdir -p $(KERNEL_MODULES_OUT)/pronto
+#	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
+#	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
 
 TARGET_KERNEL_MODULES += WLAN_MODULES
 
