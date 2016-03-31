@@ -43,7 +43,7 @@ BOARD_KERNEL_SEPARATED_DT    := true
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 
 TARGET_KERNEL_CONFIG                := msm8916_sec_defconfig
-TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortuna3g_eur_defconfig
+TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_defconfig
 TARGET_KERNEL_SELINUX_CONFIG        := selinux_defconfig
 
 # Partition sizes
@@ -76,10 +76,10 @@ WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
 WIFI_DRIVER_MODULE_NAME          := "wlan"
 
-#WLAN_MODULES:
-#	mkdir -p $(KERNEL_MODULES_OUT)/pronto
-#	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
-#	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
+WLAN_MODULES:
+	mkdir -p $(KERNEL_MODULES_OUT)/pronto
+	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
+	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
 
 TARGET_KERNEL_MODULES += WLAN_MODULES
 
@@ -90,11 +90,8 @@ BOARD_HAVE_BLUETOOTH_QCOM     := true
 BLUETOOTH_HCI_USE_MCT         := true
 
 # Custom RIL class
-BOARD_RIL_CLASS                  := ../../../device/samsung/fortunave3g/ril/
-PROTOBUF_SUPPORTED               := true
-SIM_COUNT                        := 2
-TARGET_GLOBAL_CFLAGS             += -DANDROID_MULTI_SIM
-TARGET_GLOBAL_CPPFLAGS           += -DANDROID_MULTI_SIM
+BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
+PROTOBUF_SUPPORTED                  := true
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT             := true
@@ -110,9 +107,9 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 # Audio
 TARGET_QCOM_AUDIO_VARIANT                     := caf
 BOARD_USES_ALSA_AUDIO                         := true
-AUDIO_FEATURE_LOW_LATENCY_PRIMARY             := true
-#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS   := true
-AUDIO_FEATURE_SAMSUNG_DUAL_SIM                := true
+#AUDIO_FEATURE_LOW_LATENCY_PRIMARY            := true
+#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
+#AUDIO_FEATURE_SAMSUNG_DUAL_SIM                := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true

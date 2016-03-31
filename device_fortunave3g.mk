@@ -48,7 +48,7 @@ PRODUCT_COPY_FILES += \
 	
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
+	$(LOCAL_PATH)/keylayout/Synaptics_HID_TouchPad.idc:system/usr/idc/Synaptics_HID_TouchPad.idc \
 	$(LOCAL_PATH)/keylayout/ft5x06_ts.kl:system/usr/keylayout/ft5x06_ts.kl \
 	$(LOCAL_PATH)/keylayout/synaptics_dsx.kl:system/usr/keylayout/synaptics_dsx.kl \
 	$(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
@@ -82,6 +82,11 @@ PRODUCT_PACKAGES += \
     libqsap_sdk \
     libQWiFiSoftApCfg \
     wcnss_service
+	
+# Wifi
+PRODUCT_PACKAGES += \
+    libnetcmdiface \
+    macloader
 
 # CRDA
 PRODUCT_PACKAGES += \
@@ -225,7 +230,6 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.adb.secure=0 \
     ro.debuggable=1 \
     persist.radio.multisim.config=dsds \
-	ro.multisim.set_audio_params=true \
     persist.service.adb.enable=1	
 
 # We have enough storage space to hold precise GC data

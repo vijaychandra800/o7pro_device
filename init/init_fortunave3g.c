@@ -48,4 +48,6 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     rc = property_get("ro.board.platform", platform);
     if (!rc || !ISMATCH(platform, ANDROID_TARGET))
         return;
+	
+	property_set("ro.multisim.set_audio_params", "true");
 }
