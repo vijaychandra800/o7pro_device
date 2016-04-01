@@ -3,7 +3,6 @@
 # IMPORTANT: Do not create world writable files or directories.
 # This is a common source of Android security bugs.
 #
-import init.fac.rc
 
 on early-boot
     chown bluetooth net_bt_stack /dev/ttyHS0
@@ -28,18 +27,12 @@ on boot
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
 
-# SSWAP
-    write /proc/sys/vm/swappiness 130
-
 on fs
 
-# Support Preload install apks
-    mkdir /preload 0771 system system
-
 # efs
-    mkdir /efs/drm 0700 system system
-    mkdir /efs/imei 0775 radio radio
-    restorecon -R /efs
+#    mkdir /efs/drm 0700 system system
+#    mkdir /efs/imei 0775 radio radio
+#    restorecon -R /efs
 
 # fm_radio
     chmod 0640 /dev/radio0
@@ -61,33 +54,6 @@ on fs
     chown system system /sys/class/sec/switch/uart_sel
     chown system system /sys/class/sec/switch/usb_sel
 
-# RIL for multi rild
-service ril-daemon2 /system/bin/rild -l /system/lib/libsec-ril-dsds.so -c 2
-    class main
-    socket rild2 stream 660 root radio
-    socket rild-debug2 stream 660 radio system
-    user root
-    group radio cache inet misc audio log qcom_diag sdcard_r shell sdcard_rw system drmrpc
-
-service at_distributor /system/bin/at_distributor
-    class late_start
-    user root
-    group radio misc log
-	
-service diag_uart_log /system/bin/diag_uart_log
-    class main
-    user root
-    group radio
-
-
 # fm_radio
     chmod 0640 /dev/radio0
     chown system system /dev/radio0
-
-# Kickstart the Wireless subsystem
-write /dev/wcnss_wlan 1
-write /sys/module/wcnss_ssr_8960/parameters/enable_riva_ssr 1
-service ftm_ptt /system/bin/ftm_ptt -d
-    user root
-    group radio system
-    disabled

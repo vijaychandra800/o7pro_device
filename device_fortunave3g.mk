@@ -36,20 +36,17 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc \
 	$(LOCAL_PATH)/rootdir/init.qcom.usb.rc:root/init.qcom.usb.rc \
 	$(LOCAL_PATH)/rootdir/init.carrier.rc:root/init.carrier.rc \
-	$(LOCAL_PATH)/rootdir/init.class_main.sh:root/init.class_main.sh \
-	$(LOCAL_PATH)/rootdir/init.mdm.sh:root/init.mdm.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.bms.sh:root/init.qcom.bms.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.class_core.sh:root/init.qcom.class_core.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.early_boot.sh:root/init.qcom.early_boot.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.factory.sh:root/init.qcom.factory.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.sh:root/init.qcom.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.syspart_fixup.sh:root/init.qcom.syspart_fixup.sh \
-	$(LOCAL_PATH)/rootdir/init.qcom.usb.sh:root/init.qcom.usb.sh \
+	$(LOCAL_PATH)/rootdir/etc/init.crda.sh:system/etc/init.crda.sh \
+	$(LOCAL_PATH)/rootdir/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
+	$(LOCAL_PATH)/rootdir/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
+	$(LOCAL_PATH)/rootdir/etc/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
+	$(LOCAL_PATH)/rootdir/etc/init.sec.boot.sh:system/etc/init.sec.boot.sh \
 	$(LOCAL_PATH)/rootdir/ueventd.qcom.rc:root/ueventd.qcom.rc
 	
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/keylayout/Synaptics_HID_TouchPad.idc:system/usr/idc/Synaptics_HID_TouchPad.idc \
+	$(LOCAL_PATH)/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
 	$(LOCAL_PATH)/keylayout/ft5x06_ts.kl:system/usr/keylayout/ft5x06_ts.kl \
 	$(LOCAL_PATH)/keylayout/synaptics_dsx.kl:system/usr/keylayout/synaptics_dsx.kl \
 	$(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
@@ -221,10 +218,6 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.sys.usb.default.config=mtp \
     persist.sys.isUsbOtgEnabled=true
 
-# RIL
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.telephony.ril_class=SamsungGrandPrimeRIL
-	
 # For userdebug builds
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
