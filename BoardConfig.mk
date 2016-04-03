@@ -106,10 +106,11 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
 TARGET_QCOM_AUDIO_VARIANT                     := caf
+#BOARD_HAVE_NEW_QCOM_CSDCLIENT                 := true
 BOARD_USES_ALSA_AUDIO                         := true
 #AUDIO_FEATURE_LOW_LATENCY_PRIMARY            := true
-#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
-#AUDIO_FEATURE_SAMSUNG_DUAL_SIM                := true
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
+AUDIO_FEATURE_SAMSUNG_DUAL_SIM                := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
@@ -149,7 +150,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
 # Display
 TARGET_QCOM_DISPLAY_VARIANT         := caf
 #TARGET_CONTINUOUS_SPLASH_ENABLED   := true
-TARGET_HAVE_HDMI_OUT 		    := false
+TARGET_HAVE_HDMI_OUT 		        := false
 USE_OPENGL_RENDERER                 := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
 MAX_EGL_CACHE_KEY_SIZE              := 12*1024
@@ -170,7 +171,7 @@ BOARD_HAS_NO_SELECT_BUTTON 			:= true
 BOARD_RECOVERY_SWIPE 				:= true
 BOARD_USE_CUSTOM_RECOVERY_FONT 	        	:= \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS 				:= true
-#RECOVERY_VARIANT				:= cm
+#RECOVERY_VARIANT				    := cm
 	
 # Misc.
 TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop

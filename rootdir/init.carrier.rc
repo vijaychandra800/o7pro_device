@@ -30,9 +30,9 @@ on boot
 on fs
 
 # efs
-#    mkdir /efs/drm 0700 system system
-#    mkdir /efs/imei 0775 radio radio
-#    restorecon -R /efs
+    mkdir /efs/drm 0700 system system
+    mkdir /efs/imei 0775 radio radio
+    restorecon -R /efs
 
 # fm_radio
     chmod 0640 /dev/radio0
