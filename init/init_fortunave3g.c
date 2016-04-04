@@ -51,7 +51,4 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
 	
     property_set("ro.product.model", "SM-G530H");
     property_set("ro.product.device", "fortunave3g");
-    property_set("ro.multisim.set_audio_params", "true");
-    property_set("ro.multisim.simslotcount", "2");
-    property_set("persist.radio.multisim.config", "dsds");
 }
