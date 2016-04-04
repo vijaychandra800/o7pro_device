@@ -31,6 +31,7 @@ on early-init
     mkdir /firmware 0771 system system
     mkdir /firmware-modem 0771 system system
     mkdir /system 0777 root root
+    mkdir /efs 0771 system radio
     symlink /data/tombstones /tombstones
 
 # import cne init file
@@ -55,11 +56,8 @@ on fs
     #wait /dev/block/bootdevice/by-name/efs
     #check_fs /dev/block/bootdevice/by-name/efs ext4
     #mount ext4 /dev/block/bootdevice/by-name/efs /efs nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
-    chown system radio /efs
-    chmod 0771 /efs
-    rm -rf /efs/dmverity
-    restorecon -R /efs
-
+    restorecon_recursive /efs
+  
 on fs_sec_selinux
     #wait /dev/block/bootdevice/by-name/modem
     #mount vfat /dev/block/bootdevice/by-name/modem /firmware-modem ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware:s0
@@ -127,6 +125,9 @@ service audiod /system/bin/audiod
    group system root
 
 on boot
+    # IMEI
+    mkdir /efs/imei 0775 radio radio
+
     start rmt_storage
 # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0020/secure_touch_enable
