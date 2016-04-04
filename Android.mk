@@ -1,7 +1,7 @@
 ifeq ($(TARGET_DEVICE),fortunave3g)
 	LOCAL_PATH := $(call my-dir)
-    include $(all-subdir-makefiles)
-	include $(CLEAR_VARS)
+include $(all-subdir-makefiles)
+include $(CLEAR_VARS)
 
 # CMN
 CMN_IMAGES := \
@@ -42,18 +42,6 @@ $(ISDB_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(ISDB_SYMLINKS)
 
-KM_IMAGES := \
-    keymaster.b00 keymaster.b01 keymaster.b02 keymaster.b03 keymaster.mdt
-
-KM_SYMLINKS := $(addprefix $(TARGET_OUT_VENDOR)/firmware/keymaster/,$(notdir $(KM_IMAGES)))
-$(KM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@echo "Keymaster firmware link: $@"
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /firmware/image/keymaste$(suffix $@) $@
-
-ALL_DEFAULT_INSTALLED_MODULES += $(KM_SYMLINKS)
-
 # MCpay
 MCP_IMAGES := \
     mcpay.b00 mcpay.b01 mcpay.b02 mcpay.b03 mcpay.mdt
@@ -83,12 +71,10 @@ ALL_DEFAULT_INSTALLED_MODULES += $(MLD_SYMLINKS)
 # Modem
 MODEM_IMAGES := \
     modem.b00 modem.b01 modem.b02 modem.b03 modem.b04 modem.b05 \
-    modem.b06 modem.b07 modem.b08 modem.b09 modem.b10 modem.b11 \
-	modem.b12 modem.b13 modem.b14 modem.b15 modem.b16 modem.b17 \
-	modem.b18 modem.b19 modem.b20 modem.b21 modem.b22 modem.b23 \
-	modem.b24 modem.b25 modem.b26 modem.b27 modem.b28 modem.mdt \
-    mba.mbn
-	
+    modem.b06 modem.b07 modem.b08 modem.b10 modem.b11 modem.b14 modem.b15 \
+    modem.b16 modem.b17 modem.b18 modem.b19 modem.b20 modem.b23 \
+    modem.b24 modem.b25 modem.b27 modem.b28 modem.mdt mba.mbn
+
 MODEM_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(MODEM_IMAGES)))
 $(MODEM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	@echo "Modem firmware link: $@"
@@ -149,6 +135,18 @@ $(SKM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	$(hide) ln -sf /firmware/image/$(notdir $@) $@
 
 ALL_DEFAULT_INSTALLED_MODULES += $(SKM_SYMLINKS)
+
+SKMM_TA_IMAGES := \
+    skmm_ta.b00 skmm_ta.b01 skmm_ta.b02 skmm_ta.b03 skmm_ta.mdt
+
+SKMM_TA_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(SKMM_TA_IMAGES)))
+$(SKMM_TA_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "SKMM firmware link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /firmware/image/$(notdir $@) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(SKMM_TA_SYMLINKS)
 
 # SSHDcap
 SSHDCPAP_IMAGES := \
@@ -252,5 +250,5 @@ $(shell mkdir -p $(TARGET_OUT_ETC)/firmware/wcd9306; \
     $(TARGET_OUT_ETC)/firmware/wcd9306/wcd9306_anc.bin; \
     ln -sf /data/misc/audio/mbhc.bin \
     $(TARGET_OUT_ETC)/firmware/wcd9306/wcd9306_mbhc.bin)
-	
+
 endif
