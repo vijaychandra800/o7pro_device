@@ -246,23 +246,11 @@ $(WV_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(WV_SYMLINKS)
 
-SKMM_TA_IMAGES := \
-     skmm_ta.b00 skmm_ta.b01 skmm_ta.b02 skmm_ta.b03 skmm_ta.mdt
- 
- SKMM_TA_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(SKMM_TA_IMAGES)))
- $(SKMM_TA_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
- 	@echo "SKMM firmware link: $@"
- 	@mkdir -p $(dir $@)
- 	@rm -rf $@
- 	$(hide) ln -sf /firmware/image/$(notdir $@) $@
- 
- ALL_DEFAULT_INSTALLED_MODULES += $(SKMM_TA_SYMLINKS)
-
 # Create links for audcal data files
 $(shell mkdir -p $(TARGET_OUT_ETC)/firmware/wcd9306; \
     ln -sf /data/misc/audio/wcd9320_anc.bin \
     $(TARGET_OUT_ETC)/firmware/wcd9306/wcd9306_anc.bin; \
     ln -sf /data/misc/audio/mbhc.bin \
     $(TARGET_OUT_ETC)/firmware/wcd9306/wcd9306_mbhc.bin)
-
+	
 endif
