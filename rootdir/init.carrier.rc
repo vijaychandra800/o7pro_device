@@ -28,12 +28,6 @@ on boot
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
 
 on fs
-
-# efs
-    mkdir /efs/drm 0700 system system
-    mkdir /efs/imei 0775 radio radio
-    restorecon -R /efs
-
 # fm_radio
     chmod 0640 /dev/radio0
     chown system system /dev/radio0
