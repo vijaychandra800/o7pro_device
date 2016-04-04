@@ -34,8 +34,8 @@ on early-init
     symlink /data/tombstones /tombstones
 
 # import cne init file
-#on post-fs
-#    export LD_PRELOAD /vendor/lib/libNimsWrap.so
+on post-fs
+    export LD_PRELOAD /vendor/lib/libNimsWrap.so
 
 on fs
     mount_all fstab.qcom
@@ -44,36 +44,36 @@ on fs
     # these partition flashed on the device. Failure to mount any partition in fstab file
     # results in failure to launch late-start class.
 
-    wait /dev/block/bootdevice/by-name/cache
-    check_fs /dev/block/bootdevice/by-name/cache ext4
-    mount ext4 /dev/block/bootdevice/by-name/cache /cache nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
+    #wait /dev/block/bootdevice/by-name/cache
+    #check_fs /dev/block/bootdevice/by-name/cache ext4
+    #mount ext4 /dev/block/bootdevice/by-name/cache /cache nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
 
-    wait /dev/block/bootdevice/by-name/persist
-    check_fs /dev/block/bootdevice/by-name/persist ext4
-    mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
+    #wait /dev/block/bootdevice/by-name/persist
+    #check_fs /dev/block/bootdevice/by-name/persist ext4
+    #mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
 
-    wait /dev/block/bootdevice/by-name/efs
-    check_fs /dev/block/bootdevice/by-name/efs ext4
-    mount ext4 /dev/block/bootdevice/by-name/efs /efs nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
+    #wait /dev/block/bootdevice/by-name/efs
+    #check_fs /dev/block/bootdevice/by-name/efs ext4
+    #mount ext4 /dev/block/bootdevice/by-name/efs /efs nosuid nodev noatime noauto_da_alloc,discard,journal_async_commit,errors=panic
     chown system radio /efs
     chmod 0771 /efs
     rm -rf /efs/dmverity
     restorecon -R /efs
 
 on fs_sec_selinux
-    wait /dev/block/bootdevice/by-name/modem
-    mount vfat /dev/block/bootdevice/by-name/modem /firmware-modem ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware:s0
+    #wait /dev/block/bootdevice/by-name/modem
+    #mount vfat /dev/block/bootdevice/by-name/modem /firmware-modem ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware:s0
 
-    wait /dev/block/bootdevice/by-name/apnhlos
-    mount vfat /dev/block/bootdevice/by-name/apnhlos /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware:s0
+    #wait /dev/block/bootdevice/by-name/apnhlos
+    #mount vfat /dev/block/bootdevice/by-name/apnhlos /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware:s0
     #write /sys/kernel/boot_adsp/boot 1
 
 on fs_selinux
-    wait /dev/block/bootdevice/by-name/modem
-    mount vfat /dev/block/bootdevice/by-name/modem /firmware-modem ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
+    #wait /dev/block/bootdevice/by-name/modem
+    #mount vfat /dev/block/bootdevice/by-name/modem /firmware-modem ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
 
-    wait /dev/block/bootdevice/by-name/apnhlos
-    mount vfat /dev/block/bootdevice/by-name/apnhlos /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
+    #wait /dev/block/bootdevice/by-name/apnhlos
+    #mount vfat /dev/block/bootdevice/by-name/apnhlos /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
     #write /sys/kernel/boot_adsp/boot 1
 
 on post-fs-data
@@ -123,8 +123,8 @@ service time_daemon /system/bin/time_daemon
 
 service audiod /system/bin/audiod
    class late_start
-   user system
-   group system
+   user root
+   group system root
 
 on boot
     start rmt_storage
