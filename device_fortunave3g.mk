@@ -78,13 +78,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libcurl \
     libqsap_sdk \
-    libQWiFiSoftApCfg \
-    wcnss_service
+    libQWiFiSoftApCfg
 	
 # Wifi
 PRODUCT_PACKAGES += \
-    libnetcmdiface \
-    macloader
+    libnetcmdiface
 
 # CRDA
 PRODUCT_PACKAGES += \
@@ -96,7 +94,8 @@ PRODUCT_PACKAGES += \
 # WPA supplicant
 PRODUCT_PACKAGES += \
     dhcpcd.conf \
-	hostapd.conf \
+	hostapd.accept \
+    hostapd.deny \
     hostapd \
     libwpa_client \
     wpa_supplicant \
@@ -110,6 +109,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audiod \
     audio.a2dp.default \
+	audio_policy.msm8916 \
     audio.primary.msm8916 \
     audio.r_submix.default \
     audio.usb.default \
@@ -117,7 +117,7 @@ PRODUCT_PACKAGES += \
     libqcompostprocbundle \
     libqcomvisualizer \
     libqcomvoiceprocessing
-
+	
 # TinyAlsa utils
 PRODUCT_PACKAGES += \
     tinyplay \
@@ -160,17 +160,19 @@ PRODUCT_PACKAGES += \
 # OMX
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
+	libdivxdrmdecrypt \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
     libOmxVdec \
+	libOmxVdecHevc \
     libOmxVenc \
     libstagefrighthw \
     libdashplayer \
     qcmediaplayer
-
+	
 PRODUCT_BOOT_JARS += \
     qcmediaplayer
 
@@ -196,13 +198,6 @@ PRODUCT_PACKAGES += \
     e2fsck \
     fsck.f2fs
 
-# Live Wallpapers
-PRODUCT_PACKAGES += \
-    LiveWallpapers \
-    LiveWallpapersPicker \
-    VisualizationWallpapers \
-    librs_jni
-
 # WCNSS service daemon
 PRODUCT_PACKAGES += \
     libwcnss_qmi \
@@ -216,15 +211,13 @@ PRODUCT_PACKAGES += \
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp \
-    ro.sys.usb.default.config=mtp \
-    persist.sys.isUsbOtgEnabled=true
+    ro.sys.usb.default.config=mtp
 
 # For userdebug builds
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
     ro.adb.secure=0 \
     ro.debuggable=1 \
-    persist.radio.multisim.config=dsds \
     persist.service.adb.enable=1	
 
 # We have enough storage space to hold precise GC data
@@ -234,8 +227,8 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
 # Dalvik heap config
-#include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
-#include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
+include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
+include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 

@@ -107,11 +107,15 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 # Audio
 TARGET_QCOM_AUDIO_VARIANT                     := caf
 BOARD_USES_ALSA_AUDIO                         := true
+BOARD_HAVE_NEW_QCOM_CSDCLIENT                 := true
 AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
 BOARD_CHARGER_ENABLE_SUSPEND         := true
+BOARD_BATTERY_DEVICE_NAME            := "battery"
+BOARD_CHARGING_CMDLINE_NAME          := "androidboot.bootchg"
+BOARD_CHARGING_CMDLINE_VALUE         := "true"
 
 # Enable QCOM FM feature
 TARGET_QCOM_NO_FM_FIRMWARE           := true
@@ -146,7 +150,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
 
 # Display
 TARGET_QCOM_DISPLAY_VARIANT         := caf
-#TARGET_CONTINUOUS_SPLASH_ENABLED   := true
+TARGET_CONTINUOUS_SPLASH_ENABLED   := true
 TARGET_HAVE_HDMI_OUT 		        := false
 USE_OPENGL_RENDERER                 := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
