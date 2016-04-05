@@ -35,7 +35,6 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/rootdir/init.qcom.rc:root/init.qcom.rc \
 	$(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc \
 	$(LOCAL_PATH)/rootdir/init.qcom.usb.rc:root/init.qcom.usb.rc \
-	$(LOCAL_PATH)/rootdir/init.carrier.rc:root/init.carrier.rc \
 	$(LOCAL_PATH)/rootdir/etc/init.crda.sh:system/etc/init.crda.sh \
 	$(LOCAL_PATH)/rootdir/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
 	$(LOCAL_PATH)/rootdir/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
@@ -62,6 +61,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio_effects.conf:system/etc/audio_effects.conf \
     $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
     $(LOCAL_PATH)/configs/mixer_paths.xml:system/etc/mixer_paths.xml \
+    $(LOCAL_PATH)/configs/audio_platform_info.xml:system/etc/audio_platform_info.xml \
     $(LOCAL_PATH)/configs/sec_config:system/etc/sec_config \
     $(LOCAL_PATH)/configs/gps.conf:system/etc/gps.conf \
     $(LOCAL_PATH)/configs/sap.conf:system/etc/sap.conf \
@@ -82,7 +82,8 @@ PRODUCT_PACKAGES += \
 	
 # Wifi
 PRODUCT_PACKAGES += \
-    libnetcmdiface
+    libnetcmdiface \
+    macloader
 
 # CRDA
 PRODUCT_PACKAGES += \
@@ -94,7 +95,7 @@ PRODUCT_PACKAGES += \
 # WPA supplicant
 PRODUCT_PACKAGES += \
     dhcpcd.conf \
-	hostapd.accept \
+    hostapd.accept \
     hostapd.deny \
     hostapd \
     libwpa_client \
@@ -109,7 +110,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audiod \
     audio.a2dp.default \
-	audio_policy.msm8916 \
+    audio_policy.msm8916 \
     audio.primary.msm8916 \
     audio.r_submix.default \
     audio.usb.default \
@@ -145,8 +146,8 @@ PRODUCT_PACKAGES += \
     lights.msm8916
 
 # Keystore
-PRODUCT_PACKAGES += \
-    keystore.msm8916
+#PRODUCT_PACKAGES += \
+#    keystore.msm8916
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -160,14 +161,14 @@ PRODUCT_PACKAGES += \
 # OMX
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
-	libdivxdrmdecrypt \
+    libdivxdrmdecrypt \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
     libOmxVdec \
-	libOmxVdecHevc \
+    libOmxVdecHevc \
     libOmxVenc \
     libstagefrighthw \
     libdashplayer \
