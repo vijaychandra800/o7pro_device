@@ -91,6 +91,17 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     user camera
     group camera system inet input graphics
 
+#enable zram
+on property:ro.config.zram=true
+    swapon_all fstab.qcom
+    write /proc/sys/vm/swappiness 100
+
+#start gpu_snapshotd for gpu hang issue debugging
+service gpu_snapshotd /system/bin/gpu_snapshotd -s /sys/class/kgsl/kgsl-3d0/snapshot -d /data/log/ -m 0700
+    class late_start
+    user system
+    group system  
+
 # Allow usb charging to be disabled peristently
 on property:persist.usb.chgdisabled=1
     write /sys/class/power_supply/battery/charging_enabled 0
@@ -112,6 +123,15 @@ service qseecomd /system/bin/qseecomd
    class core
    user root
    group root
+
+#service aostlmd /system/bin/aostlmd
+#   class late_start
+#   user system
+#   group system net_raw
+
+#service mpdecision /system/bin/mpdecision --avg_comp
+#   user root
+#   disabled
 
 service perfd /system/bin/perfd
    class main
@@ -138,6 +158,7 @@ service audiod /system/bin/audiod
 
 on boot
     start rmt_storage
+    insmod /system/lib/modules/adsprpc.ko
 # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0020/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0020/secure_touch
@@ -147,6 +168,19 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0020/secure_touch
     chown system drmrpc /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0070/secure_touch_enable
     chown system drmrpc /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0070/secure_touch
+
+#service ppd /system/bin/mm-pp-daemon
+#    class late_start
+#    disabled
+#    user system
+#   socket pps stream 0660 system system
+#    group system graphics
+
+#on property:init.svc.surfaceflinger=stopped
+#    stop ppd
+
+#on property:init.svc.surfaceflinger=running
+#    start ppd
 
 service wcnss-service /system/bin/wcnss_service
     class main

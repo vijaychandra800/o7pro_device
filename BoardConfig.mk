@@ -43,7 +43,7 @@ BOARD_KERNEL_SEPARATED_DT    := true
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 
 TARGET_KERNEL_CONFIG                := msm8916_sec_defconfig
-TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortuna3g_eur_defconfig
+TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_defconfig
 TARGET_KERNEL_SELINUX_CONFIG        := selinux_defconfig
 
 # Partition sizes

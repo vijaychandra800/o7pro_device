@@ -36,6 +36,14 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc \
 	$(LOCAL_PATH)/rootdir/init.qcom.usb.rc:root/init.qcom.usb.rc \
 	$(LOCAL_PATH)/rootdir/init.qcom.factory.sh:root/init.qcom.factory.sh \
+	$(LOCAL_PATH)/rootdir/init.class_main.sh:root/init.class_main.sh \
+	$(LOCAL_PATH)/rootdir/init.mdm.sh:root/init.mdm.sh \
+	$(LOCAL_PATH)/rootdir/init.qcom.bms.sh:root/init.qcom.bms.sh \
+	$(LOCAL_PATH)/rootdir/init.qcom.class_core.sh:root/init.qcom.class_core.sh \
+	$(LOCAL_PATH)/rootdir/init.qcom.early_boot.sh:root/init.qcom.early_boot.sh \
+	$(LOCAL_PATH)/rootdir/init.qcom.sh:root/init.qcom.sh \
+	$(LOCAL_PATH)/rootdir/init.qcom.syspart_fixup.sh:root/init.qcom.syspart_fixup.sh \
+	$(LOCAL_PATH)/rootdir/init.qcom.usb.sh:root/init.qcom.usb.sh \
 	$(LOCAL_PATH)/rootdir/etc/init.crda.sh:system/etc/init.crda.sh \
 	$(LOCAL_PATH)/rootdir/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
 	$(LOCAL_PATH)/rootdir/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
@@ -74,7 +82,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/prima/WCNSS_qcom_wlan_nv.bin:system/etc/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin \
     $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
-	
+		
 # SoftAP
 PRODUCT_PACKAGES += \
     libcurl \
@@ -92,12 +100,18 @@ PRODUCT_PACKAGES += \
     linville.key.pub.pem \
     regdbdump \
     regulatory.bin
+	
+# QRNGD
+PRODUCT_PACKAGES += \
+    qrngd \
+    qrngp	
 
 # WPA supplicant
 PRODUCT_PACKAGES += \
     dhcpcd.conf \
     hostapd.accept \
     hostapd.deny \
+	hostapd_default.conf \
     hostapd \
     libwpa_client \
     wpa_supplicant \
@@ -113,6 +127,7 @@ PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio_policy.msm8916 \
     audio.primary.msm8916 \
+	audio.primary.default \
     audio.r_submix.default \
     audio.usb.default \
     libaudio-resampler \
@@ -120,6 +135,10 @@ PRODUCT_PACKAGES += \
     libqcomvisualizer \
     libqcomvoiceprocessing
 	
+ Basic
+PRODUCT_PACKAGES += \
+    static_busybox 
+
 # TinyAlsa utils
 PRODUCT_PACKAGES += \
     tinyplay \
@@ -208,7 +227,8 @@ PRODUCT_PACKAGES += \
 # Misc
 PRODUCT_PACKAGES += \
     libxml2 \
-    Stk
+    Stk \
+	Stk2
 	
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
