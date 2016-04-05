@@ -104,7 +104,7 @@ PRODUCT_PACKAGES += \
 # QRNGD
 PRODUCT_PACKAGES += \
     qrngd \
-    qrngp	
+    qrngp
 
 # WPA supplicant
 PRODUCT_PACKAGES += \
@@ -115,7 +115,7 @@ PRODUCT_PACKAGES += \
     hostapd \
     libwpa_client \
     wpa_supplicant \
-    wpa_supplicant.conf	
+    wpa_supplicant.conf
 	
 # Doze
 PRODUCT_PACKAGES += \
@@ -135,7 +135,7 @@ PRODUCT_PACKAGES += \
     libqcomvisualizer \
     libqcomvoiceprocessing
 	
- Basic
+#Basic
 PRODUCT_PACKAGES += \
     static_busybox
 
