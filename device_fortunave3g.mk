@@ -137,7 +137,7 @@ PRODUCT_PACKAGES += \
 	
  Basic
 PRODUCT_PACKAGES += \
-    static_busybox 
+    static_busybox
 
 # TinyAlsa utils
 PRODUCT_PACKAGES += \
