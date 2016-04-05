@@ -92,6 +92,9 @@ BLUETOOTH_HCI_USE_MCT         := true
 # Custom RIL class
 BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
 PROTOBUF_SUPPORTED                  := true
+SIM_COUNT                           := 2
+TARGET_GLOBAL_CFLAGS                += -DANDROID_MULTI_SIM
+TARGET_GLOBAL_CPPFLAGS              += -DANDROID_MULTI_SIM
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT             := true
@@ -107,8 +110,8 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 # Audio
 TARGET_QCOM_AUDIO_VARIANT                     := caf
 BOARD_USES_ALSA_AUDIO                         := true
-BOARD_HAVE_NEW_QCOM_CSDCLIENT                 := true
 AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
+AUDIO_FEATURE_SAMSUNG_DUAL_SIM                := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
