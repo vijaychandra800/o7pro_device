@@ -92,9 +92,6 @@ BLUETOOTH_HCI_USE_MCT         := true
 # Custom RIL class
 BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
 PROTOBUF_SUPPORTED                  := true
-SIM_COUNT                           := 2
-TARGET_GLOBAL_CFLAGS                += -DANDROID_MULTI_SIM
-TARGET_GLOBAL_CPPFLAGS              += -DANDROID_MULTI_SIM
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT             := true
@@ -108,10 +105,9 @@ TARGET_INIT_VENDOR_LIB              := libinit_msm
 TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
-TARGET_QCOM_AUDIO_VARIANT                     := caf
-BOARD_USES_ALSA_AUDIO                         := true
-AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
-AUDIO_FEATURE_SAMSUNG_DUAL_SIM                := true
+TARGET_QCOM_AUDIO_VARIANT                 := caf
+BOARD_USES_ALSA_AUDIO                     := true
+AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
@@ -133,9 +129,9 @@ TARGET_POWERHAL_VARIANT              := qcom
 # Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
-BOARD_VOLD_MAX_PARTITIONS 	         := 65
+BOARD_VOLD_MAX_PARTITIONS 	     := 65
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR     := true
-BOARD_SUPPRESS_EMMC_WIPE 	         := true
+BOARD_SUPPRESS_EMMC_WIPE 	     := true
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL           := true
@@ -153,8 +149,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
 
 # Display
 TARGET_QCOM_DISPLAY_VARIANT         := caf
-TARGET_CONTINUOUS_SPLASH_ENABLED   := true
-TARGET_HAVE_HDMI_OUT 		        := false
+TARGET_HAVE_HDMI_OUT 		    := false
 USE_OPENGL_RENDERER                 := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
 MAX_EGL_CACHE_KEY_SIZE              := 12*1024
@@ -175,7 +170,7 @@ BOARD_HAS_NO_SELECT_BUTTON 			:= true
 BOARD_RECOVERY_SWIPE 				:= true
 BOARD_USE_CUSTOM_RECOVERY_FONT 	        	:= \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS 				:= true
-#RECOVERY_VARIANT				    := cm
+#RECOVERY_VARIANT				:= cm
 	
 # Misc.
 TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop
