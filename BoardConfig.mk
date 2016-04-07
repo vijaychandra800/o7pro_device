@@ -13,6 +13,7 @@ TARGET_OTA_ASSERT_DEVICE := samsung_sm_g530h,fortunave3g,fortuna3g
 TARGET_BOARD_PLATFORM           := msm8916
 TARGET_BOARD_PLATFORM_GPU       := qcom-adreno306
 TARGET_BOOTLOADER_BOARD_NAME    := MSM8916
+QCOM_HARDWARE_VARIANT           := msm8916
 
 # Arch
 TARGET_GLOBAL_CFLAGS            += -mfpu=neon -mfloat-abi=softfp
