@@ -658,8 +658,6 @@
         <ctl name="RX2 Digital Volume" value="56" />
         <ctl name="RX3 Digital Volume" value="79" />
         <ctl name="EAR PA Gain" value="POS_1P5_DB" />	
-	<ctl name="PRI_MI2S_RX Audio Mixer MultiMedia1" value="1" />
-	<ctl name="PRI_MI2S_RX Audio Mixer MultiMedia5" value="1" />
     </path>
 
     <path name="speaker-and-hdmi">
@@ -678,8 +676,6 @@
         <ctl name="RX2 Digital Volume" value="56" />
         <ctl name="RX3 Digital Volume" value="81" />
         <ctl name="EAR PA Gain" value="POS_1P5_DB" />	
-	<ctl name="PRI_MI2S_RX Audio Mixer MultiMedia1" value="1" />
-	<ctl name="PRI_MI2S_RX Audio Mixer MultiMedia5" value="1" />
     </path>
 
     <path name="fm-speaker">

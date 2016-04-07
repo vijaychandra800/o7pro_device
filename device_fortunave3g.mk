@@ -66,8 +66,6 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
     $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/audio_effects.conf:system/etc/audio_effects.conf \
     $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
     $(LOCAL_PATH)/configs/mixer_paths.xml:system/etc/mixer_paths.xml \
     $(LOCAL_PATH)/configs/sec_config:system/etc/sec_config \
@@ -121,11 +119,11 @@ PRODUCT_PACKAGES += \
     SamsungDoze
 	
 # Audio
+# audio.primary.msm8916 \
 PRODUCT_PACKAGES += \
     audiod \
     audio.a2dp.default \
     audio_policy.msm8916 \
-    audio.primary.msm8916 \
 	audio.primary.default \
     audio.r_submix.default \
     audio.usb.default \
@@ -165,8 +163,8 @@ PRODUCT_PACKAGES += \
     lights.msm8916
 
 # Keystore
-#PRODUCT_PACKAGES += \
-#    keystore.msm8916
+PRODUCT_PACKAGES += \
+    keystore.msm8916
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -231,8 +229,7 @@ PRODUCT_PACKAGES += \
 	
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp \
-    ro.sys.usb.default.config=mtp
+    persist.sys.usb.config=mtp
 
 # For userdebug builds
 ADDITIONAL_DEFAULT_PROPERTIES += \
