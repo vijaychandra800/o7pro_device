@@ -107,7 +107,6 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 # Audio
 TARGET_QCOM_AUDIO_VARIANT                 := caf
 BOARD_USES_ALSA_AUDIO                     := true
-AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
