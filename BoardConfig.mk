@@ -105,8 +105,9 @@ TARGET_INIT_VENDOR_LIB              := libinit_msm
 TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
-TARGET_QCOM_AUDIO_VARIANT                 := caf
-BOARD_USES_ALSA_AUDIO                     := true
+#TARGET_QCOM_AUDIO_VARIANT                    := caf
+BOARD_USES_ALSA_AUDIO                         := true
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
