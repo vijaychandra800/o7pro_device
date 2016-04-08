@@ -581,10 +581,10 @@ on property:sys.boot_completed=1
 on property:persist.radio.atfwd.start=false
     stop atfwd
 
-service qcom-debug /system/bin/sh /system/etc/init.qcom.debug.sh
-    class core
-    user root
-    oneshot
+#service qcom-debug /system/bin/sh /system/etc/init.qcom.debug.sh
+#    class core
+#    user root
+#    oneshot
 
 # corefile limit and ETB enabling
 on property:persist.debug.trace=1
@@ -653,13 +653,13 @@ on property:vold.decrypt=trigger_restart_framework
 on property:persist.env.fastdorm.enabled=true
     setprop persist.radio.data_no_toggle 1
 
-service cnd /system/bin/cnd
-    class late_start
-    socket cnd stream 660 root inet
+#service cnd /system/bin/cnd
+#    class late_start
+#    socket cnd stream 660 root inet
 
-service dpmd /system/bin/dpmd
-    class late_start
-    socket dpmd stream 660 root system
+#service dpmd /system/bin/dpmd
+#    class late_start
+#    socket dpmd stream 660 root system
 
 service irsc_util /system/bin/irsc_util "/etc/sec_config"
     class main
@@ -713,45 +713,45 @@ service hciattach_ath3k /system/bin/sh /system/etc/init.ath3k.bt.sh
      disabled
      oneshot
 
-service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin inet
-    disabled
-    oneshot
+#service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
+#    class late_start
+#    user bluetooth
+#    group bluetooth net_bt_admin inet
+#    disabled
+#    oneshot
 
-service bt-sap /system/bin/sapd 15
-    user bluetooth
-    group bluetooth net_bt_admin
-    class late_start
-    disabled
-    oneshot
+#service bt-sap /system/bin/sapd 15
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    class late_start
+#    disabled
+#    oneshot
 
-service btsnoop /system/bin/btsnoop
-   user bluetooth
-   group bluetooth net_bt_admin sdcard_rw sdcard_r
-   class late_start
-   disabled
-   oneshot
+#service btsnoop /system/bin/btsnoop
+#   user bluetooth
+#   group bluetooth net_bt_admin sdcard_rw sdcard_r
+#   class late_start
+#   disabled
+#   oneshot
 
-service ftmd /system/bin/logwrapper /system/bin/ftmdaemon
-    class late_start
-    user root
-    group bluetooth net_bt_admin misc net_bt_stack qcom_diag
-    disabled
-    oneshot
+#service ftmd /system/bin/logwrapper /system/bin/ftmdaemon
+#    class late_start
+#    user root
+#    group bluetooth net_bt_admin misc net_bt_stack qcom_diag
+#    disabled
+#    oneshot
 
-service bridgemgrd /system/bin/bridgemgrd
-    class late_start
-    user radio
-    group radio qcom_diag
-    disabled
+#service bridgemgrd /system/bin/bridgemgrd
+#    class late_start
+#    user radio
+#    group radio qcom_diag
+#    disabled
 
-service port-bridge /system/bin/port-bridge /dev/mhi_pipe_32 /dev/ttyGS0
-    class main
-    user radio system
-    group radio system inet
-    disabled
+#service port-bridge /system/bin/port-bridge /dev/mhi_pipe_32 /dev/ttyGS0
+#    class main
+#    user radio system
+#    group radio system inet
+#    disabled
 
 service qmiproxy /system/bin/qmiproxy
     class main
@@ -770,22 +770,22 @@ service netmgrd /system/bin/netmgrd
     class main
     disabled
 
-service ipacm-diag /system/bin/ipacm-diag
-    class main
-    user system
-    socket ipacm_log_file dgram 660 system net_admin
-    group net_admin qcom_diag
-    disabled
+#service ipacm-diag /system/bin/ipacm-diag
+#    class main
+#    user system
+#    socket ipacm_log_file dgram 660 system net_admin
+#    group net_admin qcom_diag
+#    disabled
 
-service ipacm /system/bin/ipacm
-    class main
-    user net_admin
-    group net_admin inet
-    disabled
+#service ipacm /system/bin/ipacm
+#    class main
+#    user net_admin
+#    group net_admin inet
+#    disabled
 
-service qti /system/vendor/bin/qti
-    class main
-    disabled
+#service qti /system/vendor/bin/qti
+#    class main
+#    disabled
 
 service sensors /system/bin/sensors.qcom
     class late_start
@@ -809,23 +809,23 @@ service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
     disabled
     oneshot
 
-service amp_init /system/bin/amploader -i
-    class late_start
-    user root
-    disabled
-    oneshot
+#service amp_init /system/bin/amploader -i
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
 
-service amp_load /system/bin/amploader -l 7000
-    class late_start
-    user root
-    disabled
-    oneshot
+#service amp_load /system/bin/amploader -l 7000
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
 
-service amp_unload /system/bin/amploader -u
-    class late_start
-    user root
-    disabled
-    oneshot
+#service amp_unload /system/bin/amploader -u
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
 
 service p2p_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
@@ -933,10 +933,10 @@ service dhcpcd_bnep4 /system/bin/dhcpcd -BKLG
     oneshot
 
 #for WiFi MFG(TestMode)
-service mfgloader /system/bin/mfgloader
-    class main
-    disabled
-    oneshot
+#service mfgloader /system/bin/mfgloader
+#    class main
+#    disabled
+#    oneshot
 
 service wlandutservice /system/bin/wlandutservice
     class main
@@ -1027,31 +1027,27 @@ service hostapd /system/bin/hostapd -dd /data/hostapd/hostapd.conf
     oneshot
     disabled
 
-service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
-    class late_start
-    group radio wifi inet
-    disabled
-    oneshot
+#service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
+#    class late_start
+#    group radio wifi inet
+#    disabled
+#    oneshot
 
-on property:persist.data.ds_fmc_app.mode=1
-    start ds_fmc_appd
+#on property:persist.data.ds_fmc_app.mode=1
+#    start ds_fmc_appd
 
-service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
-    class late_start
-    group net_bt_admin inet radio wifi
-    disabled
+#service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
+#    class late_start
+#    group net_bt_admin inet radio wifi
+#    disabled
 
-on property:persist.ims.regmanager.mode=1
-    start ims_regmanager
+#on property:persist.ims.regmanager.mode=1
+#    start ims_regmanager
 
-on property:ro.data.large_tcp_window_size=true
-    # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
-    write /proc/sys/net/ipv4/tcp_adv_win_scale  2
-
-service battery_monitor /system/bin/battery_monitor
-    user system
-    group system
-    disabled
+#service battery_monitor /system/bin/battery_monitor
+#    user system
+#    group system
+#    disabled
     
 on property:persist.radio.multisim.config=dsds
     stop ril-daemon
@@ -1141,31 +1137,31 @@ on ffbm
     trigger early-boot
     trigger mmi
 
-service hvdcp /system/bin/hvdcp
-    class core
-    user root
-    disabled
+#service hvdcp /system/bin/hvdcp
+#    class core
+#    user root
+#    disabled
 
-on property:persist.usb.hvdcp.detect=true
-    start hvdcp
+#on property:persist.usb.hvdcp.detect=true
+#    start hvdcp
 
-on property:persist.usb.hvdcp.detect=false
-    stop hvdcp
+#on property:persist.usb.hvdcp.detect=false
+#    stop hvdcp
 
-service charger_monitor /system/bin/charger_monitor
-    user root
-    group root
-    disabled
+#service charger_monitor /system/bin/charger_monitor
+#    user root
+#    group root
+#    disabled
 
-service qbcharger /charger -m 1
-    disabled
-    oneshot
+#service qbcharger /charger -m 1
+#    disabled
+#    oneshot
 
-on property:sys.qbcharger.enable=true
-    start qbcharger
+#on property:sys.qbcharger.enable=true
+#    start qbcharger
 
-on property:sys.qbcharger.enable=false
-    stop qbcharger
+#on property:sys.qbcharger.enable=false
+#    stop qbcharger
 
 service diag_mdlog_start /system/bin/diag_mdlog
     class late_start
@@ -1181,22 +1177,22 @@ service diag_mdlog_stop /system/bin/diag_mdlog -k
     disabled
     oneshot
 
-service qlogd /system/xbin/qlogd
-    socket qlogd stream 0662 system system
-    class main
-    disabled
-on property:persist.sys.qlogd=1
-    start qlogd
-on property:persist.sys.qlogd=0
-    stop qlogd
+#service qlogd /system/xbin/qlogd
+#    socket qlogd stream 0662 system system
+#    class main
+#    disabled
+#on property:persist.sys.qlogd=1
+#    start qlogd
+#on property:persist.sys.qlogd=0
+#    stop qlogd
 
-service rootagent /system/bin/sh /system/etc/init.qcom.rootagent.sh
-    disabled
-    oneshot
-on property:persist.sys.rootagent=1
-    start rootagent
-on property:persist.sys.rootagent=0
-    stop rootagent
+#service rootagent /system/bin/sh /system/etc/init.qcom.rootagent.sh
+#    disabled
+#    oneshot
+#on property:persist.sys.rootagent=1
+#    start rootagent
+#on property:persist.sys.rootagent=0
+#    stop rootagent
 
 service bms-sh /system/bin/sh /init.qcom.bms.sh
     class core
