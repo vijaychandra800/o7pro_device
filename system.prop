@@ -19,7 +19,7 @@ ro.use_data_netmgrd=false
 persist.data.netmgrd.qos.enable=false
 ro.telephony.default_network=0
 telephony.lteOnGsmDevice=0
-media.stagefright.use-awesome=true
+persist.radio.apm_sim_not_pwdn=1
 
 # RIL
 persist.radio.multisim.config=dsds
