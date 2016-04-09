@@ -28,6 +28,7 @@ TARGET_USES_QCOM_BSP               := true
 TARGET_PLATFORM_DEVICE_BASE        := /devices/soc.0/
 HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE := true
 COMMON_GLOBAL_CFLAGS               += -DQCOM_BSP
+BOARD_USES_QCOM_HARDWARE           := true
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
@@ -60,21 +61,19 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE  := 5731479552
 BOARD_FLASH_BLOCK_SIZE              := 131072
 
 # Wifi
-BOARD_HAS_QCOM_WLAN              := true
-BOARD_HAS_QCOM_WLAN_SDK          := true
-BOARD_WLAN_DEVICE                := qcwcn
-BOARD_HOSTAPD_DRIVER             := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
-BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_HAS_QCOM_WLAN 		 := true
+BOARD_HAS_QCOM_WLAN_SDK 	 := true
+BOARD_HOSTAPD_DRIVER 		 := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB 	 := lib_driver_cmd_qcwcn
+BOARD_WLAN_DEVICE 				 := qcwcn
+BOARD_WPA_SUPPLICANT_DRIVER 	 := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_qcwcn
 TARGET_PROVIDES_WCNSS_QMI        := true
-TARGET_USES_QCOM_WCNSS_QMI       := true
-TARGET_USES_WCNSS_CTRL           := true
-WPA_SUPPLICANT_VERSION           := VER_0_8_X
-WIFI_DRIVER_FW_PATH_STA          := "sta"
-WIFI_DRIVER_FW_PATH_AP           := "ap"
-WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
-WIFI_DRIVER_MODULE_NAME          := "wlan"
+TARGET_USES_QCOM_WCNSS_QMI 	 := true
+TARGET_USES_WCNSS_CTRL 		 := true
+WIFI_DRIVER_FW_PATH_AP 		 := "ap"
+WIFI_DRIVER_FW_PATH_STA 	 := "sta"
+WPA_SUPPLICANT_VERSION 		 := VER_0_8_X
 
 WLAN_MODULES:
 	mkdir -p $(KERNEL_MODULES_OUT)/pronto
@@ -90,7 +89,7 @@ BOARD_HAVE_BLUETOOTH_QCOM     := true
 BLUETOOTH_HCI_USE_MCT         := true
 
 # Custom RIL class
-BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
+BOARD_RIL_CLASS                    := ../../../device/samsung/fortunave3g/ril/
 PROTOBUF_SUPPORTED                  := true
 
 # Fonts
