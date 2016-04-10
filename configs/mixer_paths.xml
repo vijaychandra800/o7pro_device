@@ -315,7 +315,17 @@
         <ctl name="INTERNAL_BT_SCO_RX_Voice Mixer Voice2" value="1" />
         <ctl name="Voice2_Tx Mixer INTERNAL_BT_SCO_TX_Voice2" value="1" />
     </path>
+<!-- voice call2 -->	
+	<path name="voice2-call">
+        <ctl name="PRI_MI2S_RX_Voice Mixer Voice2" value="1" />
+        <ctl name="Voice2_Tx Mixer TERT_MI2S_TX_Voice2" value="1" />
+    </path>
 
+    <path name="voice2-call bt-sco">
+        <ctl name="INTERNAL_BT_SCO_RX_Voice Mixer Voice2" value="1" />
+        <ctl name="Voice2_Tx Mixer INTERNAL_BT_SCO_TX_Voice2" value="1" />
+    </path>
+<!-- voice call2 -->
     <path name="play-fm">
         <ctl name="Internal FM RX Volume" value="1" />
         <ctl name="PRI_MI2S_RX Port Mixer INTERNAL_FM_TX" value="1" />
@@ -423,7 +433,7 @@
         <path name="incall-rec-uplink-cp2" />
         <path name="incall-rec-downlink-cp2" />
     </path>
-    
+  
     <path name="voip-call">
         <ctl name="PRI_MI2S_RX_Voice Mixer Voip" value="1" />
         <ctl name="Voip_Tx Mixer TERT_MI2S_TX_Voip" value="1" />
