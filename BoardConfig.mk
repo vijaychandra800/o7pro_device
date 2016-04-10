@@ -107,6 +107,8 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
 #TARGET_QCOM_AUDIO_VARIANT                    := caf
+BOARD_HAVE_SAMSUNG_AUDIO := true
+QCOM_CSDCLIENT_ENABLED := false
 BOARD_USES_ALSA_AUDIO                         := true
 #AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
 
