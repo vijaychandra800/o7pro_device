@@ -69,9 +69,6 @@ service perfd /system/bin/perfd
 service thermal-engine /system/bin/thermal-engine
    class main
    user root
-   socket thermal-send-client stream 0666 system system
-   socket thermal-recv-client stream 0660 system system
-   socket thermal-recv-passive-client stream 0666 system system
    group root
 
 service time_daemon /system/bin/time_daemon
@@ -80,8 +77,8 @@ service time_daemon /system/bin/time_daemon
    group root
 
 on boot
-    start rmt_storage
-    insmod /system/lib/modules/adsprpc.ko
+    #start rmt_storage
+    #insmod /system/lib/modules/adsprpc.ko
 # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0020/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0020/secure_touch
