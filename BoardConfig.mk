@@ -43,14 +43,9 @@ BOARD_KERNEL_PAGESIZE        := 2048
 BOARD_KERNEL_SEPARATED_DT    := true
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 
-#TARGET_KERNEL_CONFIG                := msm8916_sec_cm_defconfig
-#TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_cm_defconfig
-#TARGET_KERNEL_SELINUX_CONFIG        := selinux_cm_defconfig
-
-TARGET_KERNEL_CONFIG 				:= msm8916_sec_defconfig
-TARGET_KERNEL_SELINUX_CONFIG 		:= selinux_defconfig
-TARGET_KERNEL_TIMA_CONFIG 			:= tima8916_defconfig
-TARGET_KERNEL_VARIANT_CONFIG 		:= msm8916_sec_fortunave3g_eur_defconfig
+TARGET_KERNEL_CONFIG                := msm8916_sec_cm_defconfig
+TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_cm_defconfig
+TARGET_KERNEL_SELINUX_CONFIG        := selinux_cm_defconfig
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
