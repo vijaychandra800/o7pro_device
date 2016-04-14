@@ -43,9 +43,12 @@ BOARD_KERNEL_PAGESIZE        := 2048
 BOARD_KERNEL_SEPARATED_DT    := true
 TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 
-TARGET_KERNEL_CONFIG                := msm8916_sec_cm_defconfig
-TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_cm_defconfig
-TARGET_KERNEL_SELINUX_CONFIG        := selinux_cm_defconfig
+#TARGET_KERNEL_CONFIG                := msm8916_sec_cm_defconfig
+#TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_cm_defconfig
+#TARGET_KERNEL_SELINUX_CONFIG        := selinux_cm_defconfig
+
+TARGET_KERNEL_SELINUX_CONFIG 			:= selinux_defconfig
+TARGET_KERNEL_CONFIG                    := cyanogenmod_fortunave3g_defconfig
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
@@ -77,10 +80,10 @@ WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
 WIFI_DRIVER_MODULE_NAME          := "wlan"
 
-#WLAN_MODULES:
-#	mkdir -p $(KERNEL_MODULES_OUT)/pronto
-#	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
-#	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
+WLAN_MODULES:
+	mkdir -p $(KERNEL_MODULES_OUT)/pronto
+	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
+	ln -sf /system/lib/modules/pronto/pronto_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
 
 TARGET_KERNEL_MODULES += WLAN_MODULES
 
@@ -107,10 +110,8 @@ TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
 #TARGET_QCOM_AUDIO_VARIANT                    := caf
-BOARD_HAVE_SAMSUNG_AUDIO := true
-QCOM_CSDCLIENT_ENABLED := false
 BOARD_USES_ALSA_AUDIO                         := true
-#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS    := true
+#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS   := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
