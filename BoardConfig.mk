@@ -6,6 +6,8 @@
 
 LOCAL_PATH := device/samsung/fortunave3g
 
+BLOCK_BASED_OTA := false
+
 # Assert
 TARGET_OTA_ASSERT_DEVICE := samsung_sm_g530h,fortunave3g,fortuna3g
 
