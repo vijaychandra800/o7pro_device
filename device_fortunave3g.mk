@@ -111,9 +111,6 @@ PRODUCT_PACKAGES += \
 # WPA supplicant
 PRODUCT_PACKAGES += \
     dhcpcd.conf \
-    hostapd.accept \
-    hostapd.deny \
-    hostapd_default.conf \
     hostapd \
     libwpa_client \
     wpa_supplicant \
