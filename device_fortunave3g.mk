@@ -163,8 +163,8 @@ PRODUCT_PACKAGES += \
     power.msm8916
 
 # Lights
-#PRODUCT_PACKAGES += \
-#    lights.msm8916
+PRODUCT_PACKAGES += \
+    lights.msm8916
 
 # Keystore
 PRODUCT_PACKAGES += \
