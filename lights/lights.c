@@ -31,7 +31,7 @@ static pthread_once_t g_init = PTHREAD_ONCE_INIT;
 static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
 
 char const *const LCD_FILE = "/sys/class/leds/lcd-backlight/brightness";
-char const *const BUTTON_FILE = "/sys/class/sec/sec_touchkey/brightness";
+//char const *const BUTTON_FILE = "/sys/class/sec/sec_touchkey/brightness";
 
 void init_globals(void)
 {
@@ -72,10 +72,10 @@ static int rgb_to_brightness(struct light_state_t const *state)
 		+ (150*((color>>8) & 0x00ff)) + (29*(color & 0x00ff))) >> 8;
 }
 
-static int is_lit(struct light_state_t const* state)
-{
-     return state->color & 0x00ffffff;
-}
+//static int is_lit(struct light_state_t const* state)
+//{
+//     return state->color & 0x00ffffff;
+//}
 
 static int set_light_backlight(struct light_device_t *dev, struct light_state_t const* state)
 {
@@ -87,19 +87,19 @@ static int set_light_backlight(struct light_device_t *dev, struct light_state_t 
      return err;
 }
 
-static int set_light_buttons (struct light_device_t* dev, struct light_state_t const* state) {
-     int err = 0;
-     int on = is_lit (state);
-     ALOGV("%s state->color = %d is_lit = %d", __func__,state->color , on);
-     pthread_mutex_lock (&g_lock);
-     if(on)
-         write_int(BUTTON_FILE, 1);
-     else
-         write_int(BUTTON_FILE, 0);
-
-     pthread_mutex_unlock (&g_lock);
-     return 0;
-}
+//static int set_light_buttons (struct light_device_t* dev, struct light_state_t const* state) {
+//     int err = 0;
+//     int on = is_lit (state);
+//     ALOGV("%s state->color = %d is_lit = %d", __func__,state->color , on);
+//     pthread_mutex_lock (&g_lock);
+//     if(on)
+//         write_int(BUTTON_FILE, 1);
+//     else
+//         write_int(BUTTON_FILE, 0);
+//
+//     pthread_mutex_unlock (&g_lock);
+//     return 0;
+//}
 
 static int close_lights(struct light_device_t *dev)
 {
@@ -119,8 +119,8 @@ static int open_lights(const struct hw_module_t *module, char const *name, struc
 
      if (0 == strcmp(LIGHT_ID_BACKLIGHT, name))
         set_light = set_light_backlight;
-     else if (0 == strcmp(LIGHT_ID_BUTTONS, name))
-        set_light = set_light_buttons;
+    // else if (0 == strcmp(LIGHT_ID_BUTTONS, name))
+    //    set_light = set_light_buttons;
      else
         return -EINVAL;
 
