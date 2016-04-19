@@ -93,7 +93,8 @@ BOARD_HAVE_BLUETOOTH_QCOM     := true
 BLUETOOTH_HCI_USE_MCT         := true
 
 # Custom RIL class
-BOARD_RIL_CLASS                    := ../../../device/samsung/fortunave3g/ril/
+#BOARD_RIL_CLASS                    := ../../../device/samsung/fortunave3g/ril/
+TARGET_RIL_VARIANT                  := caf
 PROTOBUF_SUPPORTED                  := true
 
 # Fonts
