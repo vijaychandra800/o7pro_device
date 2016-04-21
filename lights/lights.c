@@ -151,5 +151,4 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
      id: LIGHTS_HARDWARE_MODULE_ID,
      name: "lights Module",
      author: "Kolja Dummann <k.dummann@gmail.com>",
-     methods: &lights_module_methods,
-};
+ 

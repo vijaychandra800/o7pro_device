@@ -108,12 +108,7 @@ TARGET_INIT_VENDOR_LIB              := libinit_msm
 TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
-#TARGET_QCOM_AUDIO_VARIANT                    := caf
 BOARD_USES_ALSA_AUDIO                         := true
-#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS   := true
-#AUDIO_FEATURE_DEEP_BUFFER_RINGTONE            := true
-#AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE            := true
-#AUDIO_FEATURE_LOW_LATENCY_PRIMARY             := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
@@ -204,13 +199,4 @@ BOARD_SEPOLICY_UNION += \
     property_contexts \
     system_app.te \
     time_daemon.te \
-    vold.te \
-    bluetooth.te \
-    file.te \
-    kernel.te \
-    mm-qcamerad.te \
-    property.te \
-    rild.te \
-    system_server.te \
-    ueventd.te \
-    wcnss_service.te
+    vold.te 
