@@ -197,10 +197,6 @@
          The user is forbidden from setting the brightness below this level. -->
     <integer name="config_screenBrightnessSettingMinimum">10</integer>
 
-    <!-- When true use the linux /dev/input/event subsystem to detect the switch changes
-     on the headphone/microphone jack. When false use the older uevent framework -->
-    <bool name="config_useDevInputEventForAudioJack">true</bool>
-
     <!-- Minimum screen brightness allowed by the power manager. -->
     <integer name="config_screenBrightnessDim">10</integer>
 
@@ -316,14 +312,7 @@
     <!-- Disable dreams. Interferes with ambient display. -->
     <bool name="config_dreamsSupported">false</bool>
 
-    <!-- Configuration to restart radio upon PDP_DEACTIVATE with
-         error cause as Regular deactivation(36). -->
-    <bool name="config_radio_reset_on_regular_deactivation">false</bool>
-
-    <!-- Flag indicating if the speed up audio on mt call code should be executed -->
-    <bool name="config_speed_up_audio_on_mt_calls">true</bool>
-	
-	<!-- Ambient display. -->
+    <!-- Ambient display. -->
     <integer name="config_screenBrightnessDoze">30</integer>
     <string name="config_dozeComponent">com.android.systemui/com.android.systemui.doze.DozeService</string>
     <bool name="config_dozeAfterScreenOff">true</bool>
