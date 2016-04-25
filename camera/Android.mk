@@ -1,3 +1,5 @@
+ifeq ($(TARGET_DEVICE),fortunave3g)
+
 ifeq ($(TARGET_PROVIDES_CAMERA_HAL),true)
 
 LOCAL_PATH := $(call my-dir)
@@ -17,5 +19,7 @@ LOCAL_MODULE := camera.$(TARGET_BOARD_PLATFORM)
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_SHARED_LIBRARY)
+
+endif
 
 endif
