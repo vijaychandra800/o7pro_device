@@ -33,7 +33,7 @@ import java.util.Collections;
 import android.media.AudioManager;
 
 /**
- * Qualcomm RIL for Samsung MSM8916 devices
+ * Qualcomm RIL for Samsung MSM8916 (3G) devices
  * {@hide}
  */
 public class SamsungGrandPrimeRIL extends RIL {
@@ -80,6 +80,8 @@ public class SamsungGrandPrimeRIL extends RIL {
             rr.mParcel.writeInt(uusInfo.getDcs());
             rr.mParcel.writeByteArray(uusInfo.getUserData());
         }
+		
+		mAudioManager.setParameters("realcall=on");
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
@@ -287,7 +289,19 @@ public class SamsungGrandPrimeRIL extends RIL {
 
         send(rr);
     }
+	
+	@Override
+    public void
+    rejectCall (Message result) {
+        RILRequest rr
+                = RILRequest.obtain(RIL_REQUEST_UDUB, result);
 
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
+		
+		mAudioManager.setParameters("realcall=off");
+
+        send(rr);
+    }
 
     private void
     dialEmergencyCall(String address, int clirMode, Message result) {
