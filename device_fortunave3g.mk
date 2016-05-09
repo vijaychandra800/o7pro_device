@@ -123,8 +123,8 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf
 	
 # Doze
-#PRODUCT_PACKAGES += \
-#    SamsungDoze
+PRODUCT_PACKAGES += \
+    SamsungDoze
 	
 # Audio
 PRODUCT_PACKAGES += \
@@ -234,6 +234,13 @@ PRODUCT_PACKAGES += \
     libxml2 \
     Stk \
 	Stk2
+	
+# Live Wallpapers
+PRODUCT_PACKAGES += \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    VisualizationWallpapers \
+    librs_jni	
 	
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
