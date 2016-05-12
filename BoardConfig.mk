@@ -48,7 +48,7 @@ TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 #TARGET_KERNEL_CONFIG                := msm8916_sec_cm_defconfig
 #TARGET_KERNEL_VARIANT_CONFIG        := msm8916_sec_fortunave3g_eur_cm_defconfig
 #TARGET_KERNEL_SELINUX_CONFIG        := selinux_cm_defconfig
-TARGET_KERNEL_CONFIG := cyanogenmod_j53g_defconfig
+TARGET_KERNEL_CONFIG := cyanogenmod_fortuna_defconfig
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
