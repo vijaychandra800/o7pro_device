@@ -88,44 +88,13 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
+# Doze
+PRODUCT_PACKAGES += \
+    SamsungDoze	
+	
 # Charger
 PRODUCT_PACKAGES += \
 	charger_res_images
-	
-# SoftAP
-PRODUCT_PACKAGES += \
-    libcurl \
-    libqsap_sdk \
-    libQWiFiSoftApCfg
-	
-# Wifi
-PRODUCT_PACKAGES += \
-    libnetcmdiface \
-    macloader
-
-# CRDA
-PRODUCT_PACKAGES += \
-    crda \
-    linville.key.pub.pem \
-    regdbdump \
-    regulatory.bin
-	
-# QRNGD
-PRODUCT_PACKAGES += \
-    qrngd \
-    qrngp
-
-# WPA supplicant
-PRODUCT_PACKAGES += \
-    dhcpcd.conf \
-    hostapd \
-    libwpa_client \
-    wpa_supplicant \
-    wpa_supplicant.conf
-	
-# Doze
-PRODUCT_PACKAGES += \
-    SamsungDoze
 	
 # Audio
 PRODUCT_PACKAGES += \
@@ -140,18 +109,14 @@ PRODUCT_PACKAGES += \
     libqcompostprocbundle \
     libqcomvisualizer \
     libqcomvoiceprocessing
-	
-#Basic
-PRODUCT_PACKAGES += \
-    static_busybox
 
 # TinyAlsa utils
 PRODUCT_PACKAGES += \
     tinyplay \
     tinycap \
     tinymix \
-    tinypcminfo
-
+    tinypcminfo	
+	
 # Display
 PRODUCT_PACKAGES += \
     copybit.msm8916 \
@@ -159,7 +124,7 @@ PRODUCT_PACKAGES += \
     hwcomposer.msm8916 \
     memtrack.msm8916 \
     libtinyxml
-
+	
 # Power
 PRODUCT_PACKAGES += \
     power.msm8916
@@ -191,13 +156,11 @@ PRODUCT_PACKAGES += \
     libOmxVdec \
     libOmxVenc \
     libstagefrighthw \
-    libdashplayer
-
-PRODUCT_PACKAGES += \
+    libdashplayer \
     qcmediaplayer
 
 PRODUCT_BOOT_JARS += \
-    qcmediaplayer	
+    qcmediaplayer
 
 # FM
 PRODUCT_PACKAGES += \
@@ -211,7 +174,7 @@ PRODUCT_PACKAGES += \
     ebtables \
     ethertypes \
     libebtc
-
+	
 # USB
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
@@ -220,6 +183,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     e2fsck \
     fsck.f2fs
+
+# Live Wallpapers
+PRODUCT_PACKAGES += \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    VisualizationWallpapers \
+    librs_jni
 
 # WCNSS service daemon
 PRODUCT_PACKAGES += \
@@ -230,15 +200,29 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libxml2 \
     Stk \
-	Stk2
+	Stk2	
 	
-# Live Wallpapers
+# SoftAP
 PRODUCT_PACKAGES += \
-    LiveWallpapers \
-    LiveWallpapersPicker \
-    VisualizationWallpapers \
-    librs_jni	
+    libcurl \
+    libqsap_sdk \
+    libQWiFiSoftApCfg
 	
+# CRDA
+PRODUCT_PACKAGES += \
+    crda \
+    linville.key.pub.pem \
+    regdbdump \
+    regulatory.bin
+
+# WPA supplicant
+PRODUCT_PACKAGES += \
+    dhcpcd.conf \
+    hostapd \
+    libwpa_client \
+    wpa_supplicant \
+    wpa_supplicant.conf	
+
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp

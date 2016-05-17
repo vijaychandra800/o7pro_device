@@ -133,14 +133,14 @@ TARGET_POWERHAL_SET_INTERACTIVE_EXT  := $(LOCAL_PATH)/power/power_ext.c
 # Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
-BOARD_VOLD_MAX_PARTITIONS 	     := 65
+BOARD_VOLD_MAX_PARTITIONS 	         := 65
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR     := true
-BOARD_SUPPRESS_EMMC_WIPE 	     := true
+BOARD_SUPPRESS_EMMC_WIPE 	         := true
 
 # Camera
-TARGET_PROVIDES_CAMERA_HAL := true
-TARGET_USE_VENDOR_CAMERA_EXT := true
-USE_DEVICE_SPECIFIC_CAMERA := true
+TARGET_PROVIDES_CAMERA_HAL           := true
+TARGET_USE_VENDOR_CAMERA_EXT         := true
+USE_DEVICE_SPECIFIC_CAMERA           := true
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
@@ -149,15 +149,16 @@ BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
 TARGET_PROVIDES_LIBLIGHT            := true
 
 # Media
-#TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
+TARGET_QCOM_MEDIA_VARIANT           := caf
+TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
 
 # Display
 TARGET_USES_ION                     := true
-TARGET_USES_NEW_ION_API 	    := true
-TARGET_USES_OVERLAY 		    := true
+TARGET_USES_NEW_ION_API 	        := true
+TARGET_USES_OVERLAY 		        := true
 TARGET_USES_C2D_COMPOSITION         := true
-TARGET_HARDWARE_3D		    := false
-TARGET_HAVE_HDMI_OUT 		    := false
+TARGET_HARDWARE_3D		            := false
+TARGET_HAVE_HDMI_OUT 		        := false
 USE_OPENGL_RENDERER                 := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
 MAX_EGL_CACHE_KEY_SIZE              := 12*1024
@@ -178,7 +179,7 @@ BOARD_HAS_NO_SELECT_BUTTON 			:= true
 BOARD_RECOVERY_SWIPE 				:= true
 BOARD_USE_CUSTOM_RECOVERY_FONT 	        	:= \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS 				:= true
-#RECOVERY_VARIANT				:= cm
+#RECOVERY_VARIANT				    := cm
 	
 # Misc.
 TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop
