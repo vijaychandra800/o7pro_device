@@ -28,7 +28,6 @@ TARGET_BOARD_SUFFIX             := _32
 BOARD_USES_QC_TIME_SERVICES        := true
 TARGET_USES_QCOM_BSP               := true
 TARGET_PLATFORM_DEVICE_BASE        := /devices/soc.0/
-HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE := true
 COMMON_GLOBAL_CFLAGS               += -DQCOM_BSP
 BOARD_USES_QCOM_HARDWARE           := true
 
@@ -115,9 +114,6 @@ BOARD_USES_ALSA_AUDIO                         := true
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
 BOARD_CHARGER_ENABLE_SUSPEND         := true
-BOARD_BATTERY_DEVICE_NAME            := "battery"
-BOARD_CHARGING_CMDLINE_NAME          := "androidboot.bootchg"
-BOARD_CHARGING_CMDLINE_VALUE         := "true"
 
 # Enable QCOM FM feature
 TARGET_QCOM_NO_FM_FIRMWARE           := true
