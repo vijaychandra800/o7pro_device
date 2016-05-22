@@ -30,6 +30,7 @@ TARGET_USES_QCOM_BSP               := true
 TARGET_PLATFORM_DEVICE_BASE        := /devices/soc.0/
 COMMON_GLOBAL_CFLAGS               += -DQCOM_BSP
 BOARD_USES_QCOM_HARDWARE           := true
+HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE := true
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
@@ -108,9 +109,8 @@ TARGET_INIT_VENDOR_LIB              := libinit_msm
 TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
 
 # Audio
-#TARGET_QCOM_AUDIO_VARIANT                    := caf
-BOARD_USES_ALSA_AUDIO                         := true
-#AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS   := true
+TARGET_QCOM_AUDIO_VARIANT            := caf
+BOARD_USES_ALSA_AUDIO                := true
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
@@ -160,7 +160,7 @@ USE_OPENGL_RENDERER                 := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS     := 3
 MAX_EGL_CACHE_KEY_SIZE              := 12*1024
 MAX_EGL_CACHE_SIZE                  := 2048*1024
-#OVERRIDE_RS_DRIVER                 := libRSDriver_adreno.so
+OVERRIDE_RS_DRIVER                 := libRSDriver.so
 
 # Boot animation
 TARGET_SCREEN_WIDTH                 := 540
