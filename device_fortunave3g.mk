@@ -91,11 +91,7 @@ PRODUCT_COPY_FILES += \
 # Doze
 PRODUCT_PACKAGES += \
     SamsungDoze	
-	
-# Charger
-PRODUCT_PACKAGES += \
-	charger_res_images
-	
+
 # Audio
 PRODUCT_PACKAGES += \
     audiod \
@@ -167,11 +163,11 @@ PRODUCT_BOOT_JARS += \
     qcmediaplayer
 
 # FM
-PRODUCT_PACKAGES += \
-    FM2 \
-    FMRecord \
-    libqcomfm_jni \
-    qcom.fmradio
+#PRODUCT_PACKAGES += \
+#    FM2 \
+#    FMRecord \
+#    libqcomfm_jni \
+#    qcom.fmradio
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
