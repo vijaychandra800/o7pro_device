@@ -129,8 +129,8 @@ BOARD_SUPPRESS_EMMC_WIPE             := true
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL           := true
-TARGET_USE_VENDOR_CAMERA_EXT         := true
 USE_DEVICE_SPECIFIC_CAMERA           := true
+COMMON_GLOBAL_CFLAGS 				 += -DSAMSUNG_CAMERA_HARDWARE
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
@@ -141,6 +141,7 @@ TARGET_PROVIDES_LIBLIGHT            := true
 # Media
 TARGET_QCOM_MEDIA_VARIANT           := caf
 TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
+TARGET_USES_QCOM_MM_AUDIO			:= true
 
 # Display
 TARGET_USES_OVERLAY 		        := true
@@ -167,6 +168,9 @@ BOARD_RECOVERY_SWIPE 				:= true
 BOARD_USE_CUSTOM_RECOVERY_FONT 	    := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS 				:= true
 #RECOVERY_VARIANT				    := cm
+
+# Logging
+TARGET_USES_LOGD                    := false
 	
 # Misc.
 TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop
