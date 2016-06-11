@@ -143,6 +143,7 @@ TARGET_PROVIDES_LIBLIGHT            := true
 # Media
 TARGET_QCOM_MEDIA_VARIANT           := caf
 TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
+TARGET_USES_QCOM_MM_AUDIO			:= true
 
 # Display
 BOARD_EGL_CFG                         := $(LOCAL_PATH)/configs/egl.cfg
