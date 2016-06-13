@@ -4,9 +4,9 @@
 # Inherit from the proprietary version
 -include vendor/samsung/fortunave3g/BoardConfigVendor.mk
 
-#LOCAL_PATH := device/samsung/fortunave3g
+LOCAL_PATH := device/samsung/fortunave3g
 
-BLOCK_BASED_OTA := false
+#BLOCK_BASED_OTA := false
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := samsung_sm_g530h,fortunave3g,fortuna3g
