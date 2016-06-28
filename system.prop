@@ -12,6 +12,7 @@ persist.rild.nitz_short_ons_2=
 persist.rild.nitz_short_ons_3=
 ril.subscription.types=NV,RUIM
 DEVICE_PROVISIONED=1
+persist.radio.rat_on=combine
 ro.telephony.ril_class=SamsungQcom3GDSRIL
 telephony.lteOnGsmDevice=0
 persist.radio.apm_sim_not_pwdn=1
@@ -55,19 +56,33 @@ tunnel.audio.encode = false
 audio.offload.buffer.size.kb=32
 audio.offload.min.duration.secs=30
 av.offload.enable=true
+af.resampler.quality=4
 
 # Wi-Fi, Bluetooth
 wifi.interface=wlan0
 ro.bluetooth.hfp.ver=1.6
 ro.qualcomm.bt.hci_transport=smd
+ro.fm.transmitter=false
 
 # Misc.
-ro.chipname=MSM8916
+ro.product_ship=true
+ro.chipname=MSM8216
 ro.warmboot.capability=1
 ro.qualcomm.cabl=0
 
 # GPS
 persist.gps.qc_nlp_in_use=1
+
+#system props for time-services
+persist.timed.enable=true
+
+#property to enable user to access Google WFD settings
+persist.debug.wfd.enable=1
+#propery to enable VDS WFD solution
+persist.hwc.enable_vds=1
+
+#property to enable narrow search range for video encoding
+vidc.enc.narrow.searchrange=1
 
 # Art
 dalvik.vm.dex2oat-flags=--no-watch-dog

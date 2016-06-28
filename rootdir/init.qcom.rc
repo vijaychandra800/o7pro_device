@@ -867,12 +867,6 @@ service ril-daemon1 /system/bin/rild -l /system/lib/libsec-ril-dsds.so -c 2
     user root
     group radio cache inet misc audio log qcom_diag sdcard_r shell sdcard_rw system drmrpc
 	
-service profiler_daemon /system/bin/profiler_daemon
-    class late_start
-    user root
-    group root
-    disabled
-
 # virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
     class late_start
