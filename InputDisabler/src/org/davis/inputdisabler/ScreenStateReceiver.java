@@ -24,7 +24,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
     public static final String TAG = "ScreenStateReceiver";
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     public static final int DOZING_TIME = 1000 * 5;
 
