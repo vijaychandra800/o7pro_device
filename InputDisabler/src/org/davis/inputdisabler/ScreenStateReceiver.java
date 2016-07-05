@@ -52,42 +52,42 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                 Log.d(TAG, "Screen off!");
                 enableDevices(false);
                 break;
-            //case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
-            //    Log.d(TAG, "Phone state changed!");
-            //
-            //    final TelephonyManager telephonyManager =
-            //            (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
+                Log.d(TAG, "Phone state changed!");
             
-             //   switch (telephonyManager.getCallState()) {
-             //       case TelephonyManager.CALL_STATE_OFFHOOK:
-             //           mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-             //           mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-             //           mSensorManager.registerListener(this, mSensor, 3);
-              //          break;
-              //      case TelephonyManager.CALL_STATE_IDLE:
-              //          if(mSensorManager != null) {
-              //              mSensorManager.unregisterListener(this);
-              //          }
-              //      break;
-              //  }
-           // break;
+                final TelephonyManager telephonyManager =
+                        (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            
+                switch (telephonyManager.getCallState()) {
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+                        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+                        mSensorManager.registerListener(this, mSensor, 3);
+                        break;
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        if(mSensorManager != null) {
+                            mSensorManager.unregisterListener(this);
+                        }
+                    break;
+                }
+            break;
         }
     }
     
-    //@Override
-   // public void onSensorChanged(SensorEvent sensorEvent) {
-    //    if(sensorEvent.values[0] == 0.0f) {
-    //        if(DEBUG){
-    //            Log.d(TAG, "Proximity: screen off");
-   //         }
-    //        enableDevices(false);
-    //    } else {
-    //        if(DEBUG){
-    //            Log.d(TAG, "Proximity: screen on");
-    //        }
-    //        enableDevices(true);
-    //    }
-    //}
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(sensorEvent.values[0] == 0.0f) {
+            if(DEBUG){
+                Log.d(TAG, "Proximity: screen off");
+            }
+            enableDevices(false);
+        } else {
+            if(DEBUG){
+                Log.d(TAG, "Proximity: screen on");
+            }
+            enableDevices(true);
+        }
+    }
 
     
     // Wrapper method
