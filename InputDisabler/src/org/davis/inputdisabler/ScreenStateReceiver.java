@@ -124,4 +124,9 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
         
         return true;
     }
+	
+	@Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 }
