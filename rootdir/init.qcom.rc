@@ -954,7 +954,12 @@ service wcnss-service /system/bin/wcnss_service
     class main
     user system
     group system wifi radio
-    oneshot  
+    oneshot 
+
+service charger /charger
+    class charger
+    group log
+    seclabel u:r:healthd:s0
 	
 on charger
     chown root system /sys/class/power_supply/bms/current_now
