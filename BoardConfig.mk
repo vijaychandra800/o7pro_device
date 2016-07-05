@@ -114,8 +114,7 @@ BOARD_CHARGER_ENABLE_SUSPEND         := true
 BOARD_CHARGING_MODE_BOOTING_LPM      := /sys/class/power_supply/battery/batt_lp_charging
 
 # Enable QCOM FM feature
-#TARGET_QCOM_NO_FM_FIRMWARE           := true
-#AUDIO_FEATURE_ENABLED_FM             := true
+AUDIO_FEATURE_ENABLED_FM             := true
 
 # Enable HW based full disk encryption
 TARGET_HW_DISK_ENCRYPTION            := true

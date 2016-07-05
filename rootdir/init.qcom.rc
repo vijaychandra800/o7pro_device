@@ -447,7 +447,7 @@ on fs
     restorecon -R /efs
 
 # fm_radio
-    chmod 0640 /dev/radio0
+    chmod 0777 /dev/radio0
     chown system system /dev/radio0	
 	
 # msm specific files that need to be created on /data
