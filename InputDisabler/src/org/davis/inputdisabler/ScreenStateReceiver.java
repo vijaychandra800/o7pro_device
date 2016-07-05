@@ -26,15 +26,9 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
     public static final boolean DEBUG = true;
 
-    //public static final int DOZING_TIME = 1000 * 5;
+    SensorManager mSensorManager;
 
-   // android.os.Handler mDozeDisable;
-
-    //boolean mScreenOn;
-
-    //SensorManager mSensorManager;
-
-    //Sensor mSensor;
+    Sensor mSensor;
 
     @Override
     public void onReceive(Context context, Intent intent) {
