@@ -111,6 +111,7 @@ BOARD_USES_ALSA_AUDIO                := true
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
 BOARD_CHARGER_ENABLE_SUSPEND         := true
+BOARD_CHARGING_MODE_BOOTING_LPM      := /sys/class/power_supply/battery/batt_lp_charging
 
 # Enable QCOM FM feature
 #TARGET_QCOM_NO_FM_FIRMWARE           := true
@@ -131,7 +132,7 @@ BOARD_VOLD_MAX_PARTITIONS            := 65
 # Camera
 TARGET_PROVIDES_CAMERA_HAL           := true
 USE_DEVICE_SPECIFIC_CAMERA           := true
-COMMON_GLOBAL_CFLAGS 				 += -DSAMSUNG_CAMERA_HARDWARE
+#COMMON_GLOBAL_CFLAGS 				 += -DSAMSUNG_CAMERA_HARDWARE
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
@@ -142,7 +143,7 @@ TARGET_PROVIDES_LIBLIGHT            := true
 # Media
 TARGET_QCOM_MEDIA_VARIANT           := caf
 TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
-TARGET_USES_QCOM_MM_AUDIO			:= true
+#TARGET_USES_QCOM_MM_AUDIO			:= true
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true

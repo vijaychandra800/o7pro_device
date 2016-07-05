@@ -26,122 +26,85 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
     public static final boolean DEBUG = true;
 
-    public static final int DOZING_TIME = 1000 * 5;
+    //public static final int DOZING_TIME = 1000 * 5;
 
-    android.os.Handler mDozeDisable;
+   // android.os.Handler mDozeDisable;
 
-    boolean mScreenOn;
+    //boolean mScreenOn;
 
-    SensorManager mSensorManager;
+    //SensorManager mSensorManager;
 
-    Sensor mSensor;
+    //Sensor mSensor;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if(DEBUG)
+        if(DEBUG){
             Log.d(TAG, "Received intent");
-
+        }
+        
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
-                mScreenOn = true;
-
-                // Perform enable->disable->enable sequence
-				enableDevices(true);
+                enableDevices(true);
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
-
-                mScreenOn = false;
-
-				enableDevices(false);
+                enableDevices(false);
                 break;
-            case Constants.ACTION_DOZE_PULSE_STARTING:
-                Log.d(TAG, "Doze");
-
-                mDozeDisable = new Handler();
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if(!mScreenOn) {
-                            if(DEBUG){
-								Log.d(TAG, "Screen was turned on while dozing");
-							}
-                            
-							enableDevices(false);
-                        } else {
-                            if(DEBUG){
-								Log.d(TAG, "Screen was turned off while dozing");
-							}
-                                
-                            enableDevices(true);
-                        }
-                    }
-                };
-                mDozeDisable.postDelayed(runnable, DOZING_TIME);
-
-                // Don't enable touch keys when dozing
-                // Perform enable->disable->enable sequence
-                enableDevices(true);
-                break;
-            case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
-                Log.d(TAG, "Phone state changed!");
-
-                final TelephonyManager telephonyManager =
-                        (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-
-                switch (telephonyManager.getCallState()) {
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-                        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-                        mSensorManager.registerListener(this, mSensor, 3);
-                        break;
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        if(mSensorManager != null) {
-                            mSensorManager.unregisterListener(this);
-                        }
-                    break;
-                }
-            break;
+            //case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
+            //    Log.d(TAG, "Phone state changed!");
+            //
+            //    final TelephonyManager telephonyManager =
+            //            (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            
+             //   switch (telephonyManager.getCallState()) {
+             //       case TelephonyManager.CALL_STATE_OFFHOOK:
+             //           mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+             //           mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+             //           mSensorManager.registerListener(this, mSensor, 3);
+              //          break;
+              //      case TelephonyManager.CALL_STATE_IDLE:
+              //          if(mSensorManager != null) {
+              //              mSensorManager.unregisterListener(this);
+              //          }
+              //      break;
+              //  }
+           // break;
         }
     }
-	
-	@Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if(sensorEvent.values[0] == 0.0f) {
-            if(DEBUG){
-				Log.d(TAG, "Proximity: screen off");
-			}
-            	
-		    enableDevices(false);
-        } else {
-            if(DEBUG){
-				Log.d(TAG, "Proximity: screen on");
-			}	
-			
-			// Perform enable->disable->enable sequence
-            enableDevices(true);
-        }
-    }
+    
+    //@Override
+   // public void onSensorChanged(SensorEvent sensorEvent) {
+    //    if(sensorEvent.values[0] == 0.0f) {
+    //        if(DEBUG){
+    //            Log.d(TAG, "Proximity: screen off");
+   //         }
+    //        enableDevices(false);
+    //    } else {
+    //        if(DEBUG){
+    //            Log.d(TAG, "Proximity: screen on");
+    //        }
+    //        enableDevices(true);
+    //    }
+    //}
 
-    /*
-     * Wrapper method
-     */
-	 
+    
+    // Wrapper method
     private void enableDevices(boolean enable) {
         boolean ret;
-		
         if(enable) {
             // Turn on touch input
             ret = write_sysfs(Constants.TS_PATH, true);
-            if(DEBUG)
-                Log.d(TAG, "Enabled touchscreen, success? " + ret);
+            if(DEBUG){
+               Log.d(TAG, "Enabled touchscreen, success? " + ret);
+            }   
         } else {
             // Turn off touch input
             ret = write_sysfs(Constants.TS_PATH, false);
-            if(DEBUG)
+            if(DEBUG){
                 Log.d(TAG, "Disabled touchscreen, success? " + ret);
+            }   
         }
     }
 
@@ -160,10 +123,5 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
         }
         
         return true;
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 }
