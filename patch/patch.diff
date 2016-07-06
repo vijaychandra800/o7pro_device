@@ -155,7 +155,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadio.java b/hardware/q
              if((false == mService.isFmOn()) && isAntennaAvailable()) {
 +				mAudioManager.setParameters("fm_mode=on;fm_radio_mute=0;fm_radio_volume=on;FMRadioVol=0.1496235728");
 +                //mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+                mAudioManager.setSpeakerphoneOn(false);
++                //mAudioManager.setSpeakerphoneOn(false);
                  bStatus = mService.fmOn();
                  if(bStatus) {
                     tuneRadio(FmSharedPreferences.getTunedFrequency());
@@ -184,7 +184,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
                  stopFM();
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
 +			   //audioManager.setMode(AudioManager.MODE_IN_CALL);
-+               audioManager.setSpeakerphoneOn(false);
++               //audioManager.setSpeakerphoneOn(false);
                 if (mMuted) {
                     setAudioPath(true);
                 } else {
@@ -193,7 +193,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
                   }
             }
 +		   //audioManager.setMode(AudioManager.MODE_IN_CALL);
-+           audioManager.setSpeakerphoneOn(true);
++          // audioManager.setSpeakerphoneOn(true);
             AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
             if (analogmode)
                  startFM();
