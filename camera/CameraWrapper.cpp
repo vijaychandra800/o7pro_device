@@ -99,7 +99,7 @@ static int check_vendor_module()
 
 #define KEY_VIDEO_HFR_VALUES "video-hfr-values"
 
-const static char * iso_values[] = {"auto,ISO_HJR,ISO100,ISO200,ISO400,ISO800,auto"};
+const static char * iso_values[] = {"auto,ISO_HJR,ISO100,ISO200,ISO400,ISO800"};
 
 static char *camera_fixup_getparams(int id, const char *settings)
 {
@@ -113,9 +113,9 @@ static char *camera_fixup_getparams(int id, const char *settings)
 
     // fix params here
     params.set(android::CameraParameters::KEY_SUPPORTED_ISO_MODES, iso_values[id]);
-    params.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.5");
-    params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-2");
-    params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "2");
+    params.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.1");
+    params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-20");
+    params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "20");
 
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
