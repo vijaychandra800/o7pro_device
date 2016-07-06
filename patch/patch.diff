@@ -213,3 +213,15 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
           if (mResumeAfterCall)
           {
               //We are unmuting FM in a voice call. Need to enable FM audio routing.
+			  
+diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
+--- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
++++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
+@@ -927,6 +927,7 @@
+                Log.d(LOGTAG, "Audio source set it as speaker");
+                AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
+            } else {
++			   mSpeakerPhoneOn = false;
+                Log.d(LOGTAG, "Audio source set it as headset");
+                AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
+            }
