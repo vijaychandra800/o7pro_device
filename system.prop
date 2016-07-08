@@ -31,7 +31,6 @@ debug.composition.type=c2d
 
 # Media
 mm.enable.qcom_parser=3183219
-camera2.portability.force_api=1
 media.stagefright.enable-player=true
 media.stagefright.enable-http=true
 media.stagefright.enable-aac=true
