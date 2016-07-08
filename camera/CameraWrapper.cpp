@@ -121,12 +121,12 @@ static char *camera_fixup_getparams(int id, const char *settings)
      * this can be turned off, fixup the params to tell the Camera
      * that it really is okay to turn it off.
      */
-    const char *hfrValues = params.get(KEY_VIDEO_HFR_VALUES);
-    if (hfrValues && *hfrValues && ! strstr(hfrValues, "off")) {
-        char tmp[strlen(hfrValues) + 4 + 1];
-        sprintf(tmp, "%s,off", hfrValues);
-        params.set(KEY_VIDEO_HFR_VALUES, tmp);
-    }
+    //const char *hfrValues = params.get(KEY_VIDEO_HFR_VALUES);
+    //if (hfrValues && *hfrValues && ! strstr(hfrValues, "off")) {
+    //    char tmp[strlen(hfrValues) + 4 + 1];
+    //    sprintf(tmp, "%s,off", hfrValues);
+    //    params.set(KEY_VIDEO_HFR_VALUES, tmp);
+    //}
 
     /* Enforce video-snapshot-supported to true */
     //params.set(android::CameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED, "true");
@@ -153,7 +153,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     params.dump();
 #endif
 
-    params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
+    //params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
     
     // fix params here
     params.set("preview-format", "yuv420p");
