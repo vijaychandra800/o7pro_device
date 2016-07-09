@@ -42,6 +42,9 @@ media.aac_51_output_enabled=true
 vidc.enc.narrow.searchrange=1
 qcom.hw.aac.encoder=true
 
+# Camera
+camera2.portability.force_api=1
+
 # Perf
 ro.vendor.extension_library=libqti-perfd-client.so
 
