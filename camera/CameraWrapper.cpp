@@ -156,6 +156,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     // fix params here
 	if (id == 0) {
         params.set("preview-format", "yuv420p");
+		params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
 	}	
 	
     // No need to fix-up ISO_HJR, it is the same for userspace and the camera lib
@@ -169,8 +170,8 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
             params.set(android::CameraParameters::KEY_ISO_MODE, "400");
         else if (strcmp(isoMode, "ISO800") == 0)
             params.set(android::CameraParameters::KEY_ISO_MODE, "800");
-		else if (strcmp(isoMode, "ISO1600") == 0)
-            params.set(android::CameraParameters::KEY_ISO_MODE, "1600");
+		//else if (strcmp(isoMode, "ISO1600") == 0)
+        //    params.set(android::CameraParameters::KEY_ISO_MODE, "1600");
     }
 
     android::String8 strParams = params.flatten();
