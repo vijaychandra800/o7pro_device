@@ -117,9 +117,11 @@ static char *camera_fixup_getparams(int id, const char *settings)
     params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-20");
     params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "20");
 	
-	if(id == 0){
-		params.set("focus-mode-values", "auto,infinity,macro");
-	}
+	// fix params here
+	params.set("preview-format-values", "yuv420p");
+	params.set("video-frame-format", "yuv420p");
+	params.set("whitebalance-values", "auto");
+	params.set("auto-whitebalance-lock-supported", "false");
 
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
@@ -154,9 +156,6 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     params.dump();
 #endif
 
-    // fix params here
-	params.set("preview-format", "yuv420p");	
-	
     // No need to fix-up ISO_HJR, it is the same for userspace and the camera lib
     if (params.get("iso")) {
         const char *isoMode = params.get(android::CameraParameters::KEY_ISO_MODE);
