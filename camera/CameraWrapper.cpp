@@ -119,6 +119,7 @@ static char *camera_fixup_getparams(int id, const char *settings)
 	
 	params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
 	params.set("effect-values", "none,mono,negative,sepia");
+	params.set("flash-mode-values", "off,auto,on");
 	
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
@@ -168,7 +169,6 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
 	
 	// fix params here
 	params.set("preview-format", "yuv420p");
-	params.set("video-frame-format", "yuv420p");
 	
     android::String8 strParams = params.flatten();
 
