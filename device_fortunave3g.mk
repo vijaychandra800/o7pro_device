@@ -130,6 +130,10 @@ PRODUCT_PACKAGES += \
 # Keystore
 PRODUCT_PACKAGES += \
     keystore.msm8916
+    
+# GPS HAL
+PRODUCT_PACKAGES += \
+    gps.msm8916    
 
 # Camera
 PRODUCT_PACKAGES += \
