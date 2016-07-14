@@ -117,9 +117,9 @@ static char *camera_fixup_getparams(int id, const char *settings)
     params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-2");
     params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "2");
 	
-	params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
-	params.set("effect-values", "none,mono,negative,sepia");
-	params.set("flash-mode-values", "off,auto,on");
+    params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
+    params.set("effect-values", "none,mono,negative,sepia");
+
 	
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
@@ -154,15 +154,6 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     params.dump();
 #endif
 
-    const char *recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
-    bool isVideo = recordingHint && !strcmp(recordingHint, "true");
-
-    if (isVideo) {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
-    } else {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
-    }
-
     // No need to fix-up ISO_HJR, it is the same for userspace and the camera lib
     if (params.get("iso")) {
         const char *isoMode = params.get(android::CameraParameters::KEY_ISO_MODE);
@@ -178,11 +169,11 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
 	
 	// fix params here
 	
-	int video_width, video_height;
+    int video_width, video_height;
     params.getPreviewSize(&video_width, &video_height);
     if(video_width*video_height <= 388800){ // 720x540
-		params.set("preview-format", "yuv420p");
-	}
+        params.set("preview-format", "yuv420p");
+    }
 	
     android::String8 strParams = params.flatten();
 
