@@ -133,7 +133,10 @@ PRODUCT_PACKAGES += \
     
 # GPS HAL
 PRODUCT_PACKAGES += \
-    gps.msm8916    
+    gps.msm8916 \
+    libgps.utils \
+    libloc_eng \
+	libloc_core
 
 # Camera
 PRODUCT_PACKAGES += \
