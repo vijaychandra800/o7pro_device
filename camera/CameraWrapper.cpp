@@ -171,7 +171,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
 	
     int video_width, video_height;
     params.getPreviewSize(&video_width, &video_height);
-    if(video_width*video_height <= 388800){ // 720x540
+    if(video_width*video_height <= 518400){ // 720x540
         params.set("preview-format", "yuv420p");
     }
 	
