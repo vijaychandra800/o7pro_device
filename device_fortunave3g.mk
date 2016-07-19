@@ -131,10 +131,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     keystore.msm8916
     
-# GPS HAL
-PRODUCT_PACKAGES += \
-    gps.msm8916
-
 # Camera
 PRODUCT_PACKAGES += \
     libmm-qcamera \
@@ -164,7 +160,6 @@ PRODUCT_BOOT_JARS += \
 # FM
 PRODUCT_PACKAGES += \
     FM2 \
-    FMRecord \
     libqcomfm_jni \
     qcom.fmradio
 
@@ -268,7 +263,6 @@ $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
 # Dalvik heap config
 include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
-#include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
