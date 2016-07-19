@@ -119,10 +119,7 @@ static char *camera_fixup_getparams(int id, const char *settings)
 	
     params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     params.set("effect-values", "none,mono,negative,sepia");
-	if(id == 0){
-		params.set("picture-size-values", "3264x1836,3264x720,2560x1920,2560x1440,2560x1536,2048x1536,2048x1152,1920x1080,1600x1200,1280x960,1280x720,640x480");
-	}
-
+	
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
      * that it really is okay to turn it off.
