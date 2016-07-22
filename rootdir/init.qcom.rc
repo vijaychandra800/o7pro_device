@@ -576,8 +576,8 @@ on post-fs-data
     chmod 2770 /data/system/perfd
 
     # NFC local data and nfcee xml storage
-    mkdir /data/nfc 0770 nfc nfc
-    mkdir /data/nfc/param 0770 nfc nfc
+    #mkdir /data/nfc 0770 nfc nfc
+    #mkdir /data/nfc/param 0770 nfc nfc
 
     # DCT(Display Clock Tunning)	- Interface 2.0
     chown radio system /sys/class/dct/dct_node/data
