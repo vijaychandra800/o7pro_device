@@ -178,15 +178,6 @@ TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS                  := $(LOCAL_PATH)
 
-# Dex
-ifeq ($(HOST_OS),linux)
-  ifeq ($(TARGET_BUILD_VARIANT),user)
-    ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
-    endif
-  endif
-endif
-
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 

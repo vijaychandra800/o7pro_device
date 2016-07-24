@@ -244,6 +244,10 @@ ___________________________________________________
             <Limit name="bitrate" range="1-20000000" />
             <Feature name="adaptive-playback" />
         </MediaCodec>
+		    <MediaCodec name="OMX.ffmpeg.ac3.decoder" type="audio/ac3" >
+            <Limit name="channel-count" max="8" />
+            <Limit name="sample-rate" ranges="8000-192000" />
+ 		    </MediaCodec>
     </Decoders>
     <Include href="media_codecs_google_audio.xml" />
     <Include href="media_codecs_google_telephony.xml" />
