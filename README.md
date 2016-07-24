@@ -4,8 +4,8 @@
   - CPU: Qualcomm MSM8216 Snapdragon 410, 1200 MHz
   - Codename: FORTUNAVE3G
   - Display Panel:
-  - Display Resolution:
-  - EMMC
+  - Display Resolution: 960x540
+  - EMMC:
   - Family:
   - GPU: Qualcomm Adreno 306
   - Misc: WIFI/Tether, Bluetooth, HSPA, GPS, FM-Radio
