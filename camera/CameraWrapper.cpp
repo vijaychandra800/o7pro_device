@@ -167,7 +167,6 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     }
 	
 	// fix params here
-	
     int video_width, video_height;
     params.getPreviewSize(&video_width, &video_height);
     if(video_width*video_height <= 518400){ // 960x540

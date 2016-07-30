@@ -77,6 +77,7 @@ debug.egl.hw=1
 
 # GPS
 persist.gps.qc_nlp_in_use=1
+ro.gps.agps_provider=1
 
 #system props for time-services
 persist.timed.enable=true
