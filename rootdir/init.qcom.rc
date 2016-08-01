@@ -883,10 +883,10 @@ service sec-sh /system/bin/sh /system/etc/init.sec.boot.sh
     user root
     oneshot
 
-#service loc_launcher /system/bin/loc_launcher
+service loc_launcher /system/bin/loc_launcher
     #loc_launcher will start as root and set its uid to gps
-#    class late_start
-#    group gps inet net_raw qcom_diag net_admin wifi
+    class late_start
+    group gps inet net_raw qcom_diag net_admin wifi
 
 service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     class late_start
