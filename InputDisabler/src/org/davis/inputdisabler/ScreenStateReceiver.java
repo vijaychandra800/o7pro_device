@@ -74,12 +74,12 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
             if(DEBUG){
                 Log.d(TAG, "Proximity: screen off");
             }
-            enableDevices(false);
+            //enableDevices(false);
         } else {
             if(DEBUG){
                 Log.d(TAG, "Proximity: screen on");
             }
-            enableDevices(true);
+            ///enableDevices(true);
         }
     }
 
