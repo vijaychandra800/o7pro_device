@@ -119,6 +119,8 @@ static char *camera_fixup_getparams(int id, const char *settings)
 	
     params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     params.set("effect-values", "none,mono,negative,sepia");
+	params.set("focus-mode-values", "auto,infinity,macro");
+	params.set("focus-distances", "0.10,1.20,Infinity");
 	
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
