@@ -76,10 +76,7 @@ debug.sf.hw=1
 debug.egl.hw=1
 
 # GPS
-persist.gps.qmienabled=true
 persist.gps.qc_nlp_in_use=1
-ro.qc.sdk.izat.premium_enabled=0
-ro.qc.sdk.izat.service_mask=0x0
 ro.gps.agps_provider=1
 
 #system props for time-services
