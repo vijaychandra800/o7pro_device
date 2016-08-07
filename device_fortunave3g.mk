@@ -156,7 +156,7 @@ PRODUCT_BOOT_JARS += \
 
 # FM
 PRODUCT_PACKAGES += \
-    FM2 \
+    FM \
     libqcomfm_jni \
     qcom.fmradio
 

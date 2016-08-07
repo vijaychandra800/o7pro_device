@@ -170,7 +170,6 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
         params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
     } else {
         params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
-		params.set("preview-size", "960x540");
     }
 	
 	// fix params here
