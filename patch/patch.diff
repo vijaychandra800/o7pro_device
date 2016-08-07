@@ -37,74 +37,26 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
          if (oldMode != newMode) {
              if (oldMode == AudioManager.MODE_IN_CALL && newMode == AudioManager.MODE_RINGTONE) {
 
-diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadio.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadio.java
---- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadio.java	Mon Jun 20 17:28:46 2016
-+++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadio.java	Mon Jun 27 10:41:05 2016
-@@ -193,6 +193,7 @@
- 
-    private IFMRadioService mService = null;
-    private FmSharedPreferences mPrefs;
-+   private AudioManager mAudioManager;
- 
-    /* Button Resources */
-    private ImageView mOnOffButton;
-@@ -285,6 +286,7 @@
-    public void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
-       setVolumeControlStream(AudioManager.STREAM_MUSIC);
-+	  mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-       mPrefs = new FmSharedPreferences(this);
-       mCommandActive = CMD_NONE;
-       mCommandFailed = CMD_NONE;
-@@ -1664,6 +1666,9 @@
-             }
- 
-             if((false == mService.isFmOn()) && isAntennaAvailable()) {
-+				mAudioManager.setParameters("fm_mode=on;fm_radio_mute=0;fm_radio_volume=on;FMRadioVol=0.1496235728");
-+                //mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+                //mAudioManager.setSpeakerphoneOn(false);
-                 bStatus = mService.fmOn();
-                 if(bStatus) {
-                    tuneRadio(FmSharedPreferences.getTunedFrequency());
-@@ -1702,6 +1707,7 @@
-             }
-             bStatus = mService.fmOff();
-             enableRadioOnOffUI();
-+			mAudioManager.setParameters("fm_mode=off;fm_radio_mute=1");
-             if (bStatus == false) {
-                 mCommandFailed = CMD_FMOFF;
-                 Log.e(LOGTAG, " mService.fmOff failed");
-
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
 +++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
-@@ -2087,6 +2087,7 @@
-    public void enableSpeaker(boolean speakerOn) {
-        if(isCallActive())
-            return ;
-+	   AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        mSpeakerPhoneOn = speakerOn;
-        boolean analogmode = isAnalogModeSupported();
-        if (false == speakerOn) {
-@@ -2095,6 +2096,8 @@
-                     stopRecording();
-                 stopFM();
+@@ -930,6 +930,7 @@
+                Log.d(LOGTAG, "Audio source set it as headset");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+			   //audioManager.setMode(AudioManager.MODE_IN_CALL);
-+               //audioManager.setSpeakerphoneOn(false);
-                if (mMuted) {
-                    setAudioPath(true);
-                } else {
-@@ -2130,6 +2133,8 @@
-                      unMute();
-                  }
             }
-+		   //audioManager.setMode(AudioManager.MODE_IN_CALL);
-+          // audioManager.setSpeakerphoneOn(true);
-            AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
-            if (analogmode)
-                 startFM();
-@@ -2232,6 +2237,7 @@
++		   mAudioManager.setParameters("fm_mode=on;fm_radio_mute=0;fm_radio_volume=on;FMRadioVol=0.1496235728");
+            AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_FM,
+                                AudioSystem.DEVICE_STATE_AVAILABLE, "");
+ 
+@@ -942,6 +943,7 @@
+ 
+    private void stopFM(){
+        Log.d(LOGTAG, "In stopFM");
++	   mAudioManager.setParameters("fm_mode=off;fm_radio_mute=1");
+        if (mOverA2DP==true){
+            mOverA2DP=false;
+            stopA2dpPlayback();
+@@ -2232,6 +2234,7 @@
        {
           mMuted = true;
           audioManager.setStreamMute(AudioManager.STREAM_MUSIC,true);
@@ -112,7 +64,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
        }
        return bCommandSent;
     }
-@@ -2252,6 +2258,7 @@
+@@ -2252,6 +2255,7 @@
        {
           mMuted = false;
           audioManager.setStreamMute(AudioManager.STREAM_MUSIC,false);
@@ -120,50 +72,4 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
           if (mResumeAfterCall)
           {
               //We are unmuting FM in a voice call. Need to enable FM audio routing.
-			  
-diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
---- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
-+++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016			  
-@@ -922,14 +922,14 @@
-            //reason for resending the Speaker option is we are sending
-            //ACTION_FM=1 to AudioManager, the previous state of Speaker we set
-            //need not be retained by the Audio Manager.
--           if (isSpeakerEnabled()) {
--               mSpeakerPhoneOn = true;
--               Log.d(LOGTAG, "Audio source set it as speaker");
--               AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
--           } else {
-+           //if (isSpeakerEnabled()) {
-+           //    mSpeakerPhoneOn = true;
-+           //    Log.d(LOGTAG, "Audio source set it as speaker");
-+           //    AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
-+           //} else {
-                Log.d(LOGTAG, "Audio source set it as headset");
--               AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+				AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_HEADPHONES);
--           }
-+           //}
-            AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_FM,
-                                AudioSystem.DEVICE_STATE_AVAILABLE, "");
-diff -ur a/hardware/qcom/fm/fmapp/src/com/codeaurora/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp/src/com/codeaurora/fmradio/FMRadioService.java
---- a/hardware/qcom/fm/fmapp/src/com/codeaurora/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
-+++ b/hardware/qcom/fm/fmapp/src/com/codeaurora/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
-@@ -764,12 +764,12 @@
-            //reason for resending the Speaker option is we are sending
-            //ACTION_FM=1 to AudioManager, the previous state of Speaker we set
-            //need not be retained by the Audio Manager.
--           if (isSpeakerEnabled()) {
--               mSpeakerPhoneOn = true;
--               AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
--           } else {
--               AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
--           }
-+           //if (isSpeakerEnabled()) {
-+           //    mSpeakerPhoneOn = true;
-+           //    AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
-+           //} else {
-+               AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_HEADPHONES);
-+           //}
-            AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_FM,
-                                      AudioSystem.DEVICE_STATE_AVAILABLE, "");
-            sendRecordServiceIntent(RECORD_START);
+
