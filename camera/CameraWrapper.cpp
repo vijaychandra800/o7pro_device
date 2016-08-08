@@ -127,6 +127,11 @@ static char *camera_fixup_getparams(int id, const char *settings)
         sprintf(tmp, "%s,off", hfrValues);
         params.set(KEY_VIDEO_HFR_VALUES, tmp);
     }
+	
+	if(id == 0) {
+		params.set("min-focus-pos-index", "0");
+		params.set("max-focus-pos-index", "79");
+    }
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
