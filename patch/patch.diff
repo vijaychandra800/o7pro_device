@@ -46,7 +46,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
             }
 +		   mAudioManager.setParameters("fm_mode=on");
 +		   mAudioManager.setParameters("fm_radio_volume=on");
-+		   mAudioManager.setParameters("FMRadioVol=0.0000000000");
++		   mAudioManager.setParameters("FMRadioVol=0.1496235728");
             AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_FM,
                                 AudioSystem.DEVICE_STATE_AVAILABLE, "");
  
@@ -55,7 +55,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
         }else{
             Log.d(LOGTAG, "FMRadio: Requesting to stop FM");
 +		   mAudioManager.setParameters("fm_mode=off");
-+		   mAudioManager.setParameters("fm_radio_volume=off");
++		   mAudioManager.setParameters("fm_radio_mute=1");
             AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_FM,
                                       AudioSystem.DEVICE_STATE_UNAVAILABLE, "");
         }

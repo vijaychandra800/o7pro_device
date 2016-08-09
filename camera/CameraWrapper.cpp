@@ -128,11 +128,13 @@ static char *camera_fixup_getparams(int id, const char *settings)
         params.set(KEY_VIDEO_HFR_VALUES, tmp);
     }
 	
-	if(id == 0) {
-		params.set("min-focus-pos-index", "0");
-		params.set("max-focus-pos-index", "79");
-    }
+	const char *recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
+    bool isVideo = recordingHint && !strcmp(recordingHint, "true");
 
+    if (!isVideo) {
+        params.set("preview-size-values", "1920x1080,1280x720,960x720");
+    }
+	
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
 
@@ -180,7 +182,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
 	// fix params here
     int video_width, video_height;
     params.getPreviewSize(&video_width, &video_height);
-    if(video_width*video_height <= 518400){ // 960x540
+    if(video_width*video_height <= 921600){ // 1280x720
         params.set("preview-format", "yuv420p");
     }
 	
