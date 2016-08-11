@@ -128,12 +128,8 @@ static char *camera_fixup_getparams(int id, const char *settings)
         params.set(KEY_VIDEO_HFR_VALUES, tmp);
     }
 	
-	const char *recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
-    bool isVideo = recordingHint && !strcmp(recordingHint, "true");
-
-    if (!isVideo) {
-        params.set("preview-size-values", "1920x1080,1280x720,960x720");
-    }
+	params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
+    params.set("effect-values", "none,mono,negative,sepia");
 	
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -170,19 +166,10 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
             params.set(android::CameraParameters::KEY_ISO_MODE, "800");
     }
 	
-	const char *recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
-    bool isVideo = recordingHint && !strcmp(recordingHint, "true");
-
-    if (isVideo) {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
-    } else {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
-    }
-	
 	// fix params here
     int video_width, video_height;
     params.getPreviewSize(&video_width, &video_height);
-    if(video_width*video_height <= 921600){ // 1280x720
+    if(video_width*video_height <= 960*540){
         params.set("preview-format", "yuv420p");
     }
 	

@@ -47,6 +47,8 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
 +		   mAudioManager.setParameters("fm_mode=on");
 +		   mAudioManager.setParameters("fm_radio_volume=on");
 +		   mAudioManager.setParameters("FMRadioVol=0.1496235728");
++		   mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++          mAudioManager.setSpeakerphoneOn(false);
             AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_FM,
                                 AudioSystem.DEVICE_STATE_AVAILABLE, "");
  
