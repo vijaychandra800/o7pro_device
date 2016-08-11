@@ -132,6 +132,7 @@ BOARD_VOLD_MAX_PARTITIONS            := 65
 # Camera
 TARGET_PROVIDES_CAMERA_HAL           := true
 USE_DEVICE_SPECIFIC_CAMERA           := true
+TARGET_IS_DERP2                      := true
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
