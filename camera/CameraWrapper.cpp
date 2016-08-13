@@ -177,7 +177,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
 	
 	bool isVideo = false;
     if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
-        isVideo = !strcmp(params.get(CameraParameters::KEY_RECORDING_HINT), "true");
+        isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
 
     if (id == 0) {
         int camMode;
