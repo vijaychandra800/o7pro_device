@@ -130,11 +130,6 @@ static char *camera_fixup_getparams(int id, const char *settings)
 	
 	params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     params.set("effect-values", "none,mono,negative,sepia");
-	params.set("auto-exposure-lock", "false");
-	params.set("picture-size-values", "3264x2448,3264x1836,2048x1536,2048x1152,640x480");
-	params.set("video-size-values", "1920x1080,1280x720,640x480");
-	params.set("scene-mode-values", "auto,night,portrait,sports");
-	params.set("smart-screen-exposure-values", "vision-ae-normal");
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
