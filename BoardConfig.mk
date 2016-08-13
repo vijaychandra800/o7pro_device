@@ -101,9 +101,9 @@ EXTENDED_FONT_FOOTPRINT             := true
 MALLOC_IMPL                         := dlmalloc
 
 # Vendor Init
-TARGET_UNIFIED_DEVICE               := true
-TARGET_INIT_VENDOR_LIB              := libinit_msm
-TARGET_LIBINIT_DEFINES_FILE         := $(LOCAL_PATH)/init/init_fortunave3g.c
+TARGET_UNIFIED_DEVICE                := true
+TARGET_INIT_VENDOR_LIB               := libinit_fortunave3g
+TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
 
 # Audio
 TARGET_QCOM_AUDIO_VARIANT            := caf
@@ -184,21 +184,3 @@ include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
    device/samsung/fortunave3g/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    bluetooth_loader.te \
-    file_contexts \
-    mediaserver.te \
-    property_contexts \
-    system_app.te \
-    time_daemon.te \
-    vold.te \
-    bluetooth.te \
-    file.te \
-    kernel.te \
-    mm-qcamerad.te \
-    property.te \
-    rild.te \
-    system_server.te \
-    ueventd.te \
-    wcnss_service.te
