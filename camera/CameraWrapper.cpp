@@ -173,22 +173,24 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
         params.set("preview-format", "yuv420p");
     }
 	
+	params.set("scene-detect", "off");
+	
 	bool isVideo = false;
-    if (params.get(CameraParameters::KEY_RECORDING_HINT))
+    if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
         isVideo = !strcmp(params.get(CameraParameters::KEY_RECORDING_HINT), "true");
 
     if (id == 0) {
         int camMode;
-        if (params.get(CameraParameters::KEY_SAMSUNG_CAMERA_MODE)) {
-            camMode = params.getInt(CameraParameters::KEY_SAMSUNG_CAMERA_MODE);
+        if (params.get(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE)) {
+            camMode = params.getInt(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE);
         } else {
             camMode = -1;
         }
 
         if (camMode == -1) {
-            params.set(CameraParameters::KEY_SAMSUNG_CAMERA_MODE, "1");
+            params.set(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE, "1");
         } else {
-            params.set(CameraParameters::KEY_SAMSUNG_CAMERA_MODE, isVideo ? "1" : "0");
+            params.set(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE, isVideo ? "1" : "0");
         }
     }
 	
