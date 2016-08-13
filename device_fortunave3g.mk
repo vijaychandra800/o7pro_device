@@ -116,6 +116,10 @@ PRODUCT_PACKAGES += \
     libqservice \
     libtinyxml
 	
+# libril_shim
+PRODUCT_PACKAGES += \
+    libril_shim	
+	
 # Power
 PRODUCT_PACKAGES += \
     power.msm8916
