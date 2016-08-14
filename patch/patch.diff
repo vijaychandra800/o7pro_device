@@ -22,3 +22,20 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  
                      if (oldMode != newMode) {
                          if (oldMode == AudioManager.MODE_IN_CALL &&
+
+diff -ur a/hardware/qcom/audio-caf/msm8916/hal/audio_hw.c b/hardware/qcom/audio-caf/msm8916/hal/audio_hw.c
+--- a/hardware/qcom/audio-caf/msm8916/hal/audio_hw.c	Wed Apr 20 08:50:20 2016
++++ b/hardware/qcom/audio-caf/msm8916/hal/audio_hw.c	Thu May 12 01:31:40 2016
+@@ -427,12 +427,6 @@
+         id = SND_AUDIOCODEC_FLAC;
+         break;
+ #endif
+-    case AUDIO_FORMAT_ALAC:
+-        id = SND_AUDIOCODEC_ALAC;
+-        break;
+-    case AUDIO_FORMAT_APE:
+-        id = SND_AUDIOCODEC_APE;
+-        break;
+     case AUDIO_FORMAT_VORBIS:
+         id = SND_AUDIOCODEC_VORBIS;
+         break;

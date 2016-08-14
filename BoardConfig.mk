@@ -105,7 +105,6 @@ TARGET_LIBINIT_DEFINES_FILE          := $(DEVICE_PATH)/init/init_fortunave3g.cpp
 TARGET_UNIFIED_DEVICE                := true
 
 # Audio
-TARGET_QCOM_AUDIO_VARIANT            := caf
 BOARD_USES_ALSA_AUDIO                := true
 USE_CUSTOM_AUDIO_POLICY              := 1
 
@@ -141,7 +140,6 @@ TARGET_PROVIDES_LIBLIGHT            := true
 
 # Media
 TARGET_QCOM_MEDIA_VARIANT           := caf
-TARGET_ENABLE_QC_AV_ENHANCEMENTS    := true
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true

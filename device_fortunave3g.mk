@@ -195,7 +195,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libxml2 \
     Stk \
-	Stk2	
+	Stk2
+
+# Misc. libs
+PRODUCT_PACKAGES += \
+    libstlport \
+    libboringssl-compat	
 	
 # SoftAP
 PRODUCT_PACKAGES += \
