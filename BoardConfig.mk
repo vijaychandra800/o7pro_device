@@ -107,6 +107,7 @@ TARGET_UNIFIED_DEVICE                := true
 # Audio
 TARGET_QCOM_AUDIO_VARIANT            := caf
 BOARD_USES_ALSA_AUDIO                := true
+USE_CUSTOM_AUDIO_POLICY              := 1
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
