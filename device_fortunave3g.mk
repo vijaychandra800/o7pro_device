@@ -28,6 +28,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
+	frameworks/native/data/etc/android.software.midi.xml:system/etc/permissions/android.software.midi.xml \
     packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 		
 # Init files
@@ -171,14 +172,9 @@ PRODUCT_PACKAGES += \
     ebtables \
     ethertypes \
     libebtc
-	
-# USB
-PRODUCT_PACKAGES += \
-    com.android.future.usb.accessory
 
 # Filesystem
 PRODUCT_PACKAGES += \
-    e2fsck \
     fsck.f2fs
 
 # Live Wallpapers
@@ -209,13 +205,6 @@ PRODUCT_PACKAGES += \
     libcurl \
     libqsap_sdk \
     libQWiFiSoftApCfg
-	
-# CRDA
-PRODUCT_PACKAGES += \
-    crda \
-    linville.key.pub.pem \
-    regdbdump \
-    regulatory.bin
 
 # WPA supplicant
 PRODUCT_PACKAGES += \
