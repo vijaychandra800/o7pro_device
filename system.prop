@@ -27,10 +27,9 @@ persist.data.netmgrd.qos.enable=false
 
 # Display
 ro.sf.lcd_density=240
-ro.opengles.version=196609
+ro.opengles.version=196608
 
 # Media
-mm.enable.qcom_parser=3183219
 media.stagefright.enable-player=true
 media.stagefright.enable-http=true
 media.stagefright.enable-aac=true
@@ -59,8 +58,7 @@ persist.audio.fluence.speaker=true
 tunnel.audio.encode = false
 audio.offload.buffer.size.kb=32
 audio.offload.min.duration.secs=30
-av.offload.enable=true
-af.resampler.quality=4
+audio.offload.video=true
 
 # Wi-Fi, Bluetooth
 wifi.interface=wlan0
