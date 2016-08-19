@@ -3,6 +3,8 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 # Also get non-open-source specific aspects if available
 $(call inherit-product-if-exists, vendor/samsung/fortunave3g/fortunave3g-common-vendor.mk)
 
+# Screen density
+PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 # Common overlay
@@ -271,4 +273,4 @@ endif
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_fortunave3g
 PRODUCT_DEVICE := fortunave3g
-PRODUCT_MODEL := SM-G530H
+PRODUCT_RELEASE_NAME := SM-G530H

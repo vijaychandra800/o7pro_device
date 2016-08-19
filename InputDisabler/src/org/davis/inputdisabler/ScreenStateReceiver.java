@@ -12,14 +12,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import org.davis.inputdisabler.utils.Constants;
-import org.davis.inputdisabler.utils.Device;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import static android.provider.Settings.Secure.DOUBLE_TAP_TO_WAKE;
+import org.davis.inputdisabler.Constants;
 
 public class ScreenStateReceiver extends BroadcastReceiver implements SensorEventListener {
 
@@ -27,109 +26,69 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
     public static final boolean DEBUG = false;
 
+    public static final int DOZING_TIME = 1000 * 5;
+
     android.os.Handler mDozeDisable;
+
+    boolean mScreenOn;
 
     SensorManager mSensorManager;
 
     Sensor mSensor;
 
-    // State
-
-    static final int STATE_OFF = 0;
-
-    static final int STATE_ON = 1;
-
-    static final int STATE_DOZE = 2;
-
-    static int mScreenState = STATE_OFF;
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if(intent == null) return;
-
         if(DEBUG)
-            Log.d(TAG, "Received intent: " + intent.getAction());
-
-        // Check if double tap is enabled
-        final int isDoubleTapEnabled = Settings.Secure.getInt(context.getContentResolver(),
-                DOUBLE_TAP_TO_WAKE, 0);
-
-        if(DEBUG)
-            Log.d(TAG, "Double tap to wake is " +
-                    ((isDoubleTapEnabled != 0) ? "" : "not ") + "enabled");
+            Log.d(TAG, "Received intent");
 
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
-                if(DEBUG)
-                    Log.d(TAG, "Screen on!");
+                Log.d(TAG, "Screen on!");
+                mScreenOn = true;
 
                 // Perform enable->disable->enable sequence
-                handleScreenOn(true);
-
-                mScreenState = STATE_ON;
+                enableDevices(true);
+				enableDevices(false, true);
+				enableDevices(true, true);
                 break;
             case Intent.ACTION_SCREEN_OFF:
-                if(DEBUG)
-                    Log.d(TAG, "Screen off!");
+                Log.d(TAG, "Screen off!");
 
-                // Don't turn off touch when double tap is enabled
-                if(isDoubleTapEnabled != 0) {
-                    Device.enableKeys(false);
-                } else {
-                    Device.enableDevices(false);
-                }
+                mScreenOn = false;
 
-                // Screen is now off
-                mScreenState = STATE_OFF;
+                enableDevices(false);
                 break;
             case Constants.ACTION_DOZE_PULSE_STARTING:
-                if(DEBUG)
-                    Log.d(TAG, "Doze");
-
-                // Doze is active
-                mScreenState = STATE_DOZE;
+                Log.d(TAG, "Doze");
 
                 mDozeDisable = new Handler();
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
-                        switch (mScreenState) {
-                            case STATE_DOZE:
-                                if(DEBUG)
-                                    Log.d(TAG, "Stopped dozing, disable inputs");
+                        if(!mScreenOn) {
+                            if(DEBUG)
+                                Log.d(TAG, "Screen was turned on while dozing");
 
-                                // Screen is off now
-                                mScreenState = STATE_OFF;
+                            enableDevices(false);
+                        } else {
+                            if(DEBUG)
+                                Log.d(TAG, "Screen was turned off while dozing");
 
-                                // Don't turn off touch when double tap is enabled
-                                if(isDoubleTapEnabled != 0) {
-                                    Device.enableKeys(false);
-                                } else {
-                                    Device.enableDevices(false);
-                                }
-                                break;
-                            case STATE_ON:
-                                if(DEBUG)
-                                    Log.d(TAG, "Screen was turned on while dozing");
-                                break;
-                            case STATE_OFF:
-                                if(DEBUG)
-                                    Log.d(TAG, "Screen was turned off while dozing");
-                                break;
-
+                            enableDevices(true);
                         }
                     }
                 };
-                mDozeDisable.postDelayed(runnable, Constants.DOZING_TIME);
+                mDozeDisable.postDelayed(runnable, DOZING_TIME);
 
                 // Don't enable touch keys when dozing
                 // Perform enable->disable->enable sequence
-                handleScreenOn(false);
+                enableDevices(true, true);
+		enableDevices(false, true);
+		enableDevices(true, true);
                 break;
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
-                if(DEBUG)
-                    Log.d(TAG, "Phone state changed!");
+                Log.d(TAG, "Phone state changed!");
 
                 final TelephonyManager telephonyManager =
                         (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -144,35 +103,86 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                         if(mSensorManager != null) {
                             mSensorManager.unregisterListener(this);
                         }
-
-			            if(mScreenState != STATE_ON) {
-                            handleScreenOn(true);
-
-                            mScreenState = STATE_ON;
-			            }
                         break;
                 }
+
+
                 break;
         }
+    }
+
+    /*
+     * Wrapper method
+     */
+    private void enableDevices(boolean enable) {
+        enableDevices(enable, false);
+    }
+
+    /* Enables or disables input devices by writing to sysfs path
+     *  Only touch is used when dozing
+     */
+    private void enableDevices(boolean enable, boolean onlyTouch) {
+
+        boolean ret;
+        if(enable) {
+            if(!onlyTouch) {
+                // Turn on key input
+                ret = write_sysfs(Constants.TK_PATH, true);
+                if (DEBUG)
+                    Log.d(TAG, "Enabled touch keys, success? " + ret);
+            }
+
+            // Turn on touch input
+            ret = write_sysfs(Constants.TS_PATH, true);
+            if(DEBUG)
+                Log.d(TAG, "Enabled touchscreen, success? " + ret);
+        } else {
+            if(!onlyTouch) {
+                // Turn off key input
+                ret = write_sysfs(Constants.TK_PATH, false);
+                if(DEBUG)
+                    Log.d(TAG, "Disabled touch keys, success? " + ret);
+            }
+
+            // Turn off touch input
+            ret = write_sysfs(Constants.TS_PATH, false);
+            if(DEBUG)
+                Log.d(TAG, "Disabled touchscreen, success? " + ret);
+        }
+    }
+
+    // Writes to sysfs node, returns true if success, false if fail
+    private boolean write_sysfs(String path, boolean on) {
+        try {
+            FileOutputStream fos = new FileOutputStream(path);
+            byte[] bytes = new byte[2];
+            bytes[0] = (byte)(on ? '1' : '0');
+            bytes[1] = '\n';
+            fos.write(bytes);
+            fos.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Fail: " + e.getLocalizedMessage());
+            return false;
+        }
+        
+        return true;
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.values[0] == 0.0f) {
             if(DEBUG)
-                Log.d(TAG, "Proximity: screen off");
+            	Log.d(TAG, "Proximity: screen off");
 
-            Device.enableDevices(false);
-
-	        // Screen is off no
-	        mScreenState = STATE_OFF;
+	    enableDevices(false);
         } else {
             if(DEBUG)
-                Log.d(TAG, "Proximity: screen on");
+            	Log.d(TAG, "Proximity: screen on");
 
-            handleScreenOn(true);
-
-            mScreenState = STATE_ON;
+            // Perform enable->disable->enable sequence
+            enableDevices(true);
+            enableDevices(false, true);
+            enableDevices(true, true);
         }
     }
 
@@ -180,17 +190,4 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
-
-    // Handles screen on
-    private void handleScreenOn(boolean keys) {
-        // Enable keys
-        if(keys)
-            Device.enableKeys(true);
-
-        // Perform enable->disable->enable sequence
-        Device.enableTouch(true);
-        Device.enableTouch(false);
-        Device.enableTouch(true);
-    }
-
 }

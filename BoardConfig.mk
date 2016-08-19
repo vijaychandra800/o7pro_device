@@ -100,9 +100,6 @@ USE_DEVICE_SPECIFIC_DATASERVICES    := true
 # Fonts
 EXTENDED_FONT_FOOTPRINT             := true
 
-# malloc implementation
-MALLOC_IMPL                         := dlmalloc
-
 # Vendor Init
 TARGET_LIBINIT_DEFINES_FILE          := $(DEVICE_PATH)/init/init_fortunave3g.cpp
 TARGET_UNIFIED_DEVICE                := true
@@ -148,10 +145,10 @@ TARGET_QCOM_MEDIA_VARIANT           := caf
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true
-TARGET_USES_OVERLAY 		        := true
-TARGET_HARDWARE_3D		            := false
-TARGET_HAVE_HDMI_OUT 		        := false
-USE_OPENGL_RENDERER                 := true
+TARGET_USES_OVERLAY 		          := true
+TARGET_HARDWARE_3D		              := false
+TARGET_HAVE_HDMI_OUT 		          := false
+USE_OPENGL_RENDERER                   := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS       := 3
 MAX_EGL_CACHE_KEY_SIZE                := 12*1024
 MAX_EGL_CACHE_SIZE                    := 2048*1024
