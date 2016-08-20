@@ -36,7 +36,6 @@ TARGET_USES_NEW_ION_API              :=true
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
 # Kernel
-#BOARD_CUSTOM_BOOTIMG_MK      := $(LOCAL_PATH)/mkbootimg.mk
 TARGET_KERNEL_ARCH           := arm
 BOARD_DTBTOOL_ARG            := -2
 BOARD_KERNEL_BASE            := 0x80000000
