@@ -95,7 +95,7 @@ BLUETOOTH_HCI_USE_MCT                       := true
 # Custom RIL class
 BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
 PROTOBUF_SUPPORTED                  := true
-USE_DEVICE_SPECIFIC_DATASERVICES    := true
+#USE_DEVICE_SPECIFIC_DATASERVICES    := true
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT             := true

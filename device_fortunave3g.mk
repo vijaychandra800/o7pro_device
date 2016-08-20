@@ -270,7 +270,8 @@ ifeq ($(TARGET_BUILD_VARIANT),user)
 else      
 endif
 
-PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_fortunave3g
+# Set those variables here to overwrite the inherited values.
 PRODUCT_DEVICE := fortunave3g
-PRODUCT_RELEASE_NAME := SM-G530H
+PRODUCT_NAME := cm_fortunave3g
+PRODUCT_BRAND := samsung
+PRODUCT_MANUFACTURER := samsung

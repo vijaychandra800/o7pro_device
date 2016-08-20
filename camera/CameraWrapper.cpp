@@ -133,6 +133,16 @@ static char *camera_fixup_getparams(int id, const char *settings)
 	
 	params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     params.set("effect-values", "none,mono,negative,sepia");
+	
+	bool isVideo = false;
+    if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
+        isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
+
+    if(!isVideo){
+		params.set("auto-exposure-values", "center");
+		params.set("preview-format-values", "yuv420p");
+	}
+	
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -170,32 +180,11 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     }
 	
 	// fix params here
-    int video_width, video_height;
-    params.getPreviewSize(&video_width, &video_height);
-    if(video_width*video_height <= 960*540){
-        params.set("preview-format", "yuv420p");
-    }
-	
-	params.set("scene-detect", "off");
-	
-	bool isVideo = false;
-    if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
-        isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
-
-    if (id == 0) {
-        int camMode;
-        if (params.get(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE)) {
-            camMode = params.getInt(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE);
-        } else {
-            camMode = -1;
-        }
-
-        if (camMode == -1) {
-            params.set(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE, "1");
-        } else {
-            params.set(android::CameraParameters::KEY_SAMSUNG_CAMERA_MODE, isVideo ? "1" : "0");
-        }
-    }
+    //int video_width, video_height;
+    //params.getPreviewSize(&video_width, &video_height);
+    //if(video_width*video_height <= 960*540){
+    //    params.set("preview-format", "yuv420p");
+    //}
 	
     android::String8 strParams = params.flatten();
 
