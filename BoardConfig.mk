@@ -100,8 +100,9 @@ PROTOBUF_SUPPORTED                  := true
 EXTENDED_FONT_FOOTPRINT             := true
 
 # Vendor Init
-TARGET_LIBINIT_DEFINES_FILE          := $(DEVICE_PATH)/init/init_fortunave3g.cpp
 TARGET_UNIFIED_DEVICE                := true
+TARGET_INIT_VENDOR_LIB               := libinit_fortunave3g
+TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
 
 # Audio
 BOARD_USES_ALSA_AUDIO                := true
@@ -171,6 +172,8 @@ BOARD_USES_MMCUTILS 				:= true
 
 # Logging
 TARGET_USES_LOGD                    := false
+
+TARGET_SKIP_PRODUCT_DEVICE          := true
 	
 # Misc.
 TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop
