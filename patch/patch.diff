@@ -105,4 +105,5 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
 +		 audioManager.setParameters("fm_radio_mute=0");
           if (mAudioTrack != null)
               mAudioTrack.setVolume(1.0f);
-          if (mResumeAfterCall)						 
+          if (mResumeAfterCall)	
+		  
