@@ -80,6 +80,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
+# Use cm images if available, aosp ones otherwise
+PRODUCT_PACKAGES += \
+    charger_res_images \
+    cm_charger_res_images
+
 # Doze
 PRODUCT_PACKAGES += \
     SamsungDoze
