@@ -39,22 +39,19 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if(DEBUG)
-            Log.d(TAG, "Received intent");
+        Log.d(TAG, "Received intent");
 
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
                 mScreenOn = true;
-
-                // Perform enable->disable->enable sequence
+				
                 enableDevices(true);
-				enableDevices(false, true);
-				enableDevices(true, true);
+				enableDevices(false);
+				enableDevices(true);
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
-
                 mScreenOn = false;
 
                 enableDevices(false);
@@ -67,15 +64,11 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                     @Override
                     public void run() {
                         if(!mScreenOn) {
-                            if(DEBUG)
-                                Log.d(TAG, "Screen was turned on while dozing");
-
-                            enableDevices(false);
+                            Log.d(TAG, "Screen was turned on while dozing");
+							enableDevices(false);
                         } else {
-                            if(DEBUG)
-                                Log.d(TAG, "Screen was turned off while dozing");
-
-                            enableDevices(true);
+                           Log.d(TAG, "Screen was turned off while dozing");
+							enableDevices(true);
                         }
                     }
                 };
@@ -83,9 +76,9 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
                 // Don't enable touch keys when dozing
                 // Perform enable->disable->enable sequence
-                enableDevices(true, true);
-		enableDevices(false, true);
-		enableDevices(true, true);
+                enableDevices(true);
+				enableDevices(false);
+				enableDevices(true);
                 break;
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
                 Log.d(TAG, "Phone state changed!");
@@ -95,59 +88,34 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
                 switch (telephonyManager.getCallState()) {
                     case TelephonyManager.CALL_STATE_OFFHOOK:
+						Log.d(TAG, "Phone state: CALL_STATE_OFFHOOK");
                         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
                         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
                         mSensorManager.registerListener(this, mSensor, 3);
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
+						Log.d(TAG, "Phone state: CALL_STATE_IDLE");
                         if(mSensorManager != null) {
                             mSensorManager.unregisterListener(this);
                         }
                         break;
                 }
-
-
                 break;
         }
     }
 
-    /*
-     * Wrapper method
-     */
+    // Enables or disables input devices by writing to sysfs path
     private void enableDevices(boolean enable) {
-        enableDevices(enable, false);
-    }
-
-    /* Enables or disables input devices by writing to sysfs path
-     *  Only touch is used when dozing
-     */
-    private void enableDevices(boolean enable, boolean onlyTouch) {
 
         boolean ret;
         if(enable) {
-            if(!onlyTouch) {
-                // Turn on key input
-                ret = write_sysfs(Constants.TK_PATH, true);
-                if (DEBUG)
-                    Log.d(TAG, "Enabled touch keys, success? " + ret);
-            }
-
             // Turn on touch input
             ret = write_sysfs(Constants.TS_PATH, true);
-            if(DEBUG)
-                Log.d(TAG, "Enabled touchscreen, success? " + ret);
+            Log.d(TAG, "Enabled touchscreen, success? " + ret);
         } else {
-            if(!onlyTouch) {
-                // Turn off key input
-                ret = write_sysfs(Constants.TK_PATH, false);
-                if(DEBUG)
-                    Log.d(TAG, "Disabled touch keys, success? " + ret);
-            }
-
             // Turn off touch input
             ret = write_sysfs(Constants.TS_PATH, false);
-            if(DEBUG)
-                Log.d(TAG, "Disabled touchscreen, success? " + ret);
+            Log.d(TAG, "Disabled touchscreen, success? " + ret);
         }
     }
 
@@ -170,24 +138,19 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(sensorEvent.values[0] == 0.0f) {
-            if(DEBUG)
-            	Log.d(TAG, "Proximity: screen off");
-
-	    enableDevices(false);
+        if(sensorEvent.values[0] == 0.0f) && (!mScreenOn) {
+            Log.d(TAG, "Proximity: screen off");
+			enableDevices(false);
         } else {
-            if(DEBUG)
-            	Log.d(TAG, "Proximity: screen on");
-
+            Log.d(TAG, "Proximity: screen on");
             // Perform enable->disable->enable sequence
             enableDevices(true);
-            enableDevices(false, true);
-            enableDevices(true, true);
+            enableDevices(false);
+            enableDevices(true);
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 }
