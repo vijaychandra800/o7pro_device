@@ -138,9 +138,14 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(sensorEvent.values[0] == 0.0f) && (!mScreenOn) {
+        if(sensorEvent.values[0] == 0.0f) {
             Log.d(TAG, "Proximity: screen off");
-			enableDevices(false);
+            if(!mScreenOn) {
+                 enableDevices(false);
+            } else {
+               Log.d(TAG, "Proximity: screen off but we run it");
+	       enableDevices(true);
+            }
         } else {
             Log.d(TAG, "Proximity: screen on");
             // Perform enable->disable->enable sequence
