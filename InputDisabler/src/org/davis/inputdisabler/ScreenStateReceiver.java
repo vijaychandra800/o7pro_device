@@ -131,8 +131,8 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     }
 	
 	// Get Satus screen off or on
-	private boolean GetSTATUSScreen() {
-       pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+	private boolean GetMyScreenStatus() {
+       pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
 	   boolean IsScreenOn = pm.isInteractive();
 	   return IsScreenOn;
     }
@@ -142,11 +142,16 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 		
         if(sensorEvent.values[0] == 0.0f) {
             Log.d(TAG, "Proximity: screen off");
-			enableDevices(false);
+			if(GetMyScreenStatus()){
+				Log.d(TAG, "Proximity: off but screen on then we enable touch");
+				enableDevices(true);
+			}else{
+				enableDevices(false);
+			}	
         } else {
             Log.d(TAG, "Proximity: screen on");
 			enableDevices(true);
-			while(!GetSTATUSScreen()){
+			while(!GetMyScreenStatus()){
 				Log.d(TAG, "Proximity: off but screen not on we retry enable touch");
 				enableDevices(true);
 			}	 
