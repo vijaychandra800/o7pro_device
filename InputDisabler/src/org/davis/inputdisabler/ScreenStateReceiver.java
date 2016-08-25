@@ -12,6 +12,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -33,6 +34,8 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     boolean mScreenOn;
 
     SensorManager mSensorManager;
+	
+	PowerManager pm;
 
     Sensor mSensor;
 
@@ -45,15 +48,11 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
                 mScreenOn = true;
-				
-                enableDevices(true);
-				enableDevices(false);
 				enableDevices(true);
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
                 mScreenOn = false;
-
                 enableDevices(false);
                 break;
             case Constants.ACTION_DOZE_PULSE_STARTING:
@@ -73,12 +72,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                     }
                 };
                 mDozeDisable.postDelayed(runnable, DOZING_TIME);
-
-                // Don't enable touch keys when dozing
-                // Perform enable->disable->enable sequence
                 enableDevices(true);
-				enableDevices(false);
-				enableDevices(true);
                 break;
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
                 Log.d(TAG, "Phone state changed!");
@@ -132,26 +126,30 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
             Log.e(TAG, "Fail: " + e.getLocalizedMessage());
             return false;
         }
-        
+    
         return true;
+    }
+	
+	// Get Satus screen off or on
+	private boolean GetSTATUSScreen() {
+       pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+	   boolean IsScreenOn = pm.isInteractive();
+	   return IsScreenOn;
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+		
         if(sensorEvent.values[0] == 0.0f) {
             Log.d(TAG, "Proximity: screen off");
-            if(!mScreenOn) {
-                 enableDevices(false);
-            } else {
-               Log.d(TAG, "Proximity: screen off but we run it");
-	       enableDevices(true);
-            }
+			enableDevices(false);
         } else {
             Log.d(TAG, "Proximity: screen on");
-            // Perform enable->disable->enable sequence
-            enableDevices(true);
-            enableDevices(false);
-            enableDevices(true);
+			enableDevices(true);
+			while(!GetSTATUSScreen()){
+				Log.d(TAG, "Proximity: off but screen not on we retry enable touch");
+				enableDevices(true);
+			}	 
         }
     }
 
