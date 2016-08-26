@@ -26,15 +26,6 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
 +++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
-@@ -425,7 +425,7 @@
-                         // If we want FM sound output from speaker or BT a2dp, we must record data
-                         // to AudioRecrd and write data to AudioTrack.
-                         if (mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_STOPPED) {
--                            mAudioRecord.startRecording();
-+                            //mAudioRecord.startRecording();
-                         }
- 
-                         if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_STOPPED) {
 @@ -1066,14 +1066,25 @@
                 mSpeakerPhoneOn = true;
                 Log.d(LOGTAG, "Audio source set it as speaker");
@@ -115,3 +106,4 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
           if (mAudioTrack != null)
               mAudioTrack.setVolume(1.0f);
           if (mResumeAfterCall)
+
