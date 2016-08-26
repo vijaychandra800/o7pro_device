@@ -38,6 +38,12 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 	PowerManager pm;
 
     Sensor mSensor;
+	
+	private Context mCtx;
+	
+	public ScreenStateReceiver(Context ctx) {
+        this.mCtx = ctx;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -132,7 +138,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 	
 	// Get Satus screen off or on
 	private boolean GetMyScreenStatus() {
-       pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+       pm = (PowerManager)mCtx.getSystemService(Context.POWER_SERVICE);
 	   boolean IsScreenOn = pm.isInteractive();
 	   return IsScreenOn;
     }
