@@ -37,12 +37,12 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 	
     Sensor mSensor;
 	
-	private PowerManager pm;
+    private PowerManager pm;
 	
 	// Check display
     private boolean check_screen() {
-        pm = (PowerManager) InputDisablerService.this.getSystemService(Context.POWER_SERVICE);
-		return pm.isInteractive();
+        pm = (PowerManager) ScreenStateReceiver.this.getSystemService(Context.POWER_SERVICE);
+	return pm.isInteractive();
     }
 
     @Override
@@ -53,15 +53,15 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
-				if(check_screen()){
-					Log.d(TAG, "ACTION_SCREEN_ON: we check = true");
-				}else{
-					Log.d(TAG, "ACTION_SCREEN_ON: we check = false");
-				}
-				if(!mScreenOn){
-					mScreenOn = true;
-					enableDevices(true);
-				}	
+		if(check_screen()){
+			Log.d(TAG, "ACTION_SCREEN_ON: we check = true");
+		}else{
+			Log.d(TAG, "ACTION_SCREEN_ON: we check = false");
+		}
+		if(!mScreenOn){
+			mScreenOn = true;
+			enableDevices(true);
+		}	
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
