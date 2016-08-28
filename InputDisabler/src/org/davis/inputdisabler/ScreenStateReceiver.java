@@ -12,6 +12,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -35,6 +36,14 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     SensorManager mSensorManager;
 	
     Sensor mSensor;
+	
+	private PowerManager pm;
+	
+	// Check display
+    private boolean check_screen() {
+        pm = (PowerManager) InputDisablerService.this.getSystemService(Context.POWER_SERVICE);
+		return pm.isInteractive();
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -44,6 +53,11 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
+				if(check_screen()){
+					Log.d(TAG, "ACTION_SCREEN_ON: we check = true");
+				}else{
+					Log.d(TAG, "ACTION_SCREEN_ON: we check = false");
+				}
 				if(!mScreenOn){
 					mScreenOn = true;
 					enableDevices(true);
@@ -51,6 +65,11 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
+				if(check_screen()){
+					Log.d(TAG, "ACTION_SCREEN_OFF: we check = true");
+				}else{
+					Log.d(TAG, "ACTION_SCREEN_OFF: we check = false");
+				}
 				if(mScreenOn){
 					mScreenOn = false;
 					enableDevices(false);
@@ -65,15 +84,31 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                     public void run() {
                         if(!mScreenOn) {
                             Log.d(TAG, "Screen was turned on while dozing");
-							//enableDevices(false);
+							enableDevices(false);
+							if(check_screen()){
+								Log.d(TAG, "Doze: !mScreenOn but we check = true");
+							}else{
+								Log.d(TAG, "Doze: !mScreenOn but we check = false");
+							}	
                         } else {
                            Log.d(TAG, "Screen was turned off while dozing");
-							//enableDevices(true);
+						   enableDevices(true);
+						   
+						   if(check_screen()){
+								Log.d(TAG, "Doze: mScreenOn but we check = true");
+							}else{
+								Log.d(TAG, "Doze: mScreenOn but we check = false");
+							}	
                         }
                     }
                 };
                 mDozeDisable.postDelayed(runnable, DOZING_TIME);
-                //enableDevices(true);
+				if(check_screen()){
+					Log.d(TAG, "Doze: we check = true");
+				}else{
+					Log.d(TAG, "Doze: we check = false");
+				}
+                enableDevices(true);
                 break;
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
                 Log.d(TAG, "Phone state changed!");
@@ -98,7 +133,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                 break;
         }
     }
-
+	
     // Enables or disables input devices by writing to sysfs path
     private void enableDevices(boolean enable) {
         boolean ret;
@@ -137,11 +172,21 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 				mScreenOn = false;
 				enableDevices(false);
 			}
+			if(check_screen()){
+				 Log.d(TAG, "Proximity: screen off But check_screen() true");
+			}else{
+				 Log.d(TAG, "Proximity: screen off check_screen() false");
+			}	
         } else {
 			if(!mScreenOn){
 				mScreenOn = true;
                 enableDevices(true);
-			}	 
+			}
+			if(check_screen()){
+				 Log.d(TAG, "Proximity: screen on check_screen() true");
+			}else{
+				 Log.d(TAG, "Proximity: screen on but check_screen() false");
+			}	
         }
     }
 
