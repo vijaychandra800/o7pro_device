@@ -40,8 +40,8 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     private PowerManager pm;
 	
 	// Check display
-    private boolean check_screen() {
-        pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+    private boolean check_screen(Context context) {
+        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 	return pm.isInteractive();
     }
 
@@ -53,7 +53,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
-		if(check_screen()){
+		if(check_screen(this)){
 			Log.d(TAG, "ACTION_SCREEN_ON: we check = true");
 		}else{
 			Log.d(TAG, "ACTION_SCREEN_ON: we check = false");
@@ -65,7 +65,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
-				if(check_screen()){
+				if(check_screen(this)){
 					Log.d(TAG, "ACTION_SCREEN_OFF: we check = true");
 				}else{
 					Log.d(TAG, "ACTION_SCREEN_OFF: we check = false");
@@ -85,7 +85,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                         if(!mScreenOn) {
                             Log.d(TAG, "Screen was turned on while dozing");
 							enableDevices(false);
-							if(check_screen()){
+							if(check_screen(this)){
 								Log.d(TAG, "Doze: !mScreenOn but we check = true");
 							}else{
 								Log.d(TAG, "Doze: !mScreenOn but we check = false");
@@ -94,7 +94,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                            Log.d(TAG, "Screen was turned off while dozing");
 						   enableDevices(true);
 						   
-						   if(check_screen()){
+						   if(check_screen(this)){
 								Log.d(TAG, "Doze: mScreenOn but we check = true");
 							}else{
 								Log.d(TAG, "Doze: mScreenOn but we check = false");
@@ -103,7 +103,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                     }
                 };
                 mDozeDisable.postDelayed(runnable, DOZING_TIME);
-				if(check_screen()){
+				if(check_screen(this)){
 					Log.d(TAG, "Doze: we check = true");
 				}else{
 					Log.d(TAG, "Doze: we check = false");
@@ -172,7 +172,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 				mScreenOn = false;
 				enableDevices(false);
 			}
-			if(check_screen()){
+			if(check_screen(this)){
 				 Log.d(TAG, "Proximity: screen off But check_screen() true");
 			}else{
 				 Log.d(TAG, "Proximity: screen off check_screen() false");
@@ -182,7 +182,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 				mScreenOn = true;
                 enableDevices(true);
 			}
-			if(check_screen()){
+			if(check_screen(this)){
 				 Log.d(TAG, "Proximity: screen on check_screen() true");
 			}else{
 				 Log.d(TAG, "Proximity: screen on but check_screen() false");

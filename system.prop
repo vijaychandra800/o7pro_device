@@ -79,6 +79,8 @@ persist.hwc.enable_vds=1
 #property to enable narrow search range for video encoding
 vidc.enc.narrow.searchrange=1
 
+ro.sys.fw.use_trim_settings=true
+
 # Samsung OEM
 ro.multisim.set_audio_params=true
 ro.telephony.samsung.realcall=true

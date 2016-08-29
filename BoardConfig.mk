@@ -48,6 +48,8 @@ TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
 #TARGET_KERNEL_CUSTOM_TOOLCHAIN  := arm-eabi-4.7
 TARGET_KERNEL_CONFIG             := msm8916_fortunave3g_eur_defconfig
 
+ENABLE_CPUSETS := true
+
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
 BOARD_BOOTIMAGE_PARTITION_SIZE      := 13631488
