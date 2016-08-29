@@ -41,7 +41,7 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
 	
 	// Check display
     private boolean check_screen() {
-        pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
 	return pm.isInteractive();
     }
 
