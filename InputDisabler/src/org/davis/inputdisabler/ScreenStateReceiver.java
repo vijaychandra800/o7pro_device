@@ -12,7 +12,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -32,19 +31,13 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     android.os.Handler mDozeDisable;
 
     boolean mScreenOn;
+	
+	boolean mTouchOn;
 
     SensorManager mSensorManager;
 	
     Sensor mSensor;
 	
-    private PowerManager pm;
-	
-	// Check display
-    private boolean check_screen(Context context) {
-        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-	return pm.isInteractive();
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -53,27 +46,31 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
         switch (intent.getAction()) {
             case Intent.ACTION_SCREEN_ON:
                 Log.d(TAG, "Screen on!");
-		if(check_screen(this)){
-			Log.d(TAG, "ACTION_SCREEN_ON: we check = true");
-		}else{
-			Log.d(TAG, "ACTION_SCREEN_ON: we check = false");
-		}
-		if(!mScreenOn){
-			mScreenOn = true;
-			enableDevices(true);
-		}	
+			    Log.d(TAG, "Screen on!: mScreenOn " + mScreenOn);
+			    Log.d(TAG, "Screen on!: " + mTouchOn);
+				
+				mScreenOn = true;
+				mTouchOn = true;
+				enableDevices(true);
+				
+				Log.d(TAG, "Screen on! end");
+			    Log.d(TAG, "Screen on! end: mScreenOn " + mScreenOn);
+			    Log.d(TAG, "Screen on! end: " + mTouchOn);
+					
                 break;
             case Intent.ACTION_SCREEN_OFF:
                 Log.d(TAG, "Screen off!");
-				if(check_screen(this)){
-					Log.d(TAG, "ACTION_SCREEN_OFF: we check = true");
-				}else{
-					Log.d(TAG, "ACTION_SCREEN_OFF: we check = false");
-				}
-				if(mScreenOn){
-					mScreenOn = false;
-					enableDevices(false);
-				}	
+				Log.d(TAG, "Screen off!: mScreenOn " + mScreenOn);
+			    Log.d(TAG, "Screen off!: " + mTouchOn);
+			
+				mScreenOn = false;
+				mTouchOn = false;
+				enableDevices(false);
+				
+				Log.d(TAG, "Screen off! end");
+				Log.d(TAG, "Screen off! end: mScreenOn " + mScreenOn);
+			    Log.d(TAG, "Screen off! end: " + mTouchOn);
+					
                 break;
             case Constants.ACTION_DOZE_PULSE_STARTING:
                 Log.d(TAG, "Doze");
@@ -84,31 +81,36 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                     public void run() {
                         if(!mScreenOn) {
                             Log.d(TAG, "Screen was turned on while dozing");
+			                Log.d(TAG, "Screen was turned on while dozing: mScreenOn " + mScreenOn);
+			                Log.d(TAG, "Screen was turned on while dozing: " + mTouchOn);
+							mScreenOn = false;
+							mTouchOn = false;
 							enableDevices(false);
-							if(check_screen(this)){
-								Log.d(TAG, "Doze: !mScreenOn but we check = true");
-							}else{
-								Log.d(TAG, "Doze: !mScreenOn but we check = false");
-							}	
+							Log.d(TAG, "Screen was turned on while dozing end");
+			                Log.d(TAG, "Screen was turned on while dozing end: mScreenOn " + mScreenOn);
+			                Log.d(TAG, "Screen was turned on while dozing end: " + mTouchOn);
                         } else {
                            Log.d(TAG, "Screen was turned off while dozing");
+			               Log.d(TAG, "Screen was turned off while dozing: mScreenOn " + mScreenOn);
+			               Log.d(TAG, "Screen was turned off while dozing: " + mTouchOn);
+						   mTouchOn = true;
+						   mScreenOn = true;
 						   enableDevices(true);
-						   
-						   if(check_screen(this)){
-								Log.d(TAG, "Doze: mScreenOn but we check = true");
-							}else{
-								Log.d(TAG, "Doze: mScreenOn but we check = false");
-							}	
+						   Log.d(TAG, "Screen was turned off while dozing end");
+			               Log.d(TAG, "Screen was turned off while dozing end: mScreenOn " + mScreenOn);
+			               Log.d(TAG, "Screen was turned off while dozing end: " + mTouchOn);
                         }
                     }
                 };
                 mDozeDisable.postDelayed(runnable, DOZING_TIME);
-				if(check_screen(this)){
-					Log.d(TAG, "Doze: we check = true");
-				}else{
-					Log.d(TAG, "Doze: we check = false");
-				}
+				Log.d(TAG, "Doze");
+			    Log.d(TAG, "Doze: mScreenOn " + mScreenOn);
+			    Log.d(TAG, "Doze: " + mTouchOn);
+				mTouchOn = true;
                 enableDevices(true);
+				Log.d(TAG, "Doze end");
+			    Log.d(TAG, "Doze end: mScreenOn " + mScreenOn);
+			    Log.d(TAG, "Doze end: " + mTouchOn);
                 break;
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED:
                 Log.d(TAG, "Phone state changed!");
@@ -168,29 +170,31 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.values[0] == 0.0f) {
             Log.d(TAG, "Proximity: screen off");
-			if(mScreenOn){
-				mScreenOn = false;
-				enableDevices(false);
-			}
-			if(check_screen(this)){
-				 Log.d(TAG, "Proximity: screen off But check_screen() true");
-			}else{
-				 Log.d(TAG, "Proximity: screen off check_screen() false");
-			}	
+			Log.d(TAG, "Proximity: screen off mScreenOn " + mScreenOn);
+			Log.d(TAG, "Proximity: screen off mScreenOn " + mTouchOn);
+			mScreenOn = false;
+			mTouchOn = false;
+			enableDevices(false);
+			Log.d(TAG, "Proximity: screen off end");
+			Log.d(TAG, "Proximity: screen off end mScreenOn " + mScreenOn);
+			Log.d(TAG, "Proximity: screen off end mScreenOn " + mTouchOn);	
         } else {
-			if(!mScreenOn){
-				mScreenOn = true;
-                enableDevices(true);
-			}
-			if(check_screen(this)){
-				 Log.d(TAG, "Proximity: screen on check_screen() true");
-			}else{
-				 Log.d(TAG, "Proximity: screen on but check_screen() false");
-			}	
+			Log.d(TAG, "Proximity: screen on");
+			Log.d(TAG, "Proximity: screen on mScreenOn " + mScreenOn);
+			Log.d(TAG, "Proximity: screen on mScreenOn " + mTouchOn);
+			mScreenOn = true;
+			mTouchOn = true;
+			enableDevices(true);
+			Log.d(TAG, "Proximity: screen on end");
+			Log.d(TAG, "Proximity: screen on end mScreenOn " + mScreenOn);
+			Log.d(TAG, "Proximity: screen on end mScreenOn " + mTouchOn);	
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
+		Log.d(TAG, "onAccuracyChanged");
+		Log.d(TAG, "onAccuracyChanged: screen on mScreenOn " + mScreenOn);
+		Log.d(TAG, "onAccuracyChanged: screen on mScreenOn " + mTouchOn);
     }
 }
