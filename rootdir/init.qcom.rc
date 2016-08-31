@@ -27,13 +27,6 @@
 
 import init.qcom.usb.rc
 
-on enable-low-power
-	# Update foreground and background cpusets
-    write /dev/cpuset/foreground/cpus 0-3
-    write /dev/cpuset/foreground/boost/cpus 0-3
-    write /dev/cpuset/background/cpus 0
-    write /dev/cpuset/system-background/cpus 0-1
-
 on early-init
 	mkdir /firmware 0771 system system
     mkdir /firmware-modem 0771 system system
@@ -573,7 +566,6 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     class main
     user camera
     group camera system inet input graphics
-	writepid /dev/cpuset/system-background/tasks
 
 service qseecomd /system/bin/qseecomd
    class core
@@ -584,7 +576,6 @@ service perfd /system/bin/perfd
    class main
    user root
    disabled
-   writepid /dev/cpuset/system-background/tasks
 
 service thermal-engine /system/bin/thermal-engine
    class main
@@ -718,13 +709,7 @@ service qmuxd /system/bin/qmuxd
     class main
     user root
     group radio audio bluetooth gps qcom_diag
-	
-service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
-    class core
-    user root
-    group root
-    writepid /dev/cpuset/system-background/tasks	
-
+		
 service netmgrd /system/bin/netmgrd
     class main
 	
@@ -954,5 +939,4 @@ on charger
     #start vm_bms
     load_all_props
     start qcom-post-boot
-
 
