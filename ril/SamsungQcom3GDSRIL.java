@@ -43,11 +43,13 @@ public class SamsungQcom3GDSRIL extends RIL {
 
     private static final int RIL_REQUEST_DIAL_EMERGENCY = 10001;
     private static final int RIL_UNSOL_ON_SS_LL = 11055;
+    
+    private boolean setPreferredNetworkTypeSeen = false;
 
     private boolean mIsGsm = false;
 
-    public SamsungQcom3GDSRIL(Context context, int networkMode, int cdmaSubscription) {
-        super(context, networkMode, cdmaSubscription, null);
+    public SamsungQcom3GDSRIL(Context context, int preferredNetworkType, int cdmaSubscription) {
+        super(context, preferredNetworkType, cdmaSubscription, null);
         mQANElements = 6;
     }
 
@@ -434,4 +436,27 @@ public class SamsungQcom3GDSRIL extends RIL {
         }
         return response;
     }
+    
+    @Override
+     public void getRadioCapability(Message response) {
+         riljLog("getRadioCapability: returning static radio capability");
+         if (response != null) {
+             Object ret = makeStaticRadioCapability();
+             AsyncResult.forMessage(response, ret, null);
+             response.sendToTarget();
+         }
+     }
+     
+     @Override
+     public void setPreferredNetworkType(int networkType , Message response) {
+         riljLog("setPreferredNetworkType: " + networkType);
+ 
+         if (!setPreferredNetworkTypeSeen) {
+             riljLog("Need to reboot modem!");
+             setRadioPower(false, null);
+             setPreferredNetworkTypeSeen = true;
+         }
+ 
+         super.setPreferredNetworkType(networkType, response);
+     }
 }
