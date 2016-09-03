@@ -8,7 +8,7 @@
     		"target_path": "external/sony/boringssl-compat"
   	},
 	{
-		"repository": "android_hardware_samsung",
-		"target_path": "hardware/samsung"
+		    "repository": "android_hardware_samsung",
+		    "target_path": "hardware/samsung"
 	}
 ]

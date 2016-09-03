@@ -50,13 +50,11 @@ public class SamsungQcom3GDSRIL extends RIL {
 
     public SamsungQcom3GDSRIL(Context context, int preferredNetworkType, int cdmaSubscription) {
         super(context, preferredNetworkType, cdmaSubscription, null);
-        mQANElements = 6;
     }
 
     public SamsungQcom3GDSRIL(Context context, int preferredNetworkType,
             int cdmaSubscription, Integer instanceId) {
         super(context, preferredNetworkType, cdmaSubscription, instanceId);
-        mQANElements = 6;
     }
 
     @Override
