@@ -83,15 +83,10 @@ ro.gps.agps_provider=1
 #system props for time-services
 persist.timed.enable=true
 
-#property to enable user to access Google WFD settings
+
 persist.debug.wfd.enable=1
-#propery to enable VDS WFD solution
 persist.hwc.enable_vds=1
-
-#property to enable narrow search range for video encoding
 vidc.enc.narrow.searchrange=1
-
-ro.sys.fw.use_trim_settings=true
 
 # Samsung OEM
 ro.multisim.set_audio_params=true
