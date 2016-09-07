@@ -79,14 +79,18 @@ debug.egl.hw=1
 # GPS
 persist.gps.qc_nlp_in_use=1
 ro.gps.agps_provider=1
+persist.gps.qmienabled=true
+ro.qc.sdk.izat.premium_enabled=0
+ro.qc.sdk.izat.service_mask=0x0
 
 #system props for time-services
 persist.timed.enable=true
 
-
 persist.debug.wfd.enable=1
 persist.hwc.enable_vds=1
 vidc.enc.narrow.searchrange=1
+
+ro.config.max_starting_bg=8
 
 # Samsung OEM
 ro.multisim.set_audio_params=true
