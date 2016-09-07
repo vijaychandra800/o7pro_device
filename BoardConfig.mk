@@ -22,6 +22,7 @@ TARGET_GLOBAL_CPPFLAGS          += -mfpu=neon -mfloat-abi=softfp
 TARGET_CPU_VARIANT              := cortex-a53
 TARGET_CPU_CORTEX_A53           := true
 ARCH_ARM_HAVE_TLS_REGISTER      := true
+ENABLE_CPUSETS                  := true
 
 # Board CFLAGS
 COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
@@ -171,6 +172,9 @@ BOARD_RECOVERY_SWIPE 				:= true
 BOARD_USE_CUSTOM_RECOVERY_FONT 	    := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS 				:= true
 #RECOVERY_VARIANT				    := cm
+
+#Use dlmalloc instead of jemalloc for mallocs
+MALLOC_IMPL                         := dlmalloc
 
 # Logging
 TARGET_USES_LOGD                    := false
