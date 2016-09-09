@@ -91,6 +91,9 @@ persist.hwc.enable_vds=1
 vidc.enc.narrow.searchrange=1
 
 ro.config.max_starting_bg=8
+dalvik.vm.dex2oat-swap=false
+dalvik.vm.dex2oat-flags=--no-watch-dog
+ro.sys.fw.dex2oat_thread_count=4
 
 # Samsung OEM
 ro.multisim.set_audio_params=true
