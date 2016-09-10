@@ -88,7 +88,7 @@ on early-init
     chmod 644 /proc/cmdline
 
 on init
-	export LD_SHIM_LIBS /system/lib/libril.so|libril_shim.so:/system/lib/libcrypto.so|libboringssl-compat.so
+    export LD_SHIM_LIBS /system/lib/libril.so|libril_shim.so:/system/lib/libcrypto.so|libboringssl-compat.so
 
     # Set permissions for persist partition
     mkdir /persist 0771 system system
@@ -107,7 +107,7 @@ on early-boot
     write /sys/module/peripheral_loader/parameters/proxy_timeout_ms ${persist.sys.pil_proxy_timeout}
     write /sys/kernel/boot_adsp/boot 1
     setprop qcom.audio.init complete
-	
+
 on boot
     start rmt_storage
     insmod /system/lib/modules/adsprpc.ko
@@ -122,9 +122,9 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0070/secure_touch
 
     # KSM tuning
-    #write /sys/kernel/mm/ksm/pages_to_scan 100
-    #write /sys/kernel/mm/ksm/sleep_millisecs 500
-    #write /sys/kernel/mm/ksm/run 1
+    write /sys/kernel/mm/ksm/pages_to_scan 100
+    write /sys/kernel/mm/ksm/sleep_millisecs 500
+    write /sys/kernel/mm/ksm/run 1
 
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
@@ -745,11 +745,11 @@ on property:bluetooth.hciattach=true
 on property:bluetooth.hciattach=false
     setprop bluetooth.status off
 
-service qmiproxy /system/bin/qmiproxy
-    class main
-    user radio
-    group radio qcom_diag
-    disabled
+#service qmiproxy /system/bin/qmiproxy
+#    class main
+#    user radio
+#    group radio qcom_diag
+#    disabled
 
 # QMUX must be in multiple groups to support external process connections
 service qmuxd /system/bin/qmuxd
@@ -887,15 +887,15 @@ service wlandutservice /system/bin/wlandutservice
     disabled
     oneshot
 
-service macloader /system/bin/macloader
-    class main
-    oneshot
+#service macloader /system/bin/macloader
+#    class main
+#    oneshot
 
-on property:init.svc.macloader=stopped
-    chown system root /data/.cid.info
-    chmod 0664 /data/.cid.info
-    chown system root /data/.rev
-    chmod 0664 /data/.rev
+#on property:init.svc.macloader=stopped
+#    chown system root /data/.cid.info
+#    chmod 0664 /data/.cid.info
+#    chown system root /data/.rev
+#    chmod 0664 /data/.rev
 # end of wifi
 
 service sec-sh /system/bin/sh /system/etc/init.sec.boot.sh
