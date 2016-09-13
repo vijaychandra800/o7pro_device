@@ -25,7 +25,7 @@ ARCH_ARM_HAVE_TLS_REGISTER      := true
 ENABLE_CPUSETS                  := true
 
 # Board CFLAGS
-COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
+#COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
 
 # Qcom
 TARGET_PLATFORM_DEVICE_BASE          := /devices/soc.0/
