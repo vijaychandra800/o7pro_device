@@ -1,14 +1,17 @@
 [
 	{
     		"repository": "android_external_stlport",
+			"branch": "cm-14.0",
     		"target_path": "external/stlport"
   	},
 	{
     		"repository": "android_external_sony_boringssl-compat",
+			"branch": "cm-14.0",
     		"target_path": "external/sony/boringssl-compat"
   	},
 	{
 		    "repository": "android_hardware_samsung",
+			"branch": "cm-14.0",
 		    "target_path": "hardware/samsung"
 	}
 ]
