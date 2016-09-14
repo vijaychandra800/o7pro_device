@@ -216,7 +216,6 @@ PRODUCT_PACKAGES += \
 
 # WPA supplicant
 PRODUCT_PACKAGES += \
-    dhcpcd.conf \
     hostapd \
     libwpa_client \
     wpa_supplicant \
