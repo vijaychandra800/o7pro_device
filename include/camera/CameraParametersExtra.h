@@ -116,7 +116,6 @@ const char CameraParameters::EFFECT_VINTAGE_WARM[] = "vintage-warm"; \
 const char CameraParameters::EFFECT_WASHED[] = "washed"; \
 const char CameraParameters::SCENE_MODE_BACKLIGHT[] = "backlight"; \
 const char CameraParameters::SCENE_MODE_ASD[] = "asd"; \
-int CameraParameters::getInt64(const char *key) const { return -1; }; \
 const char *CameraParameters::getPreviewFrameRateMode() const { return get(KEY_PREVIEW_FRAME_RATE_MODE); }; \
 void CameraParameters::setPreviewFrameRateMode(const char *mode) { set(KEY_PREVIEW_FRAME_RATE_MODE, mode); };
 
@@ -222,6 +221,5 @@ void CameraParameters::setPreviewFrameRateMode(const char *mode) { set(KEY_PREVI
     static const char EFFECT_WASHED[]; \
     static const char SCENE_MODE_BACKLIGHT[]; \
     static const char SCENE_MODE_ASD[]; \
-    int getInt64(const char *key) const; \
     const char *getPreviewFrameRateMode() const; \
     void setPreviewFrameRateMode(const char *mode);
