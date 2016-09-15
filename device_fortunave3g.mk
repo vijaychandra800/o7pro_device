@@ -145,11 +145,11 @@ PRODUCT_PACKAGES += \
 # OMX
 PRODUCT_PACKAGES += \
     libextmedia_jni \
-	libqcmediaplayer \
+    libqcmediaplayer \
     libc2dcolorconvert \
     libOmxVidcCommon \
-	libOmxVdecHevc \
-	libOmxVdpp \
+    libOmxVdecHevc \
+    libOmxVdpp \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -157,7 +157,7 @@ PRODUCT_PACKAGES += \
     libOmxQcelp13Enc \
     libOmxVdec \
     libOmxVenc \
-	libdivxdrmdecrypt \
+    libdivxdrmdecrypt \
     libstagefrighthw \
     libdashplayer \
     qcmediaplayer
@@ -170,10 +170,10 @@ PRODUCT_PACKAGES += \
     Gello	
 
 # FM
-PRODUCT_PACKAGES += \
-    FM2 \
-    libqcomfm_jni \
-    qcom.fmradio
+#PRODUCT_PACKAGES += \
+#    FM2 \
+#    libqcomfm_jni \
+#    qcom.fmradio
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
