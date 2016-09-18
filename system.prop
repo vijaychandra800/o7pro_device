@@ -95,8 +95,6 @@ dalvik.vm.dex2oat-swap=false
 dalvik.vm.dex2oat-flags=--no-watch-dog
 ro.sys.fw.dex2oat_thread_count=4
 
-ro.sys.sdcardfs=true
-
 # Samsung OEM
 ro.multisim.set_audio_params=true
 ro.telephony.samsung.realcall=true
