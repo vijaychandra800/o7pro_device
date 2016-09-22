@@ -374,7 +374,7 @@ public class SamsungQcom3GDSRIL extends RIL {
             /* Nothing we care about, go up */
             p.setDataPosition(dataPosition);
             // Forward responses that we are not overriding to the super class
-            return super.processSolicited(p);
+            return super.processSolicited(p, type);;
         }
         rr = findAndRemoveRequestFromList(serial);
         if (rr == null) {
