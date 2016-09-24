@@ -140,7 +140,7 @@ static char *camera_fixup_getparams(int id, const char *settings)
 
     if(!isVideo){
 		params.set("auto-exposure-values", "center");
-		params.set("preview-format-values", "yuv420p");
+		//params.set("preview-format-values", "yuv420p");
 	}
 	
 
