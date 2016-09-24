@@ -86,7 +86,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      private void removeCall(Call call) {
 +		
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
-+		if(setMsimAudioParams){
++		if(setSamsungRealcallParams){
 +			mAudioManager.setParameters("realcall=off");
 +		}
 +		
