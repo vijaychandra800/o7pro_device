@@ -158,10 +158,6 @@ MAX_EGL_CACHE_KEY_SIZE                := 12*1024
 MAX_EGL_CACHE_SIZE                    := 2048*1024
 OVERRIDE_RS_DRIVER                    := libRSDriver.so
 
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
-BOARD_VENDOR_QCOM_LOC_PDK_FEATURE_SET := true
-TARGET_NO_RPC := true
-
 # Boot animation
 TARGET_SCREEN_WIDTH                 := 540
 TARGET_SCREEN_HEIGHT                := 960
