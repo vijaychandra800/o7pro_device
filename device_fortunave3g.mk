@@ -138,9 +138,12 @@ PRODUCT_PACKAGES += \
     
 # Camera
 PRODUCT_PACKAGES += \
-    Snap \
     libmm-qcamera \
     camera.msm8916
+	
+# Camera
+#PRODUCT_PACKAGES += \
+#    Snap
 	
 # OMX
 PRODUCT_PACKAGES += \
