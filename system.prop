@@ -32,6 +32,7 @@ qcom.hw.aac.encoder=true
 # Camera
 ro.device.rear_cam=8 MP
 ro.device.front_cam=5 MP
+camera2.portability.force_api=1
 
 # Perf
 ro.vendor.extension_library=/system/vendor/lib/libqti-perfd-client.so
