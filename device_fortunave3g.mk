@@ -204,7 +204,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libxml2 \
     Stk \
-	Stk2
+    Stk2
 
 # Misc. libs
 PRODUCT_PACKAGES += \
@@ -225,8 +225,8 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf	
 	
 # Storage
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sys.sdcardfs=true	
+#PRODUCT_PROPERTY_OVERRIDES += \
+#    ro.sys.sdcardfs=true	
 
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
