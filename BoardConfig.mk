@@ -175,7 +175,7 @@ BOARD_USES_MMCUTILS 				:= true
 #RECOVERY_VARIANT				    := cm
 
 #Use dlmalloc instead of jemalloc for mallocs
-MALLOC_IMPL                         := dlmalloc
+MALLOC_IMPL                         := jemalloc
 
 # Logging
 TARGET_USES_LOGD                    := false
