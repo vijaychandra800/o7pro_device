@@ -1,46 +1,24 @@
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
-@@ -31,6 +31,27 @@
- import java.util.Set;
- import java.util.LinkedHashSet;
- 
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -86,6 +86,14 @@
+ import org.codeaurora.ims.QtiCallConstants;
+ import org.codeaurora.ims.utils.QtiImsExtUtils;
+ import org.codeaurora.internal.IExtTelephony;
++
 +import android.app.ActivityManagerNative;
-+import android.content.Context;
-+import android.content.pm.UserInfo;
-+import android.media.AudioManager;
++import android.media.IAudioService;
 +import android.os.Binder;
-+import android.os.Handler;
 +import android.os.IBinder;
-+import android.os.Looper;
-+import android.os.Message;
-+import android.os.RemoteException;
-+import android.os.ServiceManager;
-+import android.os.SystemProperties;
-+import android.os.UserHandle;
-+
-+import android.telecom.PhoneAccountHandle;
 +import android.telephony.SubscriptionManager;
-+
 +import com.android.internal.util.Preconditions;
 +
-+import java.util.Objects;
-+
- public class CallAudioManager extends CallsManagerListenerBase {
- 
-     public interface AudioServiceFactory {
-@@ -56,6 +77,8 @@
-     private Call mForegroundCall;
-     private boolean mIsTonePlaying = false;
-     private InCallTonePlayer mHoldTonePlayer;
-+	
-+	private AudioManager mAudioManager;
- 
-     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
-             CallsManager callsManager,
-@@ -130,8 +153,40 @@
- 
-         removeCall(call);
+ /**
+  * Singleton.
+  *
+@@ -1879,6 +1887,22 @@
+         mCallLogManager.logCall(incomingCall, Calls.MISSED_TYPE,
+                 true /*showNotificationForMissedCall*/);
      }
 +	
 +	private int getPhoneId(Call call) {
@@ -59,40 +37,52 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +        return -1;
 +    }
  
-     private void addCall(Call call) {
+     /**
+      * Adds the specified call to the main list of live calls.
+@@ -1898,6 +1922,21 @@
+                 SystemClock.elapsedRealtime());
+ 
+         updateCallsManagerState();
 +		
-+		mAudioManager = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
 +		boolean setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		if(setMsimAudioParams){
-+			mAudioManager.setParameters("realcall=on");
++			mCallAudioManager.setParameters("realcall=on");
 +		}
 +		if(setMsimAudioParams){
 +			int phoneId = getPhoneId(call);
 +			if (phoneId == 0) {
-+				mAudioManager.setParameters("phone_type=cp1");
++				mCallAudioManager.setParameters("phone_type=cp1");
 +			} else if (phoneId == 1) {
-+				mAudioManager.setParameters("phone_type=cp2");
++				mCallAudioManager.setParameters("phone_type=cp2");
 +			}
 +		}
 +		
-         if (mCalls.contains(call)) {
-             Log.w(LOG_TAG, "Call TC@%s is being added twice.", call.getId());
-             return; // No guarantees that the same call won't get added twice.
-@@ -150,6 +205,13 @@
+         // onCallAdded for calls which immediately take the foreground (like the first call).
+         for (CallsManagerListener listener : mListeners) {
+             if (Log.SYSTRACE_DEBUG) {
+@@ -1908,7 +1947,7 @@
+                 Trace.endSection();
+             }
+         }
+-        Trace.endSection();
++        Trace.endSection();		
      }
  
      private void removeCall(Call call) {
+@@ -1940,6 +1979,12 @@
+                 }
+             }
+         }
 +		
-+		mAudioManager = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		if(setSamsungRealcallParams){
-+			mAudioManager.setParameters("realcall=off");
++			mCallAudioManager.setParameters("realcall=off");
 +		}
 +		
-         if (!mCalls.contains(call)) {
-             return; // No guarantees that the same call won't get removed twice.
-         }
+         Trace.endSection();
+     }
+ 
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
