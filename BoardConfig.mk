@@ -32,7 +32,7 @@ TARGET_PLATFORM_DEVICE_BASE          := /devices/soc.0/
 HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE   := true
 USE_DEVICE_SPECIFIC_QCOM_PROPRIETARY := true
 TARGET_USES_QCOM_BSP                 := true
-TARGET_USES_NEW_ION_API              :=true
+#TARGET_USES_NEW_ION_API              := true
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
