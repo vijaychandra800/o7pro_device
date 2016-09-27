@@ -61,7 +61,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  
      private void addCall(Call call) {
 +		
-+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
++		mAudioManager = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
 +		boolean setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		if(setMsimAudioParams){
@@ -84,7 +84,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  
      private void removeCall(Call call) {
 +		
-+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
++		mAudioManager = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		if(setSamsungRealcallParams){
 +			mAudioManager.setParameters("realcall=off");
