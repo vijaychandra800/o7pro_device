@@ -23,10 +23,10 @@ media.stagefright.enable-aac=true
 media.stagefright.enable-qcp=true
 media.stagefright.enable-fma2dp=true
 media.stagefright.enable-scan=true
-media.swhevccodectype=0
-mm.enable.smoothstreaming=true
-media.aac_51_output_enabled=true
-vidc.enc.narrow.searchrange=1
+#media.swhevccodectype=0
+#mm.enable.smoothstreaming=true
+#media.aac_51_output_enabled=true
+#vidc.enc.narrow.searchrange=1
 qcom.hw.aac.encoder=true
 
 # Camera
@@ -72,7 +72,6 @@ persist.timed.enable=true
 
 persist.debug.wfd.enable=1
 persist.hwc.enable_vds=1
-vidc.enc.narrow.searchrange=1
 
 ro.config.max_starting_bg=8
 dalvik.vm.dex2oat-swap=false
