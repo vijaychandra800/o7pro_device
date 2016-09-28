@@ -142,8 +142,8 @@ PRODUCT_PACKAGES += \
     camera.msm8916
 	
 # Camera
-#PRODUCT_PACKAGES += \
-#    Snap
+PRODUCT_PACKAGES += \
+    Snap
 	
 # OMX
 PRODUCT_PACKAGES += \

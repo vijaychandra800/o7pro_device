@@ -95,8 +95,8 @@ BOARD_HAVE_BLUETOOTH_QCOM                   := true
 BLUETOOTH_HCI_USE_MCT                       := true
 
 # Custom RIL class
-BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
-PROTOBUF_SUPPORTED                  := true
+BOARD_RIL_CLASS                      := ../../../device/samsung/fortunave3g/ril/
+PROTOBUF_SUPPORTED                   := true
 #USE_DEVICE_SPECIFIC_DATASERVICES    := true
 
 # Fonts
@@ -110,7 +110,6 @@ TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
 # Audio
 BOARD_USES_ALSA_AUDIO                := true
 USE_CUSTOM_AUDIO_POLICY              := 1
-TARGET_USES_QCOM_MM_AUDIO            := true
 TARGET_QCOM_AUDIO_VARIANT            := caf
 
 # Charger

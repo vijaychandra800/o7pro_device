@@ -115,33 +115,33 @@ static char *camera_fixup_getparams(int id, const char *settings)
 #endif
 
     // fix params here
-    //params.set(android::CameraParameters::KEY_SUPPORTED_ISO_MODES, iso_values[id]);
-    //params.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.5");
-    //params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-2");
-    //params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "2");
+    params.set(android::CameraParameters::KEY_SUPPORTED_ISO_MODES, iso_values[id]);
+    params.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.5");
+    params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-2");
+    params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "2");
 	
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
      * that it really is okay to turn it off.
      */
-    //const char *hfrValues = params.get(KEY_VIDEO_HFR_VALUES);
-    //if (hfrValues && *hfrValues && ! strstr(hfrValues, "off")) {
-    //    char tmp[strlen(hfrValues) + 4 + 1];
-    //    sprintf(tmp, "%s,off", hfrValues);
-    //    params.set(KEY_VIDEO_HFR_VALUES, tmp);
-    //}
+    const char *hfrValues = params.get(KEY_VIDEO_HFR_VALUES);
+    if (hfrValues && *hfrValues && ! strstr(hfrValues, "off")) {
+        char tmp[strlen(hfrValues) + 4 + 1];
+        sprintf(tmp, "%s,off", hfrValues);
+        params.set(KEY_VIDEO_HFR_VALUES, tmp);
+    }
 	
     //params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     //params.set("effect-values", "none,mono,negative,sepia");
 	
-    //bool isVideo = false;
-    //if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
-    //    isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
+    bool isVideo = false;
+    if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
+        isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
 
-    //if(!isVideo){
-	//	params.set("auto-exposure-values", "center");
-	//	params.set("preview-format-values", "yuv420p");
-	//}
+    if(!isVideo){
+		params.set("auto-exposure-values", "center");
+		params.set("preview-format-values", "yuv420p");
+	}
 	
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -185,13 +185,6 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
         params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
     } else {
         params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
-    }
-	
-	// fix params here
-    int video_width, video_height;
-    params.getPreviewSize(&video_width, &video_height);
-    if(video_width*video_height <= 960*540){
-        params.set("preview-format", "yuv420p");
     }
 	
     android::String8 strParams = params.flatten();
