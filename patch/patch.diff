@@ -16,7 +16,25 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  /**
   * Singleton.
   *
-@@ -1879,6 +1887,22 @@
+@@ -230,6 +238,8 @@
+     private Runnable mStopTone;
+     private String mActiveSub = null;
+     private DsdaAdapter mDsdaAdapter = null;
++	
++	 private AudioManager mAudioManager;
+ 
+     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
+ 
+@@ -303,6 +313,8 @@
+                 this,new CallAudioModeStateMachine((AudioManager)
+                         mContext.getSystemService(Context.AUDIO_SERVICE)),
+                 playerFactory, mRinger, new RingbackPlayer(playerFactory), mDtmfLocalTonePlayer);
++				
++		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);		
+ 
+         mHeadsetMediaButton = headsetMediaButtonFactory.create(context, this, mLock);
+         mPlayerFactory = playerFactory;
+@@ -1879,6 +1891,22 @@
          mCallLogManager.logCall(incomingCall, Calls.MISSED_TYPE,
                  true /*showNotificationForMissedCall*/);
      }
@@ -39,7 +57,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
      /**
       * Adds the specified call to the main list of live calls.
-@@ -1898,6 +1922,21 @@
+@@ -1898,6 +1926,21 @@
                  SystemClock.elapsedRealtime());
  
          updateCallsManagerState();
@@ -47,37 +65,28 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +		boolean setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		if(setMsimAudioParams){
-+			mCallAudioManager.setParameters("realcall=on");
++			mAudioManager.setParameters("realcall=on");
 +		}
 +		if(setMsimAudioParams){
 +			int phoneId = getPhoneId(call);
 +			if (phoneId == 0) {
-+				mCallAudioManager.setParameters("phone_type=cp1");
++				mAudioManager.setParameters("phone_type=cp1");
 +			} else if (phoneId == 1) {
-+				mCallAudioManager.setParameters("phone_type=cp2");
++				mAudioManager.setParameters("phone_type=cp2");
 +			}
 +		}
 +		
          // onCallAdded for calls which immediately take the foreground (like the first call).
          for (CallsManagerListener listener : mListeners) {
              if (Log.SYSTRACE_DEBUG) {
-@@ -1908,7 +1947,7 @@
-                 Trace.endSection();
-             }
-         }
--        Trace.endSection();
-+        Trace.endSection();		
-     }
- 
-     private void removeCall(Call call) {
-@@ -1940,6 +1979,12 @@
+@@ -1940,6 +1983,12 @@
                  }
              }
          }
 +		
 +		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		if(setSamsungRealcallParams){
-+			mCallAudioManager.setParameters("realcall=off");
++			mAudioManager.setParameters("realcall=off");
 +		}
 +		
          Trace.endSection();
