@@ -33,15 +33,13 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
          mHeadsetMediaButton = headsetMediaButtonFactory.create(context, this, mLock);
          mPlayerFactory = playerFactory;
-@@ -1942,6 +1953,25 @@
+@@ -1942,6 +1953,22 @@
          }
          Trace.endSection();
      }
 +	
 +	private int getPhoneId(Call call) {
-+		Log.e(this, "getPhoneId");
 +        if (call.getTargetPhoneAccount() != null) {
-+			Log.e(this, "getPhoneId etTargetPhoneAccount not null");
 +            PhoneAccountHandle account = call.getTargetPhoneAccount();
 +            try {
 +                int index = Integer.parseInt(account.getId());
@@ -53,13 +51,12 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +                Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
 +            }
 +        }
-+		Log.e(this, "getPhoneId return -1");
 +        return -1;
 +    }
  
      /**
       * Sets the specified state on the specified call.
-@@ -1982,6 +2012,28 @@
+@@ -1982,6 +2009,28 @@
                  }
              }
              Trace.endSection();
