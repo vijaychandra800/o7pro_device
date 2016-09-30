@@ -1,55 +1,46 @@
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
-@@ -31,6 +31,27 @@
- import java.util.Set;
- import java.util.LinkedHashSet;
- 
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -86,6 +86,12 @@
+ import org.codeaurora.ims.QtiCallConstants;
+ import org.codeaurora.ims.utils.QtiImsExtUtils;
+ import org.codeaurora.internal.IExtTelephony;
++
 +import android.app.ActivityManagerNative;
-+import android.content.Context;
-+import android.content.pm.UserInfo;
-+import android.media.AudioManager;
 +import android.os.Binder;
-+import android.os.Handler;
 +import android.os.IBinder;
-+import android.os.Looper;
-+import android.os.Message;
-+import android.os.RemoteException;
-+import android.os.ServiceManager;
-+import android.os.SystemProperties;
-+import android.os.UserHandle;
-+
-+import android.telecom.PhoneAccountHandle;
 +import android.telephony.SubscriptionManager;
-+
 +import com.android.internal.util.Preconditions;
-+
-+import java.util.Objects;
-+
- public class CallAudioManager extends CallsManagerListenerBase {
+ /**
+  * Singleton.
+  *
+@@ -232,6 +238,10 @@
+     private DsdaAdapter mDsdaAdapter = null;
  
-     public interface AudioServiceFactory {
-@@ -56,6 +77,10 @@
-     private Call mForegroundCall;
-     private boolean mIsTonePlaying = false;
-     private InCallTonePlayer mHoldTonePlayer;
+     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
 +	
 +	private AudioManager mAudioManager;
 +	boolean setMsimAudioParams;
 +	boolean setSamsungRealcallParams;
  
-     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
-             CallsManager callsManager,
-@@ -86,6 +111,27 @@
- 
-         mPlayerFactory.setCallAudioManager(this);
-         mCallAudioModeStateMachine.setCallAudioManager(this);
+     /**
+      * Initializes the required Telecom components.
+@@ -314,6 +324,11 @@
+                 new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
+         mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
+         mViceNotificationImpl = viceNotifier.create(mContext, this);
 +		
-+		mAudioManager = (AudioManager) mCallsManager.mContext.getSystemService(Context.AUDIO_SERVICE);
++		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 +		
 +		setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
 +		setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
-+    }
+ 
+         mListeners.add(mInCallWakeLockController);
+         mListeners.add(statusBarNotifier);
+@@ -1942,6 +1957,22 @@
+         }
+         Trace.endSection();
+     }
 +	
 +	private int getPhoneId(Call call) {
 +         if (call.getTargetPhoneAccount() != null) {
@@ -65,15 +56,15 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +             }
 +         }
 +         return -1;
-     }
++    }
  
-     @Override
-@@ -103,7 +149,27 @@
-         if (mCallStateToCalls.get(newState) != null) {
-             mCallStateToCalls.get(newState).add(call);
-         }
--
-+		
+     /**
+      * Sets the specified state on the specified call.
+@@ -1956,6 +1987,27 @@
+         int oldState = call.getState();
+         Log.i(this, "setCallState %s -> %s, call: %s", CallState.toString(oldState),
+                 CallState.toString(newState), call);
++				
 +		Call callm = getForegroundCall();
 +		if(newState == CallState.ACTIVE){
 +			if(setSamsungRealcallParams){
@@ -87,16 +78,16 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +					mAudioManager.setParameters("phone_type=cp2");
 +				}
 +			}
-+ 		}
++		}
 +		if(newState == CallState.ABORTED || newState == CallState.DISCONNECTED){
 +			if(setSamsungRealcallParams){
 +				mAudioManager.setParameters("realcall=off");
 +			}
 +		}			
-+          
-         updateForegroundCall();
-         if (newState == CallState.DISCONNECTED) {
-             playToneForDisconnectedCall(call);
++					
+         if (newState != oldState) {
+             // Unfortunately, in the telephony world the radio is king. So if the call notifies
+             // us that the call is in a particular state, we allow it even if it doesn't make
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
