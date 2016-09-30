@@ -1,97 +1,102 @@
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
-@@ -86,6 +86,13 @@
- import org.codeaurora.ims.QtiCallConstants;
- import org.codeaurora.ims.utils.QtiImsExtUtils;
- import org.codeaurora.internal.IExtTelephony;
-+
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
+@@ -31,6 +31,27 @@
+ import java.util.Set;
+ import java.util.LinkedHashSet;
+ 
 +import android.app.ActivityManagerNative;
-+import android.media.IAudioService;
++import android.content.Context;
++import android.content.pm.UserInfo;
++import android.media.AudioManager;
 +import android.os.Binder;
++import android.os.Handler;
 +import android.os.IBinder;
++import android.os.Looper;
++import android.os.Message;
++import android.os.RemoteException;
++import android.os.ServiceManager;
++import android.os.SystemProperties;
++import android.os.UserHandle;
++
++import android.telecom.PhoneAccountHandle;
 +import android.telephony.SubscriptionManager;
++
 +import com.android.internal.util.Preconditions;
- /**
-  * Singleton.
-  *
-@@ -230,6 +237,8 @@
-     private Runnable mStopTone;
-     private String mActiveSub = null;
-     private DsdaAdapter mDsdaAdapter = null;
++
++import java.util.Objects;
++
+ public class CallAudioManager extends CallsManagerListenerBase {
+ 
+     public interface AudioServiceFactory {
+@@ -56,6 +77,10 @@
+     private Call mForegroundCall;
+     private boolean mIsTonePlaying = false;
+     private InCallTonePlayer mHoldTonePlayer;
 +	
-+	 private AudioManager mAudioManager;
++	private AudioManager mAudioManager;
++	boolean setMsimAudioParams;
++	boolean setSamsungRealcallParams;
  
-     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
+     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
+             CallsManager callsManager,
+@@ -86,6 +111,27 @@
  
-@@ -303,6 +312,8 @@
-                 this,new CallAudioModeStateMachine((AudioManager)
-                         mContext.getSystemService(Context.AUDIO_SERVICE)),
-                 playerFactory, mRinger, new RingbackPlayer(playerFactory), mDtmfLocalTonePlayer);
-+				
-+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);		
- 
-         mHeadsetMediaButton = headsetMediaButtonFactory.create(context, this, mLock);
-         mPlayerFactory = playerFactory;
-@@ -1879,6 +1890,22 @@
-         mCallLogManager.logCall(incomingCall, Calls.MISSED_TYPE,
-                 true /*showNotificationForMissedCall*/);
-     }
+         mPlayerFactory.setCallAudioManager(this);
+         mCallAudioModeStateMachine.setCallAudioManager(this);
++		
++		mAudioManager = (AudioManager) mCallsManager.mContext.getSystemService(Context.AUDIO_SERVICE);
++		
++		setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
++		setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
++    }
 +	
 +	private int getPhoneId(Call call) {
-+        if (call.getTargetPhoneAccount() != null) {
-+            PhoneAccountHandle account = call.getTargetPhoneAccount();
++         if (call.getTargetPhoneAccount() != null) {
++             PhoneAccountHandle account = call.getTargetPhoneAccount();
 +            try {
-+                int index = Integer.parseInt(account.getId());
-+                int phoneId = SubscriptionManager.getPhoneId(index);
-+                if (SubscriptionManager.isValidPhoneId(phoneId)) {
-+                    return phoneId;
-+                }
-+            } catch (NumberFormatException e) {
-+                Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
-+            }
-+        }
-+        return -1;
-+    }
++                 int index = Integer.parseInt(account.getId());
++                 int phoneId = SubscriptionManager.getPhoneId(index);
++                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
++                     return phoneId;
++                 }
++             } catch (NumberFormatException e) {
++                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
++             }
++         }
++         return -1;
+     }
  
-     /**
-      * Adds the specified call to the main list of live calls.
-@@ -1890,7 +1917,22 @@
-         Log.v(this, "addCall(%s)", call);
-         call.addListener(this);
-         mCalls.add(call);
+     @Override
+@@ -103,7 +149,27 @@
+         if (mCallStateToCalls.get(newState) != null) {
+             mCallStateToCalls.get(newState).add(call);
+         }
 -
 +		
-+		boolean setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
-+		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +		Call callm = getForegroundCall();
-+		if(setSamsungRealcallParams){
-+			mAudioManager.setParameters("realcall=on");
-+		}
-+		if(setMsimAudioParams){
-+			int phoneId = getPhoneId(callm);
-+			if (phoneId == 0) {
-+				mAudioManager.setParameters("phone_type=cp1");
-+			} else if (phoneId == 1) {
-+				mAudioManager.setParameters("phone_type=cp2");
++		if(newState == CallState.ACTIVE){
++			if(setSamsungRealcallParams){
++				mAudioManager.setParameters("realcall=on");
 +			}
-+		}
-+		
-         // Specifies the time telecom finished routing the call. This is used by the dialer for
-         // analytics.
-         Bundle extras = call.getIntentExtras();
-@@ -1914,6 +1956,11 @@
-     private void removeCall(Call call) {
-         Trace.beginSection("removeCall");
-         Log.v(this, "removeCall(%s)", call);
-+		
-+		boolean setSamsungRealcallParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
-+		if(setSamsungRealcallParams){
-+			mAudioManager.setParameters("realcall=off");
-+		}
- 
-         call.setParentCall(null);  // need to clean up parent relationship before destroying.
-         call.removeListener(this);
++			if(setMsimAudioParams){
++				int phoneId = getPhoneId(callm);
++				if (phoneId == 0) {
++					mAudioManager.setParameters("phone_type=cp1");
++				} else if (phoneId == 1) {
++					mAudioManager.setParameters("phone_type=cp2");
++				}
++			}
++ 		}
++		if(newState == CallState.ABORTED || newState == CallState.DISCONNECTED){
++			if(setSamsungRealcallParams){
++				mAudioManager.setParameters("realcall=off");
++			}
++		}			
++          
+         updateForegroundCall();
+         if (newState == CallState.DISCONNECTED) {
+             playToneForDisconnectedCall(call);
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
