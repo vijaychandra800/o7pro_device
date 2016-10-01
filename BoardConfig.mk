@@ -109,7 +109,6 @@ TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
 # Audio
 BOARD_USES_ALSA_AUDIO                := true
 USE_CUSTOM_AUDIO_POLICY              := 1
-TARGET_USES_QCOM_MM_AUDIO            := true
 TARGET_QCOM_AUDIO_VARIANT            := caf
 
 # Charger
@@ -175,7 +174,7 @@ BOARD_USES_MMCUTILS 				:= true
 #RECOVERY_VARIANT				    := cm
 
 #Use dlmalloc instead of jemalloc for mallocs
-MALLOC_IMPL                         := jemalloc
+MALLOC_IMPL                         := dlmalloc
 
 # Logging
 TARGET_USES_LOGD                    := false
@@ -183,10 +182,10 @@ TARGET_USES_LOGD                    := false
 TARGET_SKIP_PRODUCT_DEVICE          := true
 	
 # Misc.
-TARGET_SYSTEM_PROP                              := $(LOCAL_PATH)/system.prop
+TARGET_SYSTEM_PROP                  := $(LOCAL_PATH)/system.prop
 
 # Releasetools
-TARGET_RELEASETOOLS_EXTENSIONS                  := $(LOCAL_PATH)
+TARGET_RELEASETOOLS_EXTENSIONS      := $(LOCAL_PATH)
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
