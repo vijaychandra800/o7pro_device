@@ -33,36 +33,36 @@ ro.sf.lcd_density=240
 ro.opengles.version=196608
 
 # Media
-media.stagefright.enable-player=true
-media.stagefright.enable-http=true
-media.stagefright.enable-aac=true
-media.stagefright.enable-qcp=true
-media.stagefright.enable-fma2dp=true
-media.stagefright.enable-scan=true
+#media.stagefright.enable-player=true
+#media.stagefright.enable-http=true
+#media.stagefright.enable-aac=true
+#media.stagefright.enable-qcp=true
+#media.stagefright.enable-fma2dp=true
+#media.stagefright.enable-scan=true
 #media.swhevccodectype=0
 #mm.enable.smoothstreaming=true
 #media.aac_51_output_enabled=true
 #vidc.enc.narrow.searchrange=1
-qcom.hw.aac.encoder=true
+#qcom.hw.aac.encoder=true
 
 # Camera
-ro.device.rear_cam=8 MP
-ro.device.front_cam=5 MP
-camera2.portability.force_api=1
-persist.camera.HAL3.enabled=0
+#ro.device.rear_cam=8 MP
+#ro.device.front_cam=5 MP
+#camera2.portability.force_api=1
+#persist.camera.HAL3.enabled=0
 
 # Perf
 ro.vendor.extension_library=/system/vendor/lib/libqti-perfd-client.so
 
 # Audio
-ro.qc.sdk.audio.fluencetype=none
-persist.audio.fluence.voicecall=true
-persist.audio.fluence.voicerec=false
-persist.audio.fluence.speaker=true
-tunnel.audio.encode = false
-audio.offload.buffer.size.kb=32
-audio.offload.min.duration.secs=30
-audio.offload.video=true
+#ro.qc.sdk.audio.fluencetype=none
+#persist.audio.fluence.voicecall=true
+#persist.audio.fluence.voicerec=false
+#persist.audio.fluence.speaker=true
+#tunnel.audio.encode = false
+#audio.offload.buffer.size.kb=32
+#audio.offload.min.duration.secs=30
+#audio.offload.video=true
 
 # Wi-Fi, Bluetooth
 wifi.interface=wlan0
