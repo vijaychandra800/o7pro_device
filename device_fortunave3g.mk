@@ -139,6 +139,8 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     libmm-qcamera \
+    libmmcamera_interface \
+    libmmjpeg_interface \
     camera.msm8916
 	
 # Camera
