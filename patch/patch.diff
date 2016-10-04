@@ -1,7 +1,7 @@
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
 +++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
-@@ -86,6 +86,12 @@
+@@ -86,6 +86,13 @@
  import org.codeaurora.ims.QtiCallConstants;
  import org.codeaurora.ims.utils.QtiImsExtUtils;
  import org.codeaurora.internal.IExtTelephony;
@@ -11,88 +11,69 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +import android.os.IBinder;
 +import android.telephony.SubscriptionManager;
 +import com.android.internal.util.Preconditions;
++
  /**
   * Singleton.
   *
-@@ -233,6 +239,9 @@
+@@ -232,6 +239,8 @@
+     private DsdaAdapter mDsdaAdapter = null;
  
      private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
- 
++	
 +	private AudioManager mAudioManager;
-+	boolean setMsimAudioParams;
-+
+ 
      /**
       * Initializes the required Telecom components.
-      */
-@@ -314,6 +323,10 @@
+@@ -314,6 +323,8 @@
                  new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
          mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
          mViceNotificationImpl = viceNotifier.create(mContext, this);
 +		
 +		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-+		
-+		setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
  
          mListeners.add(mInCallWakeLockController);
          mListeners.add(statusBarNotifier);
-@@ -333,7 +346,23 @@
-             onUserSwitch(Process.myUserHandle());
-         }
+@@ -1501,8 +1512,40 @@
+         maybeMoveToSpeakerPhone(call);
+         setActiveSubscription(call.getTargetPhoneAccount().getId());
      }
--
 +	
 +	private int getPhoneId(Call call) {
++		Log.v(this, "getPhoneId");
 +         if (call.getTargetPhoneAccount() != null) {
 +             PhoneAccountHandle account = call.getTargetPhoneAccount();
++			 Log.v(this, "getPhoneId: call.getTargetPhoneAccount()");
 +            try {
 +                 int index = Integer.parseInt(account.getId());
++				 Log.v(this, "getPhoneId: Integer.parseInt");
 +                 int phoneId = SubscriptionManager.getPhoneId(index);
++				 Log.v(this, "getPhoneId: SubscriptionManager.getPhoneId");
 +                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
++					 Log.v(this, "getPhoneId: return  -> %i", phoneId);
 +                     return phoneId;
 +                 }
 +             } catch (NumberFormatException e) {
 +                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
 +             }
 +         }
++		 Log.v(this, "getPhoneId: return  -> -1");
 +         return -1;
 +    }
-+	
-     ViceNotificationImpl getViceNotificationImpl() {
-         return mViceNotificationImpl;
+ 
+     void markCallAsActive(Call call) {
++		Call callm = getForegroundCall();
++		int phoneId = getPhoneId(callm);
++		if (phoneId == 0) {
++			Log.v(this, "SET phone_type=cp1");
++			mAudioManager.setParameters("phone_type=cp1");
++		} else if (phoneId == 1) {
++			Log.v(this, "SET phone_type=cp2");
++			mAudioManager.setParameters("phone_type=cp2");
++		}
++
+         setCallState(call, CallState.ACTIVE, "active set explicitly");
+         maybeMoveToSpeakerPhone(call);
      }
-@@ -357,7 +386,15 @@
-     @Override
-     public void onSuccessfulOutgoingCall(Call call, int callState) {
-         Log.v(this, "onSuccessfulOutgoingCall, %s", call);
--
-+		Call callm = getForegroundCall();
-+		if(setMsimAudioParams){
-+			int phoneId = getPhoneId(callm);
-+			if (phoneId == 0) {
-+				mAudioManager.setParameters("phone_type=cp1");
-+			} else if (phoneId == 1) {
-+				mAudioManager.setParameters("phone_type=cp2");
-+			}
-+		}
-         setCallState(call, callState, "successful outgoing call");
-         if (!mCalls.contains(call)) {
-             // Call was not added previously in startOutgoingCall due to it being a potential MMI
-@@ -383,6 +420,15 @@
-     @Override
-     public void onSuccessfulIncomingCall(Call incomingCall) {
-         Log.d(this, "onSuccessfulIncomingCall");
-+		Call callm = getForegroundCall();
-+		if(setMsimAudioParams){
-+			int phoneId = getPhoneId(callm);
-+			if (phoneId == 0) {
-+				mAudioManager.setParameters("phone_type=cp1");
-+			} else if (phoneId == 1) {
-+				mAudioManager.setParameters("phone_type=cp2");
-+			}
-+		}
-         List<IncomingCallFilter.CallFilter> filters = new ArrayList<>();
-         filters.add(new DirectToVoicemailCallFilter(mCallerInfoLookupHelper));
-         filters.add(new AsyncBlockCheckFilter(mContext, new BlockCheckerAdapter()));
 
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
