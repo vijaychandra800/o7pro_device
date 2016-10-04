@@ -110,7 +110,6 @@ TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
 # Audio
 BOARD_USES_ALSA_AUDIO                := true
 USE_CUSTOM_AUDIO_POLICY              := 1
-USE_XML_AUDIO_POLICY_CONF            := 1
 TARGET_QCOM_AUDIO_VARIANT            := caf
 
 # Charger
