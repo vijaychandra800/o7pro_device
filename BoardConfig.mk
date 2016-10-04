@@ -32,7 +32,7 @@ TARGET_PLATFORM_DEVICE_BASE          := /devices/soc.0/
 HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE   := true
 USE_DEVICE_SPECIFIC_QCOM_PROPRIETARY := true
 TARGET_USES_QCOM_BSP                 := true
-#TARGET_USES_NEW_ION_API              := true
+TARGET_USES_NEW_ION_API              := true
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
@@ -135,9 +135,9 @@ BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
 BOARD_VOLD_MAX_PARTITIONS            := 65
 
 # Camera
-TARGET_PROVIDES_CAMERA_HAL           := true
-USE_DEVICE_SPECIFIC_CAMERA           := true
-TARGET_NEEDS_TEXT_RELOCATIONS        := true
+TARGET_PROVIDES_CAMERA_HAL             := true
+USE_DEVICE_SPECIFIC_CAMERA             := true
+TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(LOCAL_PATH)/cmhw
@@ -150,9 +150,9 @@ TARGET_QCOM_MEDIA_VARIANT           := caf
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true
-TARGET_USES_OVERLAY 		          := true
-TARGET_HARDWARE_3D		              := false
-TARGET_HAVE_HDMI_OUT 		          := false
+TARGET_USES_OVERLAY 		      := true
+TARGET_HARDWARE_3D		      := false
+TARGET_HAVE_HDMI_OUT 		      := false
 USE_OPENGL_RENDERER                   := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS       := 3
 MAX_EGL_CACHE_KEY_SIZE                := 12*1024
