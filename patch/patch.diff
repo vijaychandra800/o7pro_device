@@ -82,18 +82,19 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  mAudioManager.setMode(AudioManager.MODE_NORMAL);
  
                  mMostRecentMode = AudioManager.MODE_NORMAL;
-+				mAudioManager.setParameters("realcall=off");
++                mAudioManager.setParameters("realcall=off");
                  mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.NO_FOCUS);
              }
          }
-@@ -288,6 +289,7 @@
-                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+@@ -289,6 +290,7 @@
              mAudioManager.setMode(AudioManager.MODE_IN_CALL);
              mMostRecentMode = AudioManager.MODE_IN_CALL;
-+			mAudioManager.setParameters("realcall=on");
              mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
++            mAudioManager.setParameters("realcall=on");
          }
  
+         @Override
+
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
