@@ -77,7 +77,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
              // Unfortunately, in the telephony world the radio is king. So if the call notifies
              // us that the call is in a particular state, we allow it even if it doesn't make
              // sense (e.g., STATE_ACTIVE -> STATE_RINGING).
-@@ -1966,6 +2000,21 @@
+@@ -1966,6 +2000,27 @@
              // unexpected transition occurs.
              call.setState(newState, tag);
              maybeShowErrorDialogOnDisconnect(call);
@@ -85,40 +85,26 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +			int phoneId2 = SubscriptionManager.getPhoneId(Integer.valueOf(call.getTargetPhoneAccount().getId()));
 +			Log.i(this, "setCallState phoneId2 %i", phoneId2);
 +			
-+            if(newState == CallState.ACTIVE){
-+				Log.i(this, "setCallState new CallState.ACTIVE");
-+                int phoneId = getPhoneId(getForegroundCall());
-+                if (phoneId == 0) {
++			if(newState == CallState.DISCONNECTED || newState == CallState.ABORTED){
++				Log.i(this, "setCallState new CallState.DISCONNECTED or ABORTED");
++				Log.i(this, "setCallState realcall=off");
++				mAudioManager.setParameters("realcall=off");
++			}else{
++				Log.i(this, "setCallState new CallState.CONNECTING or other");
++				Log.i(this, "setCallState realcall=on");
++				mAudioManager.setParameters("realcall=on");
++				int phoneId = getPhoneId(getForegroundCall());
++				if (phoneId == 0) {
 +					Log.i(this, "setCallState phone_type=cp1");
-+                    mAudioManager.setParameters("phone_type=cp1");
-+                } else if (phoneId == 1) {
++					mAudioManager.setParameters("phone_type=cp1");
++				} else if (phoneId == 1) {
 +					Log.i(this, "setCallState phone_type=cp2");
-+                    mAudioManager.setParameters("phone_type=cp2");
-+                }
++					mAudioManager.setParameters("phone_type=cp2");
++				}
 +            }
  
              Trace.beginSection("onCallStateChanged");
              // Only broadcast state change for calls that are being tracked.
-
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
-@@ -152,6 +152,7 @@
-                 mAudioManager.setMode(AudioManager.MODE_NORMAL);
- 
-                 mMostRecentMode = AudioManager.MODE_NORMAL;
-+                mAudioManager.setParameters("realcall=off");
-                 mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.NO_FOCUS);
-             }
-         }
-@@ -289,6 +290,7 @@
-             mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-             mMostRecentMode = AudioManager.MODE_IN_CALL;
-             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
-+            mAudioManager.setParameters("realcall=on");
-         }
- 
-         @Override
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
