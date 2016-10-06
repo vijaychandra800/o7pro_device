@@ -1,3 +1,23 @@
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -195,6 +195,7 @@
+     private final PhoneStateBroadcaster mPhoneStateBroadcaster;
+     private final CallLogManager mCallLogManager;
+     private final Context mContext;
++	public final Context pContext;
+     private final TelecomSystem.SyncRoot mLock;
+     private final ContactsAsyncHelper mContactsAsyncHelper;
+     private final CallerInfoAsyncQueryFactory mCallerInfoAsyncQueryFactory;
+@@ -255,6 +256,7 @@
+             AsyncRingtonePlayer asyncRingtonePlayer,
+             ViceNotifier viceNotifier) {
+         mContext = context;
++		pContext = context;
+         mLock = lock;
+         mContactsAsyncHelper = contactsAsyncHelper;
+         mCallerInfoAsyncQueryFactory = callerInfoAsyncQueryFactory;
+
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
 +++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
@@ -81,7 +101,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
          mPlayerFactory.setCallAudioManager(this);
          mCallAudioModeStateMachine.setCallAudioManager(this);
 +		
-+		mAudioManager = (AudioManager) mCallsManager.mContext.getSystemService(Context.AUDIO_SERVICE);
++		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
 +		
 +    }
 +	
@@ -108,7 +128,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
 +	
 +	private void setMSIMAudioState() {
-+       Call callm = getForegroundCall();
++        Call callm = getForegroundCall();
 +		int phoneId = getPhoneId(callm);
 +		if (phoneId == 0) {
 +			mAudioManager.setParameters("phone_type=cp1");
