@@ -111,6 +111,10 @@ TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
 BOARD_USES_ALSA_AUDIO                := true
 USE_CUSTOM_AUDIO_POLICY              := 1
 TARGET_QCOM_AUDIO_VARIANT            := caf
+TARGET_ENABLE_QC_AV_ENHANCEMENTS     := true
+AUDIO_FEATURE_ENABLED_FLAC_OFFLOAD   := true
+AUDIO_FEATURE_ENABLED_ALAC_OFFLOAD   := true
+
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
@@ -176,7 +180,7 @@ BOARD_USES_MMCUTILS 				:= true
 #RECOVERY_VARIANT				    := cm
 
 #Use dlmalloc instead of jemalloc for mallocs
-MALLOC_SVELTE                       := true
+#MALLOC_SVELTE                       := true
 
 # Logging
 TARGET_USES_LOGD                    := false
