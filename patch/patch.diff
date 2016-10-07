@@ -103,7 +103,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +            }
 +			mCallAudioRouteStateMachine.sendMessageWithSessionInfo(CallAudioRouteStateMachine.USER_SWITCH_EARPIECE);
 +        }else{
-+             mAudioManager.setParameters("realcall=off");
++             /* mAudioManager.setParameters("realcall=off"); */
 +        } 
 +    }
 +
