@@ -291,4 +291,4 @@ diff --git a/services/camera/libcameraservice/CameraService.cpp b/services/camer
              return true;
          default:
              return false;
-			 
+		 
