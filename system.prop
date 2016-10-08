@@ -47,6 +47,7 @@ qcom.hw.aac.encoder=true
 
 # Camera
 #camera2.portability.force_api=1
+media.stagefright.legacyencoder=true
 
 # Perf
 ro.vendor.extension_library=/system/vendor/lib/libqti-perfd-client.so
