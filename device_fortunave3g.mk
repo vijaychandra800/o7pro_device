@@ -175,10 +175,10 @@ PRODUCT_PACKAGES += \
     Gello	
 
 # FM
-#PRODUCT_PACKAGES += \
-#    FM2 \
-#    libqcomfm_jni \
-#    qcom.fmradio
+PRODUCT_PACKAGES += \
+    FM2 \
+    libqcomfm_jni \
+    qcom.fmradio
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
