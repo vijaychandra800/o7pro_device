@@ -49,26 +49,25 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  public class CallAudioManager extends CallsManagerListenerBase {
  
      public interface AudioServiceFactory {
-@@ -57,6 +78,8 @@
+@@ -56,6 +77,8 @@
+     private Call mForegroundCall;
      private boolean mIsTonePlaying = false;
      private InCallTonePlayer mHoldTonePlayer;
++	
++	private AudioManager mAudioManager;
  
-+    private AudioManager mAudioManager;
-+
      public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
              CallsManager callsManager,
-             CallAudioModeStateMachine callAudioModeStateMachine,
-@@ -84,10 +107,28 @@
-         mRingbackPlayer = ringbackPlayer;
-         mDtmfLocalTonePlayer = dtmfLocalTonePlayer;
+@@ -86,6 +109,25 @@
  
-+        mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
-+
          mPlayerFactory.setCallAudioManager(this);
          mCallAudioModeStateMachine.setCallAudioManager(this);
-     }
- 
-+    private int getPhoneId(Call call) {
++		
++		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
++		
++    }
++	
++	private int getPhoneId(Call call) {
 +         if (call.getTargetPhoneAccount() != null) {
 +             PhoneAccountHandle account = call.getTargetPhoneAccount();
 +            try {
@@ -82,45 +81,32 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +             }
 +         }
 +         return -1;
-+     }
-+
-     @Override
-     public void onCallStateChanged(Call call, int oldState, int newState) {
-         if (shouldIgnoreCallForAudio(call)) {
-@@ -458,11 +499,28 @@
-                 makeArgsForModeStateMachine());
      }
  
-+    private void setMSIMAudioState(boolean enable) {
-+        if(enable){
-+            mAudioManager.setParameters("realcall=on");
-+            Call callm = getForegroundCall();
-+            int phoneId = getPhoneId(callm);
-+            if (phoneId == 0) {
-+                mAudioManager.setParameters("phone_type=cp1");
-+            } else if (phoneId == 1) {
-+                mAudioManager.setParameters("phone_type=cp2");
-+            }
-+			mCallAudioRouteStateMachine.sendMessageWithSessionInfo(CallAudioRouteStateMachine.USER_SWITCH_EARPIECE);
-+        }else{
-+             /* mAudioManager.setParameters("realcall=off"); */
-+        } 
+     @Override
+@@ -475,12 +517,25 @@
+                 onCallLeavingActiveDialingOrConnecting();
+         }
+     }
++	
++	private void setMSIMAudioState() {
++        Call callm = getForegroundCall();
++		int phoneId = getPhoneId(callm);
++		mAudioManager.setParameters("realcall=off");
++		mAudioManager.setParameters("realcall=on");
++		if (phoneId == 0) {
++			mAudioManager.setParameters("phone_type=cp1");
++		} else if (phoneId == 1) {
++			mAudioManager.setParameters("phone_type=cp2");
++		}
 +    }
-+
-     private void onCallLeavingState(Call call, int state) {
+ 
+     private void onCallEnteringState(Call call, int state) {
          switch (state) {
              case CallState.ACTIVE:
              case CallState.CONNECTING:
-                 onCallLeavingActiveDialingOrConnecting();
-+                setMSIMAudioState(false);
-                 break;
-             case CallState.RINGING:
-                 onCallLeavingRinging();
-@@ -481,6 +539,7 @@
-             case CallState.ACTIVE:
-             case CallState.CONNECTING:
                  onCallEnteringActiveDialingOrConnecting();
-+                setMSIMAudioState(true);
++				setMSIMAudioState();
                  break;
              case CallState.RINGING:
                  onCallEnteringRinging();
