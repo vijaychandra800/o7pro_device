@@ -92,13 +92,13 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +	private void setMSIMAudioState() {
 +        Call callm = getForegroundCall();
 +		int phoneId = getPhoneId(callm);
-+		mAudioManager.setParameters("realcall=off");
++		/* mAudioManager.setParameters("realcall=off"); */
 +		mAudioManager.setParameters("realcall=on");
-+		if (phoneId == 0) {
-+			mAudioManager.setParameters("phone_type=cp1");
-+		} else if (phoneId == 1) {
++		/* if (phoneId == 0) { */
++		/* 	mAudioManager.setParameters("phone_type=cp1"); */
++		/* } else if (phoneId == 1) { */
 +			mAudioManager.setParameters("phone_type=cp2");
-+		}
++		/* } */
 +    }
  
      private void onCallEnteringState(Call call, int state) {
