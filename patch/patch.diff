@@ -84,33 +84,46 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
  
      @Override
-@@ -475,12 +517,25 @@
+@@ -475,12 +517,29 @@
                  onCallLeavingActiveDialingOrConnecting();
          }
      }
 +	
-+	private void setMSIMAudioState() {
-+        Call callm = getForegroundCall();
-+		int phoneId = getPhoneId(callm);
-+		/* mAudioManager.setParameters("realcall=off"); */
-+		mAudioManager.setParameters("realcall=on");
-+		/* if (phoneId == 0) { */
-+		/* 	mAudioManager.setParameters("phone_type=cp1"); */
-+		/* } else if (phoneId == 1) { */
-+			mAudioManager.setParameters("phone_type=cp2");
-+		/* } */
++	private void setMSIMAudioState(boolean on) {
++		if(on){
++			Call callm = getForegroundCall();
++			int phoneId = getPhoneId(callm);
++			mAudioManager.setParameters("realcall=on");
++			if (phoneId == 0) {
++				mAudioManager.setParameters("phone_type=cp1");
++			} else if (phoneId == 1) {
++				mAudioManager.setParameters("phone_type=cp2");
++			}
++		}else{
++			mAudioManager.setParameters("realcall=off");
++		}
 +    }
  
      private void onCallEnteringState(Call call, int state) {
          switch (state) {
              case CallState.ACTIVE:
              case CallState.CONNECTING:
++				setMSIMAudioState(true);
                  onCallEnteringActiveDialingOrConnecting();
-+				setMSIMAudioState();
++				
                  break;
              case CallState.RINGING:
                  onCallEnteringRinging();
-
+@@ -492,6 +551,9 @@
+                 onCallEnteringActiveDialingOrConnecting();
+                 playRingbackForCall(call);
+                 break;
++			case CallState.DISCONNECTED:
++				setMSIMAudioState(false);
++				break;
+         }
+     }
+ 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
