@@ -146,19 +146,26 @@ PRODUCT_PACKAGES += \
 	
 # OMX
 PRODUCT_PACKAGES += \
+    libextmedia_jni \
+	libqcmediaplayer \
+    libc2dcolorconvert \
+    libOmxVidcCommon \
+	libOmxVdecHevc \
+	libOmxVdpp \
     libOmxAacEnc \
     libOmxAmrEnc \
+    libOmxCore \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
-    libmm-omxcore \
-    libOmxCore \
-    libdivxdrmdecrypt \
-    libOmxSwVencMpeg4 \
     libOmxVdec \
-    libOmxVdpp \
     libOmxVenc \
-    libOmxVidEnc \
-    libstagefrighthw
+	libdivxdrmdecrypt \
+    libstagefrighthw \
+    libdashplayer \
+    qcmediaplayer
+	
+PRODUCT_BOOT_JARS += \
+    qcmediaplayer	
     
 # Gello
 PRODUCT_PACKAGES += \

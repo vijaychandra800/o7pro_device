@@ -84,9 +84,9 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
  
      @Override
-@@ -475,12 +517,29 @@
-                 onCallLeavingActiveDialingOrConnecting();
-         }
+@@ -457,12 +499,28 @@
+                         : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
+                 makeArgsForModeStateMachine());
      }
 +	
 +	private void setMSIMAudioState(boolean on) {
@@ -104,17 +104,34 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +		}
 +    }
  
-     private void onCallEnteringState(Call call, int state) {
+     private void onCallLeavingState(Call call, int state) {
          switch (state) {
              case CallState.ACTIVE:
              case CallState.CONNECTING:
+                 onCallLeavingActiveDialingOrConnecting();
 +				setMSIMAudioState(true);
+                 break;
+             case CallState.RINGING:
+                 onCallLeavingRinging();
+@@ -470,6 +528,9 @@
+             case CallState.ON_HOLD:
+                 onCallLeavingHold();
+                 break;
++			case CallState.DISCONNECTED:
++				setMSIMAudioState(false);
++				break;	
+             case CallState.DIALING:
+                 stopRingbackForCall(call);
+                 onCallLeavingActiveDialingOrConnecting();
+@@ -481,6 +542,7 @@
+             case CallState.ACTIVE:
+             case CallState.CONNECTING:
                  onCallEnteringActiveDialingOrConnecting();
-+				
++				setMSIMAudioState(true);
                  break;
              case CallState.RINGING:
                  onCallEnteringRinging();
-@@ -492,6 +551,9 @@
+@@ -492,6 +554,9 @@
                  onCallEnteringActiveDialingOrConnecting();
                  playRingbackForCall(call);
                  break;
@@ -124,6 +141,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
          }
      }
  
+
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
