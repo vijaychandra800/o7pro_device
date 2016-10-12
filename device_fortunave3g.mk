@@ -138,9 +138,6 @@ PRODUCT_PACKAGES += \
     
 # Camera
 PRODUCT_PACKAGES += \
-    libmm-qcamera \
-    libmmcamera_interface \
-    libmmjpeg_interface \
     camera.msm8916
 	
 # Camera
@@ -149,12 +146,6 @@ PRODUCT_PACKAGES += \
 	
 # OMX
 PRODUCT_PACKAGES += \
-    libextmedia_jni \
-    libqcmediaplayer \
-    libc2dcolorconvert \
-    libOmxVidcCommon \
-    libOmxVdecHevc \
-    libOmxVdpp \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -162,14 +153,8 @@ PRODUCT_PACKAGES += \
     libOmxQcelp13Enc \
     libOmxVdec \
     libOmxVenc \
-    libdivxdrmdecrypt \
-    libstagefrighthw \
-    libdashplayer \
-    qcmediaplayer
-
-PRODUCT_BOOT_JARS += \
-    qcmediaplayer
-	
+    libstagefrighthw
+    
 # Gello
 PRODUCT_PACKAGES += \
     Gello	
