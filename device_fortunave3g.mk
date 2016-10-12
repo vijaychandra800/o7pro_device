@@ -148,11 +148,16 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libOmxAacEnc \
     libOmxAmrEnc \
-    libOmxCore \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
+    libmm-omxcore \
+    libOmxCore \
+    libdivxdrmdecrypt \
+    libOmxSwVencMpeg4 \
     libOmxVdec \
+    libOmxVdpp \
     libOmxVenc \
+    libOmxVidEnc \
     libstagefrighthw
     
 # Gello
