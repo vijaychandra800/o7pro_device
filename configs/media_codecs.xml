@@ -179,12 +179,6 @@ ___________________________________________________
         <MediaCodec name="OMX.qcom.audio.decoder.amrwbplus" type="audio/amr-wb-plus" >
         </MediaCodec>
         <!-- Audio Software  -->
-        <!--
-            Use Google's RAW decoder to support ACodec path for FLAC clips as
-            FLACDecoder is non-OMX component based. A component can be used to
-            support several mimetypes, so existing raw decoder usecases will not
-            be affected by this.
-        -->
         <MediaCodec name="OMX.qcom.audio.decoder.Qcelp13" type="audio/qcelp" >
             <Quirk name="requires-global-flush" />
         </MediaCodec>
@@ -257,10 +251,10 @@ ___________________________________________________
 			<Limit name="concurrent-instances" max="8" />
             <Feature name="adaptive-playback" />
         </MediaCodec>
-		    <MediaCodec name="OMX.ffmpeg.ac3.decoder" type="audio/ac3" >
+		<MediaCodec name="OMX.ffmpeg.ac3.decoder" type="audio/ac3" >
             <Limit name="channel-count" max="8" />
             <Limit name="sample-rate" ranges="8000-192000" />
- 		    </MediaCodec>
+ 		</MediaCodec>
     </Decoders>
 	<Include href="media_codecs_google_video.xml" />
     <Include href="media_codecs_ffmpeg.xml" />
