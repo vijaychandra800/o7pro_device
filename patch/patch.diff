@@ -84,7 +84,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
  
      @Override
-@@ -457,12 +499,30 @@
+@@ -457,6 +499,21 @@
                          : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
                  makeArgsForModeStateMachine());
      }
@@ -93,14 +93,12 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +		if(on){
 +			Call callm = getForegroundCall();
 +			int phoneId = getPhoneId(callm);
-+			mAudioManager.setParameters("realcall=on");
 +			if (phoneId == 0) {
 +				mAudioManager.setParameters("phone_type=cp1");
 +			} else if (phoneId == 1) {
 +				mAudioManager.setParameters("phone_type=cp2");
 +			}
-+			setAudioRoute(CallAudioState.ROUTE_EARPIECE);
-+			mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++			mAudioManager.setParameters("realcall=on");
 +		}else{
 +			mAudioManager.setParameters("realcall=off");
 +		}
@@ -108,14 +106,19 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  
      private void onCallLeavingState(Call call, int state) {
          switch (state) {
-             case CallState.ACTIVE:
-             case CallState.CONNECTING:
+@@ -473,6 +530,11 @@
+             case CallState.DIALING:
+                 stopRingbackForCall(call);
                  onCallLeavingActiveDialingOrConnecting();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.RINGING:
-                 onCallLeavingRinging();
-@@ -481,6 +541,7 @@
++				break;
++			case CallState.ABORTED:
++			case CallState.DISCONNECTED:
++				setMSIMAudioState(false);
++				break;
+         }
+     }
+ 
+@@ -481,6 +543,7 @@
              case CallState.ACTIVE:
              case CallState.CONNECTING:
                  onCallEnteringActiveDialingOrConnecting();
