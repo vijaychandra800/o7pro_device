@@ -84,7 +84,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
  
      @Override
-@@ -457,12 +499,28 @@
+@@ -457,12 +499,30 @@
                          : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
                  makeArgsForModeStateMachine());
      }
@@ -99,6 +99,8 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +			} else if (phoneId == 1) {
 +				mAudioManager.setParameters("phone_type=cp2");
 +			}
++			setAudioRoute(CallAudioState.ROUTE_EARPIECE);
++			mAudioManager.setMode(AudioManager.MODE_IN_CALL);
 +		}else{
 +			mAudioManager.setParameters("realcall=off");
 +		}
@@ -113,17 +115,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
                  break;
              case CallState.RINGING:
                  onCallLeavingRinging();
-@@ -470,6 +528,9 @@
-             case CallState.ON_HOLD:
-                 onCallLeavingHold();
-                 break;
-+			case CallState.DISCONNECTED:
-+				setMSIMAudioState(false);
-+				break;	
-             case CallState.DIALING:
-                 stopRingbackForCall(call);
-                 onCallLeavingActiveDialingOrConnecting();
-@@ -481,6 +542,7 @@
+@@ -481,6 +541,7 @@
              case CallState.ACTIVE:
              case CallState.CONNECTING:
                  onCallEnteringActiveDialingOrConnecting();
@@ -131,16 +123,6 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
                  break;
              case CallState.RINGING:
                  onCallEnteringRinging();
-@@ -492,6 +554,9 @@
-                 onCallEnteringActiveDialingOrConnecting();
-                 playRingbackForCall(call);
-                 break;
-+			case CallState.DISCONNECTED:
-+				setMSIMAudioState(false);
-+				break;
-         }
-     }
- 
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
