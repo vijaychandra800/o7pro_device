@@ -84,7 +84,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
  
      @Override
-@@ -457,6 +499,21 @@
+@@ -457,41 +499,78 @@
                          : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
                  makeArgsForModeStateMachine());
      }
@@ -93,32 +93,53 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +		if(on){
 +			Call callm = getForegroundCall();
 +			int phoneId = getPhoneId(callm);
-+			if (phoneId == 0) {
-+				mAudioManager.setParameters("phone_type=cp1");
-+			} else if (phoneId == 1) {
-+				mAudioManager.setParameters("phone_type=cp2");
++			int aMode = mAudioManager.getMode();
++			if (aMode == AudioManager.MODE_IN_CALL) {
++				if (phoneId == 0) {
++					mAudioManager.setParameters("phone_type=cp1");
++				} else if (phoneId == 1) {
++					mAudioManager.setParameters("phone_type=cp2");
++				}
 +			}
-+			mAudioManager.setParameters("realcall=on");
++			if(aMode == AudioManager.MODE_IN_CALL || aMode == AudioManager.MODE_IN_COMMUNICATION){			
++				mAudioManager.setParameters("realcall=on");
++			}
 +		}else{
-+			mAudioManager.setParameters("realcall=off");
++			if(aMode == AudioManager.MODE_IN_CALL){
++				mAudioManager.setParameters("realcall=off");
++			}
 +		}
 +    }
  
      private void onCallLeavingState(Call call, int state) {
          switch (state) {
-@@ -473,6 +530,11 @@
+             case CallState.ACTIVE:
+             case CallState.CONNECTING:
+                 onCallLeavingActiveDialingOrConnecting();
++				setMSIMAudioState(true);
+                 break;
+             case CallState.RINGING:
+                 onCallLeavingRinging();
++				setMSIMAudioState(true);
+                 break;
+             case CallState.ON_HOLD:
+                 onCallLeavingHold();
++				setMSIMAudioState(true);
+                 break;
              case CallState.DIALING:
                  stopRingbackForCall(call);
                  onCallLeavingActiveDialingOrConnecting();
++				setMSIMAudioState(true);
 +				break;
-+			case CallState.ABORTED:
 +			case CallState.DISCONNECTED:
 +				setMSIMAudioState(false);
-+				break;
++				break;	
          }
      }
- 
-@@ -481,6 +543,7 @@
+-
++	
+     private void onCallEnteringState(Call call, int state) {
+         switch (state) {
              case CallState.ACTIVE:
              case CallState.CONNECTING:
                  onCallEnteringActiveDialingOrConnecting();
@@ -126,6 +147,23 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
                  break;
              case CallState.RINGING:
                  onCallEnteringRinging();
++				setMSIMAudioState(true);
+                 break;
+             case CallState.ON_HOLD:
+                 onCallEnteringHold();
++				setMSIMAudioState(true);
+                 break;
+             case CallState.DIALING:
+                 onCallEnteringActiveDialingOrConnecting();
+                 playRingbackForCall(call);
++				setMSIMAudioState(true);
+                 break;
++			case CallState.DISCONNECTED:
++				setMSIMAudioState(false);
++			break;
+         }
+     }
+ 
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
