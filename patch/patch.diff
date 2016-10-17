@@ -90,10 +90,10 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
 +	
 +	private void setMSIMAudioState(boolean on) {
++		int aMode = mAudioManager.getMode();
 +		if(on){
 +			Call callm = getForegroundCall();
 +			int phoneId = getPhoneId(callm);
-+			int aMode = mAudioManager.getMode();
 +			if (aMode == AudioManager.MODE_IN_CALL) {
 +				if (phoneId == 0) {
 +					mAudioManager.setParameters("phone_type=cp1");
