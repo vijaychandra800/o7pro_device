@@ -105,7 +105,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +				mAudioManager.setParameters("realcall=on");
 +			}
 +		}else{
-+			if(aMode == AudioManager.MODE_IN_CALL){
++			if(aMode == 0){
 +				mAudioManager.setParameters("realcall=off");
 +			}
 +		}
