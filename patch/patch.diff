@@ -88,7 +88,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
                  mAudioManager.abandonAudioFocusForCall();
                  mAudioManager.setMode(AudioManager.MODE_NORMAL);
-+				mAudioManager.setParameters("realcall=off");
++                mAudioManager.setParameters("realcall=off");
  
                  mMostRecentMode = AudioManager.MODE_NORMAL;
                  mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.NO_FOCUS);
@@ -96,15 +96,15 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
              mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
                      AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
              mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+			int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
-+			int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
-+			if(vsid1 == 1){
-+				mAudioManager.setParameters("phone_type=cp1");
-+			}
-+			if(vsid2 == 1){
-+				mAudioManager.setParameters("phone_type=cp2");
-+			}
-+			mAudioManager.setParameters("realcall=on");
++            int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
++            int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
++            if(vsid1 == 1){
++                mAudioManager.setParameters("phone_type=cp1");
++            }
++            if(vsid2 == 1){
++                mAudioManager.setParameters("phone_type=cp2");
++            }
++            mAudioManager.setParameters("realcall=on");
              mMostRecentMode = AudioManager.MODE_IN_CALL;
              mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
          }
@@ -112,15 +112,15 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
              mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
                      AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
              mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-+			int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
-+			int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
-+			if(vsid1 == 1){
-+				mAudioManager.setParameters("phone_type=cp1");
-+			}
-+			if(vsid2 == 1){
-+				mAudioManager.setParameters("phone_type=cp2");
-+			}
-+			mAudioManager.setParameters("realcall=on");
++            int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
++            int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
++            if(vsid1 == 1){
++                mAudioManager.setParameters("phone_type=cp1");
++            }
++            if(vsid2 == 1){
++                mAudioManager.setParameters("phone_type=cp2");
++            }
++            mAudioManager.setParameters("realcall=on");
              mMostRecentMode = AudioManager.MODE_IN_COMMUNICATION;
              mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
          }
@@ -128,17 +128,17 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
              mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
                      AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
              mAudioManager.setMode(mMostRecentMode);
-+			if(mMostRecentMode == AudioManager.MODE_IN_COMMUNICATION || mMostRecentMode == AudioManager.MODE_IN_CALL){
-+				int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
-+				int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
-+				if(vsid1 == 1){
-+					mAudioManager.setParameters("phone_type=cp1");
-+				}
-+				if(vsid2 == 1){
-+					mAudioManager.setParameters("phone_type=cp2");
-+				}
-+				mAudioManager.setParameters("realcall=on");
-+			}
++            if(mMostRecentMode == AudioManager.MODE_IN_COMMUNICATION || mMostRecentMode == AudioManager.MODE_IN_CALL){
++                int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
++                int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
++                if(vsid1 == 1){
++                    mAudioManager.setParameters("phone_type=cp1");
++                }
++                if(vsid2 == 1){
++                    mAudioManager.setParameters("phone_type=cp2");
++                }
++                mAudioManager.setParameters("realcall=on");
++            }
              mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
          }
  
