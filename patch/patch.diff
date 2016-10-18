@@ -256,12 +256,11 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
          sendMessage(messageCode, args);
 +    }
 +	
-+	public void sendPhoneID(int id) {
++	public static void sendPhoneID(int id) {
 +        mphoneID = id;
      }
  
      @Override
-
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
 +++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
