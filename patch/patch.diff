@@ -49,16 +49,17 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  public class CallAudioManager extends CallsManagerListenerBase {
  
      public interface AudioServiceFactory {
-@@ -56,6 +77,8 @@
+@@ -56,6 +77,9 @@
      private Call mForegroundCall;
      private boolean mIsTonePlaying = false;
      private InCallTonePlayer mHoldTonePlayer;
 +	
 +	private AudioManager mAudioManager;
++	public int PhoneID;
  
      public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
              CallsManager callsManager,
-@@ -86,6 +109,25 @@
+@@ -86,10 +110,31 @@
  
          mPlayerFactory.setCallAudioManager(this);
          mCallAudioModeStateMachine.setCallAudioManager(this);
@@ -66,7 +67,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
 +		
 +    }
-+	
++
 +	private int getPhoneId(Call call) {
 +         if (call.getTargetPhoneAccount() != null) {
 +             PhoneAccountHandle account = call.getTargetPhoneAccount();
@@ -84,86 +85,30 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
      }
  
      @Override
-@@ -457,41 +499,78 @@
-                         : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
-                 makeArgsForModeStateMachine());
-     }
-+	
-+	private void setMSIMAudioState(boolean on) {
-+		int aMode = mAudioManager.getMode();
-+		if(on){
-+			Call callm = getForegroundCall();
-+			int phoneId = getPhoneId(callm);
-+			if (aMode == AudioManager.MODE_IN_CALL) {
-+				if (phoneId == 0) {
-+					mAudioManager.setParameters("phone_type=cp1");
-+				} else if (phoneId == 1) {
-+					mAudioManager.setParameters("phone_type=cp2");
-+				}
-+			}
-+			if(aMode == AudioManager.MODE_IN_CALL || aMode == AudioManager.MODE_IN_COMMUNICATION){			
-+				mAudioManager.setParameters("realcall=on");
-+			}
-+		}else{
-+			if(aMode == 0){
-+				mAudioManager.setParameters("realcall=off");
-+			}
-+		}
-+    }
- 
-     private void onCallLeavingState(Call call, int state) {
-         switch (state) {
-             case CallState.ACTIVE:
-             case CallState.CONNECTING:
-                 onCallLeavingActiveDialingOrConnecting();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.RINGING:
-                 onCallLeavingRinging();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.ON_HOLD:
-                 onCallLeavingHold();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.DIALING:
-                 stopRingbackForCall(call);
-                 onCallLeavingActiveDialingOrConnecting();
-+				setMSIMAudioState(true);
-+				break;
-+			case CallState.DISCONNECTED:
-+				setMSIMAudioState(false);
-+				break;	
-         }
-     }
--
-+	
-     private void onCallEnteringState(Call call, int state) {
-         switch (state) {
-             case CallState.ACTIVE:
-             case CallState.CONNECTING:
-                 onCallEnteringActiveDialingOrConnecting();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.RINGING:
-                 onCallEnteringRinging();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.ON_HOLD:
-                 onCallEnteringHold();
-+				setMSIMAudioState(true);
-                 break;
-             case CallState.DIALING:
-                 onCallEnteringActiveDialingOrConnecting();
-                 playRingbackForCall(call);
-+				setMSIMAudioState(true);
-                 break;
-+			case CallState.DISCONNECTED:
-+				setMSIMAudioState(false);
-+			break;
-         }
+     public void onCallStateChanged(Call call, int oldState, int newState) {
++		Call callm = getForegroundCall();
++		PhoneID = getPhoneId(callm);
+         if (shouldIgnoreCallForAudio(call)) {
+             // No audio management for calls in a conference, or external calls.
+             return;
+@@ -132,6 +177,8 @@
      }
  
+     private void addCall(Call call) {
++		Call callm = getForegroundCall();
++		PhoneID = getPhoneId(callm);
+         if (mCalls.contains(call)) {
+             Log.w(LOG_TAG, "Call TC@%s is being added twice.", call.getId());
+             return; // No guarantees that the same call won't get added twice.
+@@ -150,6 +197,8 @@
+     }
+ 
+     private void removeCall(Call call) {
++		Call callm = getForegroundCall();
++		PhoneID = getPhoneId(callm);
+         if (!mCalls.contains(call)) {
+             return; // No guarantees that the same call won't get removed twice.
+         }
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
@@ -238,6 +183,60 @@ diff -ur a/frameworks/base/services/core/java/com/android/server/display/Display
              } else if (diff != 0) {
                  Slog.i(TAG, "Display device changed: " + info);
              }
+
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
+@@ -150,7 +150,7 @@
+                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
+                 mAudioManager.abandonAudioFocusForCall();
+                 mAudioManager.setMode(AudioManager.MODE_NORMAL);
+-
++				mAudioManager.setParameters("realcall=off");
+                 mMostRecentMode = AudioManager.MODE_NORMAL;
+                 mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.NO_FOCUS);
+             }
+@@ -287,6 +287,12 @@
+             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
+                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+             mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++			if (CallAudioManager.PhoneID == 0) {
++				mAudioManager.setParameters("phone_type=cp1");
++			} else if (CallAudioManager.PhoneID == 1) {
++				mAudioManager.setParameters("phone_type=cp2");
++			}
++			mAudioManager.setParameters("realcall=on");
+             mMostRecentMode = AudioManager.MODE_IN_CALL;
+             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
+         }
+@@ -349,6 +355,12 @@
+             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
+                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+             mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
++			if (CallAudioManager.PhoneID == 0) {
++				mAudioManager.setParameters("phone_type=cp1");
++			} else if (CallAudioManager.PhoneID == 1) {
++				mAudioManager.setParameters("phone_type=cp2");
++			}
++			mAudioManager.setParameters("realcall=on");
+             mMostRecentMode = AudioManager.MODE_IN_COMMUNICATION;
+             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
+         }
+@@ -408,6 +420,14 @@
+                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+             mAudioManager.setMode(mMostRecentMode);
+             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
++			if(mMostRecentMode == AudioManager.MODE_IN_COMMUNICATION || mMostRecentMode == AudioManager.MODE_IN_CALL){
++				if (CallAudioManager.PhoneID == 0) {
++					mAudioManager.setParameters("phone_type=cp1");
++				} else if (CallAudioManager.PhoneID == 1) {
++					mAudioManager.setParameters("phone_type=cp2");
++				}
++				mAudioManager.setParameters("realcall=on");
++			}
+         }
+ 
+         @Override
 
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
