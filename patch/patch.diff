@@ -1,3 +1,131 @@
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -195,6 +195,7 @@
+     private final PhoneStateBroadcaster mPhoneStateBroadcaster;
+     private final CallLogManager mCallLogManager;
+     private final Context mContext;
++    public  final Context pContext;
+     private final TelecomSystem.SyncRoot mLock;
+     private final ContactsAsyncHelper mContactsAsyncHelper;
+     private final CallerInfoAsyncQueryFactory mCallerInfoAsyncQueryFactory;
+@@ -255,6 +256,7 @@
+             AsyncRingtonePlayer asyncRingtonePlayer,
+             ViceNotifier viceNotifier) {
+         mContext = context;
++        pContext = context;
+         mLock = lock;
+         mContactsAsyncHelper = contactsAsyncHelper;
+         mCallerInfoAsyncQueryFactory = callerInfoAsyncQueryFactory;
+
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
+@@ -31,6 +31,27 @@
+ import java.util.Set;
+ import java.util.LinkedHashSet;
+ 
++import android.app.ActivityManagerNative;
++import android.content.Context;
++import android.content.pm.UserInfo;
++import android.media.AudioManager;
++import android.os.Binder;
++import android.os.Handler;
++import android.os.IBinder;
++import android.os.Looper;
++import android.os.Message;
++import android.os.RemoteException;
++import android.os.ServiceManager;
++import android.os.SystemProperties;
++import android.os.UserHandle;
++
++import android.telecom.PhoneAccountHandle;
++import android.telephony.SubscriptionManager;
++
++import com.android.internal.util.Preconditions;
++
++import java.util.Objects;
++
+ public class CallAudioManager extends CallsManagerListenerBase {
+ 
+     public interface AudioServiceFactory {
+@@ -56,7 +77,9 @@
+     private Call mForegroundCall;
+     private boolean mIsTonePlaying = false;
+     private InCallTonePlayer mHoldTonePlayer;
+-
++	
++	private AudioManager mAudioManager;
++	
+     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
+             CallsManager callsManager,
+             CallAudioModeStateMachine callAudioModeStateMachine,
+@@ -86,8 +109,27 @@
+ 
+         mPlayerFactory.setCallAudioManager(this);
+         mCallAudioModeStateMachine.setCallAudioManager(this);
++		
++		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
++		
++    }
++
++	private int getPhoneId(Call call) {
++         if (call.getTargetPhoneAccount() != null) {
++             PhoneAccountHandle account = call.getTargetPhoneAccount();
++            try {
++                 int index = Integer.parseInt(account.getId());
++                 int phoneId = SubscriptionManager.getPhoneId(index);
++                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
++                     return phoneId;
++                 }
++             } catch (NumberFormatException e) {
++                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
++             }
++         }
++         return -1;
+     }
+-
++	
+     @Override
+     public void onCallStateChanged(Call call, int oldState, int newState) {
+         if (shouldIgnoreCallForAudio(call)) {
+@@ -560,6 +602,35 @@
+     }
+ 
+     private void updateForegroundCall() {
++		Log.v(this, "updateForegroundCall");
++		
++		int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
++        int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
++        if(vsid1 == 1){
++            Log.v(this, "updateForegroundCall vsid1 == 1");
++        }else{
++			Log.v(this, "updateForegroundCall vsid1 == else");
++		}
++        if(vsid2 == 1){
++             Log.v(this, "updateForegroundCall vsid2 == 1");
++        }else{
++			Log.v(this, "updateForegroundCall vsid1 == else");
++		}
++		
++		if (call.getState() == CallState.CONNECTING) {
++			Log.v(this, "updateForegroundCall CallState.CONNECTING");
++			Call callm = getForegroundCall();
++			int PhoneID = getPhoneId(callm);
++            if (phoneID == 0) {
++				Log.v(this, "updateForegroundCall phoneID == 0");
++				mAudioManager.setParameters("phone_type=cp1");
++			} else if (phoneID == 1) {
++				Log.v(this, "updateForegroundCall phoneID == 1");
++				mAudioManager.setParameters("phone_type=cp2");
++			}
++			mAudioManager.setParameters("realcall=on");
++        }
++		
+         Call oldForegroundCall = mForegroundCall;
+         if (mActiveDialingOrConnectingCalls.size() > 0) {
+             // Give preference for connecting calls over active/dialing for foreground-ness.
+
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
@@ -71,77 +199,6 @@ diff -ur a/frameworks/base/services/core/java/com/android/server/display/Display
              } else if (diff != 0) {
                  Slog.i(TAG, "Display device changed: " + info);
              }
-
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
-@@ -24,6 +24,8 @@
- import com.android.internal.util.State;
- import com.android.internal.util.StateMachine;
- 
-+import android.os.SystemProperties;
-+
- public class CallAudioModeStateMachine extends StateMachine {
-     public static class MessageArgs {
-         public boolean hasActiveOrDialingCalls;
-@@ -150,6 +152,7 @@
-                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
-                 mAudioManager.abandonAudioFocusForCall();
-                 mAudioManager.setMode(AudioManager.MODE_NORMAL);
-+                mAudioManager.setParameters("realcall=off");
- 
-                 mMostRecentMode = AudioManager.MODE_NORMAL;
-                 mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.NO_FOCUS);
-@@ -287,6 +290,15 @@
-             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
-                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-             mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+            int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
-+            int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
-+            if(vsid1 == 1){
-+                mAudioManager.setParameters("phone_type=cp1");
-+            }
-+            if(vsid2 == 1){
-+                mAudioManager.setParameters("phone_type=cp2");
-+            }
-+            mAudioManager.setParameters("realcall=on");
-             mMostRecentMode = AudioManager.MODE_IN_CALL;
-             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
-         }
-@@ -349,6 +361,15 @@
-             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
-                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-             mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-+            int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
-+            int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
-+            if(vsid1 == 1){
-+                mAudioManager.setParameters("phone_type=cp1");
-+            }
-+            if(vsid2 == 1){
-+                mAudioManager.setParameters("phone_type=cp2");
-+            }
-+            mAudioManager.setParameters("realcall=on");
-             mMostRecentMode = AudioManager.MODE_IN_COMMUNICATION;
-             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
-         }
-@@ -407,6 +428,17 @@
-             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
-                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-             mAudioManager.setMode(mMostRecentMode);
-+            if(mMostRecentMode == AudioManager.MODE_IN_COMMUNICATION || mMostRecentMode == AudioManager.MODE_IN_CALL){
-+                int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
-+                int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
-+                if(vsid1 == 1){
-+                    mAudioManager.setParameters("phone_type=cp1");
-+                }
-+                if(vsid2 == 1){
-+                    mAudioManager.setParameters("phone_type=cp2");
-+                }
-+                mAudioManager.setParameters("realcall=on");
-+            }
-             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
-         }
- 
 
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
