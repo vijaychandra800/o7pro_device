@@ -18,6 +18,155 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
          mContactsAsyncHelper = contactsAsyncHelper;
          mCallerInfoAsyncQueryFactory = callerInfoAsyncQueryFactory;
 
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
+@@ -31,6 +31,27 @@
+ import java.util.Set;
+ import java.util.LinkedHashSet;
+ 
++import android.app.ActivityManagerNative;
++import android.content.Context;
++import android.content.pm.UserInfo;
++import android.media.AudioManager;
++import android.os.Binder;
++import android.os.Handler;
++import android.os.IBinder;
++import android.os.Looper;
++import android.os.Message;
++import android.os.RemoteException;
++import android.os.ServiceManager;
++import android.os.SystemProperties;
++import android.os.UserHandle;
++
++import android.telecom.PhoneAccountHandle;
++import android.telephony.SubscriptionManager;
++
++import com.android.internal.util.Preconditions;
++
++import java.util.Objects;
++
+ public class CallAudioManager extends CallsManagerListenerBase {
+ 
+     public interface AudioServiceFactory {
+@@ -56,6 +77,8 @@
+     private Call mForegroundCall;
+     private boolean mIsTonePlaying = false;
+     private InCallTonePlayer mHoldTonePlayer;
++	
++	private AudioManager mAudioManager;
+ 
+     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
+             CallsManager callsManager,
+@@ -86,6 +109,25 @@
+ 
+         mPlayerFactory.setCallAudioManager(this);
+         mCallAudioModeStateMachine.setCallAudioManager(this);
++		
++		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
++		
++    }
++	
++	private int getPhoneId(Call call) {
++         if (call.getTargetPhoneAccount() != null) {
++             PhoneAccountHandle account = call.getTargetPhoneAccount();
++            try {
++                 int index = Integer.parseInt(account.getId());
++                 int phoneId = SubscriptionManager.getPhoneId(index);
++                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
++                     return phoneId;
++                 }
++             } catch (NumberFormatException e) {
++                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
++             }
++         }
++         return -1;
+     }
+ 
+     @Override
+@@ -457,12 +499,46 @@
+                         : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
+                 makeArgsForModeStateMachine());
+     }
++	
++	private void setMSIMAudioState(Call callm, boolean on) {
++		Log.v(this, "setMSIMAudioState");
++		int aMode = mAudioManager.getMode();
++		if(on){
++			Log.v(this, "setMSIMAudioState ON");
++			if (aMode == AudioManager.MODE_IN_CALL) {
++				Log.v(this, "setMSIMAudioState INCALL");
++				int phoneId = getPhoneId(callm);
++				if (phoneId == 0) {
++					Log.v(this, "setMSIMAudioState phone 0 set cp1");
++					mAudioManager.setParameters("phone_type=cp1");
++				} else if (phoneId == 1) {
++					Log.v(this, "setMSIMAudioState phone 1 set cp2");
++					mAudioManager.setParameters("phone_type=cp2");
++				}
++				Log.v(this, "setMSIMAudioState SET INCALL");
++				mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++			}	
++			if(aMode == AudioManager.MODE_IN_CALL || aMode == AudioManager.MODE_IN_COMMUNICATION){	
++				Log.v(this, "setMSIMAudioState INCALL OR COMMUNICATION set realcall");
++ 				mAudioManager.setParameters("realcall=on");
++ 			}
++		}else{
++			if (aMode == 0) {
++				Log.v(this, "setMSIMAudioState mode = 0  realcall off");
++				mAudioManager.setParameters("realcall=off");
++				Log.v(this, "setMSIMAudioState SET MODE 0");
++				mAudioManager.setMode(0);
++			}
++		}
++    }
+ 
+     private void onCallLeavingState(Call call, int state) {
+         switch (state) {
+             case CallState.ACTIVE:
+             case CallState.CONNECTING:
++				Log.v(this, "onCallLeavingState active or .....");
+                 onCallLeavingActiveDialingOrConnecting();
++				setMSIMAudioState(call, true);
+                 break;
+             case CallState.RINGING:
+                 onCallLeavingRinging();
+@@ -473,6 +549,12 @@
+             case CallState.DIALING:
+                 stopRingbackForCall(call);
+                 onCallLeavingActiveDialingOrConnecting();
++				break;
++			case CallState.ABORTED:
++			case CallState.DISCONNECTED:
++				Log.v(this, "onCallLeavingState disconnect");
++				setMSIMAudioState(call, false);
++				break;
+         }
+     }
+ 
+@@ -480,7 +562,9 @@
+         switch (state) {
+             case CallState.ACTIVE:
+             case CallState.CONNECTING:
++				Log.v(this, "onCallEnteringState ACTIVE or CONNECTING");
+                 onCallEnteringActiveDialingOrConnecting();
++				setMSIMAudioState(call, true);
+                 break;
+             case CallState.RINGING:
+                 onCallEnteringRinging();
+@@ -492,6 +576,11 @@
+                 onCallEnteringActiveDialingOrConnecting();
+                 playRingbackForCall(call);
+                 break;
++			case CallState.ABORTED:
++			case CallState.DISCONNECTED:
++				Log.v(this, "onCallEnteringState abro or disc");
++				setMSIMAudioState(call, false);
++				break;	
+         }
+     }
+ 
+
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
