@@ -43,10 +43,7 @@ media.swhevccodectype=0
 mm.enable.smoothstreaming=true
 media.aac_51_output_enabled=true
 vidc.enc.narrow.searchrange=1
-#qcom.hw.aac.encoder=true
-
-# Camera
-#camera2.portability.force_api=1
+qcom.hw.aac.encoder=true
 
 # Perf
 ro.vendor.extension_library=/system/vendor/lib/libqti-perfd-client.so
@@ -63,7 +60,6 @@ audio.offload.video=true
 
 # Wi-Fi, Bluetooth
 qcom.bluetooth.soc=smd
-
 
 # Misc.
 ro.product_ship=true
