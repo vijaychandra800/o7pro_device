@@ -108,14 +108,14 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +			Log.v(this, "updateForegroundCall vsid1 == else");
 +		}
 +		
-+		if (call.getState() == CallState.CONNECTING) {
++		if (mForegroundCall.getState() == CallState.CONNECTING) {
 +			Log.v(this, "updateForegroundCall CallState.CONNECTING");
 +			Call callm = getForegroundCall();
 +			int PhoneID = getPhoneId(callm);
-+            if (phoneID == 0) {
++            if (PhoneID == 0) {
 +				Log.v(this, "updateForegroundCall phoneID == 0");
 +				mAudioManager.setParameters("phone_type=cp1");
-+			} else if (phoneID == 1) {
++			} else if (PhoneID == 1) {
 +				Log.v(this, "updateForegroundCall phoneID == 1");
 +				mAudioManager.setParameters("phone_type=cp2");
 +			}
