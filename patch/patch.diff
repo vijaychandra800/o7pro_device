@@ -222,7 +222,24 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                      }
                      return HANDLED;
                  default:
-@@ -429,8 +533,14 @@
+@@ -419,8 +523,14 @@
+             switch (msg.what) {
+                 case NO_MORE_HOLDING_CALLS:
+                     if (args.hasActiveOrDialingCalls) {
+-                        transitionTo(args.foregroundCallIsVoip
+-                                ? mVoipCallFocusState : mSimCallFocusState);
++                        if(PHONE_ID == 0){
++							transitionTo(args.foregroundCallIsVoip
++                                ? mVoipCallFocusState : mSim1CallFocusState);
++						}
++						if(PHONE_ID == 1){
++							transitionTo(args.foregroundCallIsVoip
++                                ? mVoipCallFocusState : mSim2CallFocusState);
++						}	
+                     } else if (args.hasRingingCalls) {
+                         transitionTo(mRingingFocusState);
+                     } else if (!args.isTonePlaying) {
+@@ -429,8 +539,14 @@
                      // Do nothing if a tone is playing.
                      return HANDLED;
                  case NEW_ACTIVE_OR_DIALING_CALL:
@@ -239,7 +256,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                      return HANDLED;
                  case NEW_RINGING_CALL:
                      if (args.hasHoldingCalls) {
-@@ -461,7 +571,8 @@
+@@ -461,7 +577,8 @@
  
      private final BaseState mUnfocusedState = new UnfocusedState();
      private final BaseState mRingingFocusState = new RingingFocusState();
@@ -249,7 +266,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
      private final BaseState mVoipCallFocusState = new VoipCallFocusState();
      private final BaseState mOtherFocusState = new OtherFocusState();
  
-@@ -478,7 +589,8 @@
+@@ -478,7 +595,8 @@
  
          addState(mUnfocusedState);
          addState(mRingingFocusState);
@@ -259,7 +276,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
          addState(mVoipCallFocusState);
          addState(mOtherFocusState);
          setInitialState(mUnfocusedState);
-@@ -496,6 +608,14 @@
+@@ -496,6 +614,14 @@
      }
  
      public void sendMessageWithArgs(int messageCode, MessageArgs args) {
@@ -274,6 +291,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
          sendMessage(messageCode, args);
      }
  
+
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
