@@ -18,155 +18,262 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
          mContactsAsyncHelper = contactsAsyncHelper;
          mCallerInfoAsyncQueryFactory = callerInfoAsyncQueryFactory;
 
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
-@@ -31,6 +31,27 @@
- import java.util.Set;
- import java.util.LinkedHashSet;
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
+@@ -24,6 +24,8 @@
+ import com.android.internal.util.State;
+ import com.android.internal.util.StateMachine;
  
-+import android.app.ActivityManagerNative;
-+import android.content.Context;
-+import android.content.pm.UserInfo;
-+import android.media.AudioManager;
-+import android.os.Binder;
-+import android.os.Handler;
-+import android.os.IBinder;
-+import android.os.Looper;
-+import android.os.Message;
-+import android.os.RemoteException;
-+import android.os.ServiceManager;
 +import android.os.SystemProperties;
-+import android.os.UserHandle;
 +
-+import android.telecom.PhoneAccountHandle;
-+import android.telephony.SubscriptionManager;
-+
-+import com.android.internal.util.Preconditions;
-+
-+import java.util.Objects;
-+
- public class CallAudioManager extends CallsManagerListenerBase {
- 
-     public interface AudioServiceFactory {
-@@ -56,6 +77,8 @@
-     private Call mForegroundCall;
-     private boolean mIsTonePlaying = false;
-     private InCallTonePlayer mHoldTonePlayer;
+ public class CallAudioModeStateMachine extends StateMachine {
+     public static class MessageArgs {
+         public boolean hasActiveOrDialingCalls;
+@@ -60,6 +62,8 @@
+                     '}';
+         }
+     }
 +	
-+	private AudioManager mAudioManager;
++	public int PHONE_ID = 0;
  
-     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
-             CallsManager callsManager,
-@@ -86,6 +109,25 @@
+     public static final int INITIALIZE = 1;
+     // These ENTER_*_FOCUS commands are for testing.
+@@ -107,7 +111,8 @@
  
-         mPlayerFactory.setCallAudioManager(this);
-         mCallAudioModeStateMachine.setCallAudioManager(this);
-+		
-+		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
-+		
+     public static final String TONE_HOLD_STATE_NAME = OtherFocusState.class.getSimpleName();
+     public static final String UNFOCUSED_STATE_NAME = UnfocusedState.class.getSimpleName();
+-    public static final String CALL_STATE_NAME = SimCallFocusState.class.getSimpleName();
++    public static final String CALL1_STATE_NAME = Sim1CallFocusState.class.getSimpleName();
++	public static final String CALL2_STATE_NAME = Sim2CallFocusState.class.getSimpleName();
+     public static final String RING_STATE_NAME = RingingFocusState.class.getSimpleName();
+     public static final String COMMS_STATE_NAME = VoipCallFocusState.class.getSimpleName();
+ 
+@@ -116,7 +121,12 @@
+         public boolean processMessage(Message msg) {
+             switch (msg.what) {
+                 case ENTER_CALL_FOCUS_FOR_TESTING:
+-                    transitionTo(mSimCallFocusState);
++					if(PHONE_ID == 0){
++						transitionTo(mSim1CallFocusState);
++					} 
++					if(PHONE_ID == 1){
++						transitionTo(mSim2CallFocusState);
++					}
+                     return HANDLED;
+                 case ENTER_COMMS_FOCUS_FOR_TESTING:
+                     transitionTo(mVoipCallFocusState);
+@@ -173,8 +183,14 @@
+                     // Do nothing.
+                     return HANDLED;
+                 case NEW_ACTIVE_OR_DIALING_CALL:
+-                    transitionTo(args.foregroundCallIsVoip
+-                            ? mVoipCallFocusState : mSimCallFocusState);
++					if(PHONE_ID == 0){
++						transitionTo(args.foregroundCallIsVoip
++                            ? mVoipCallFocusState : mSim1CallFocusState);
++					} 
++					if(PHONE_ID == 1){
++						transitionTo(args.foregroundCallIsVoip
++                            ? mVoipCallFocusState : mSim2CallFocusState);
++					}
+                     return HANDLED;
+                 case NEW_RINGING_CALL:
+                     transitionTo(mRingingFocusState);
+@@ -242,7 +258,12 @@
+                         if (args.foregroundCallIsVoip) {
+                             transitionTo(mVoipCallFocusState);
+                         } else {
+-                            transitionTo(mSimCallFocusState);
++                            if(PHONE_ID == 0){
++								transitionTo(mSim1CallFocusState);
++							} 
++							if(PHONE_ID == 1){
++								transitionTo(mSim2CallFocusState);
++							}
+                         }
+                     } else if (args.hasHoldingCalls || args.isTonePlaying) {
+                         transitionTo(mOtherFocusState);
+@@ -252,8 +273,14 @@
+                     return HANDLED;
+                 case NEW_ACTIVE_OR_DIALING_CALL:
+                     // If a call becomes active suddenly, give it priority over ringing.
+-                    transitionTo(args.foregroundCallIsVoip
+-                            ? mVoipCallFocusState : mSimCallFocusState);
++					if(PHONE_ID == 0){
++						transitionTo(args.foregroundCallIsVoip
++                            ? mVoipCallFocusState : mSim1CallFocusState);		
++					}
++                    if(PHONE_ID == 1){
++						transitionTo(args.foregroundCallIsVoip
++                            ? mVoipCallFocusState : mSim2CallFocusState);		
++					}
+                     return HANDLED;
+                 case NEW_RINGING_CALL:
+                     Log.w(LOG_TAG, "Unexpected behavior! New ringing call appeared while in " +
+@@ -271,7 +298,12 @@
+ 
+                     // VOIP calls should never invoke this mechanism, so transition directly to
+                     // the sim call focus state.
+-                    transitionTo(mSimCallFocusState);
++					if(PHONE_ID == 0){
++						transitionTo(mSim1CallFocusState);	
++					}
++                    if(PHONE_ID == 1){
++						transitionTo(mSim2CallFocusState);	
++					}
+                     return HANDLED;
+                 default:
+                     // The forced focus switch commands are handled by BaseState.
+@@ -280,7 +312,72 @@
+         }
+     }
+ 
+-    private class SimCallFocusState extends BaseState {
++    private class Sim1CallFocusState extends BaseState {
++        @Override
++        public void enter() {
++            Log.i(LOG_TAG, "Audio focus entering SIM CALL state");
++            mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
++                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
++            mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++            mMostRecentMode = AudioManager.MODE_IN_CALL;
++			mAudioManager.setParameters("phone_type=cp1");
++			mAudioManager.setParameters("realcall=on");
++            mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
++			
++        }
++
++        @Override
++        public boolean processMessage(Message msg) {
++            if (super.processMessage(msg) == HANDLED) {
++                return HANDLED;
++            }
++            MessageArgs args = (MessageArgs) msg.obj;
++            switch (msg.what) {
++                case NO_MORE_ACTIVE_OR_DIALING_CALLS:
++                    // Switch to either ringing, holding, or inactive
++                    transitionTo(destinationStateAfterNoMoreActiveCalls(args));
++                    return HANDLED;
++                case NO_MORE_RINGING_CALLS:
++                    // Don't transition state, but stop any call-waiting tones that may have been
++                    // playing.
++                    if (args.isTonePlaying) {
++                        mCallAudioManager.stopCallWaiting();
++                    }
++                    // If a MT-audio-speedup call gets disconnected by the connection service
++                    // concurrently with the user answering it, we may get this message
++                    // indicating that a ringing call has disconnected while this state machine
++                    // is in the SimCallFocusState.
++                    if (!args.hasActiveOrDialingCalls) {
++                        transitionTo(destinationStateAfterNoMoreActiveCalls(args));
++                    }
++                    return HANDLED;
++                case NO_MORE_HOLDING_CALLS:
++                    // Do nothing.
++                    return HANDLED;
++                case NEW_ACTIVE_OR_DIALING_CALL:
++                    // Do nothing. Already active.
++                    return HANDLED;
++                case NEW_RINGING_CALL:
++                    // Don't make a call ring over an active call, but do play a call waiting tone.
++                    mCallAudioManager.startCallWaiting();
++                    return HANDLED;
++                case NEW_HOLDING_CALL:
++                    // Don't do anything now. Putting an active call on hold will be handled when
++                    // NO_MORE_ACTIVE_CALLS is processed.
++                    return HANDLED;
++                case FOREGROUND_VOIP_MODE_CHANGE:
++                    if (args.foregroundCallIsVoip) {
++                        transitionTo(mVoipCallFocusState);
++                    }
++                    return HANDLED;
++                default:
++                    // The forced focus switch commands are handled by BaseState.
++                    return NOT_HANDLED;
++            }
++        }
 +    }
 +	
-+	private int getPhoneId(Call call) {
-+         if (call.getTargetPhoneAccount() != null) {
-+             PhoneAccountHandle account = call.getTargetPhoneAccount();
-+            try {
-+                 int index = Integer.parseInt(account.getId());
-+                 int phoneId = SubscriptionManager.getPhoneId(index);
-+                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
-+                     return phoneId;
-+                 }
-+             } catch (NumberFormatException e) {
-+                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
-+             }
-+         }
-+         return -1;
++	private class Sim2CallFocusState extends BaseState {
+         @Override
+         public void enter() {
+             Log.i(LOG_TAG, "Audio focus entering SIM CALL state");
+@@ -288,6 +385,8 @@
+                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+             mAudioManager.setMode(AudioManager.MODE_IN_CALL);
+             mMostRecentMode = AudioManager.MODE_IN_CALL;
++			mAudioManager.setParameters("phone_type=cp2");
++			mAudioManager.setParameters("realcall=on");
+             mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
+         }
+ 
+@@ -387,7 +486,12 @@
+                     return HANDLED;
+                 case FOREGROUND_VOIP_MODE_CHANGE:
+                     if (!args.foregroundCallIsVoip) {
+-                        transitionTo(mSimCallFocusState);
++						if(PHONE_ID == 0){
++							transitionTo(mSim1CallFocusState);	
++						}
++                        if(PHONE_ID == 1){
++							transitionTo(mSim2CallFocusState);	
++						}
+                     }
+                     return HANDLED;
+                 default:
+@@ -429,8 +533,14 @@
+                     // Do nothing if a tone is playing.
+                     return HANDLED;
+                 case NEW_ACTIVE_OR_DIALING_CALL:
+-                    transitionTo(args.foregroundCallIsVoip
+-                            ? mVoipCallFocusState : mSimCallFocusState);
++					if(PHONE_ID == 0){
++						transitionTo(args.foregroundCallIsVoip
++                            ? mVoipCallFocusState : mSim1CallFocusState);	
++					}
++                    if(PHONE_ID == 1){
++						transitionTo(args.foregroundCallIsVoip
++                            ? mVoipCallFocusState : mSim2CallFocusState);	
++					}
+                     return HANDLED;
+                 case NEW_RINGING_CALL:
+                     if (args.hasHoldingCalls) {
+@@ -461,7 +571,8 @@
+ 
+     private final BaseState mUnfocusedState = new UnfocusedState();
+     private final BaseState mRingingFocusState = new RingingFocusState();
+-    private final BaseState mSimCallFocusState = new SimCallFocusState();
++    private final BaseState mSim1CallFocusState = new Sim1CallFocusState();
++	private final BaseState mSim2CallFocusState = new Sim2CallFocusState();
+     private final BaseState mVoipCallFocusState = new VoipCallFocusState();
+     private final BaseState mOtherFocusState = new OtherFocusState();
+ 
+@@ -478,7 +589,8 @@
+ 
+         addState(mUnfocusedState);
+         addState(mRingingFocusState);
+-        addState(mSimCallFocusState);
++        addState(mSim1CallFocusState);
++		addState(mSim2CallFocusState);
+         addState(mVoipCallFocusState);
+         addState(mOtherFocusState);
+         setInitialState(mUnfocusedState);
+@@ -496,6 +608,14 @@
      }
  
-     @Override
-@@ -457,12 +499,46 @@
-                         : CallAudioModeStateMachine.TONE_STOPPED_PLAYING,
-                 makeArgsForModeStateMachine());
-     }
-+	
-+	private void setMSIMAudioState(Call callm, boolean on) {
-+		Log.v(this, "setMSIMAudioState");
-+		int aMode = mAudioManager.getMode();
-+		if(on){
-+			Log.v(this, "setMSIMAudioState ON");
-+			if (aMode == AudioManager.MODE_IN_CALL) {
-+				Log.v(this, "setMSIMAudioState INCALL");
-+				int phoneId = getPhoneId(callm);
-+				if (phoneId == 0) {
-+					Log.v(this, "setMSIMAudioState phone 0 set cp1");
-+					mAudioManager.setParameters("phone_type=cp1");
-+				} else if (phoneId == 1) {
-+					Log.v(this, "setMSIMAudioState phone 1 set cp2");
-+					mAudioManager.setParameters("phone_type=cp2");
-+				}
-+				Log.v(this, "setMSIMAudioState SET INCALL");
-+				mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+			}	
-+			if(aMode == AudioManager.MODE_IN_CALL || aMode == AudioManager.MODE_IN_COMMUNICATION){	
-+				Log.v(this, "setMSIMAudioState INCALL OR COMMUNICATION set realcall");
-+ 				mAudioManager.setParameters("realcall=on");
-+ 			}
-+		}else{
-+			if (aMode == 0) {
-+				Log.v(this, "setMSIMAudioState mode = 0  realcall off");
-+				mAudioManager.setParameters("realcall=off");
-+				Log.v(this, "setMSIMAudioState SET MODE 0");
-+				mAudioManager.setMode(0);
-+			}
+     public void sendMessageWithArgs(int messageCode, MessageArgs args) {
++		int vsid1 = SystemProperties.getInt("gsm.current.vsid", 0);
++        int vsid2 = SystemProperties.getInt("gsm.current.vsid2", 0);
++        if(vsid1 == 1){
++			PHONE_ID = 0;
 +		}
-+    }
- 
-     private void onCallLeavingState(Call call, int state) {
-         switch (state) {
-             case CallState.ACTIVE:
-             case CallState.CONNECTING:
-+				Log.v(this, "onCallLeavingState active or .....");
-                 onCallLeavingActiveDialingOrConnecting();
-+				setMSIMAudioState(call, true);
-                 break;
-             case CallState.RINGING:
-                 onCallLeavingRinging();
-@@ -473,6 +549,12 @@
-             case CallState.DIALING:
-                 stopRingbackForCall(call);
-                 onCallLeavingActiveDialingOrConnecting();
-+				break;
-+			case CallState.ABORTED:
-+			case CallState.DISCONNECTED:
-+				Log.v(this, "onCallLeavingState disconnect");
-+				setMSIMAudioState(call, false);
-+				break;
-         }
++        if(vsid2 == 1){
++			PHONE_ID = 1;
++		}
+         sendMessage(messageCode, args);
      }
  
-@@ -480,7 +562,9 @@
-         switch (state) {
-             case CallState.ACTIVE:
-             case CallState.CONNECTING:
-+				Log.v(this, "onCallEnteringState ACTIVE or CONNECTING");
-                 onCallEnteringActiveDialingOrConnecting();
-+				setMSIMAudioState(call, true);
-                 break;
-             case CallState.RINGING:
-                 onCallEnteringRinging();
-@@ -492,6 +576,11 @@
-                 onCallEnteringActiveDialingOrConnecting();
-                 playRingbackForCall(call);
-                 break;
-+			case CallState.ABORTED:
-+			case CallState.DISCONNECTED:
-+				Log.v(this, "onCallEnteringState abro or disc");
-+				setMSIMAudioState(call, false);
-+				break;	
-         }
-     }
- 
-
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
