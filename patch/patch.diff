@@ -1,3 +1,128 @@
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -195,6 +195,7 @@
+     private final PhoneStateBroadcaster mPhoneStateBroadcaster;
+     private final CallLogManager mCallLogManager;
+     private final Context mContext;
++    public  final Context pContext;
+     private final TelecomSystem.SyncRoot mLock;
+     private final ContactsAsyncHelper mContactsAsyncHelper;
+     private final CallerInfoAsyncQueryFactory mCallerInfoAsyncQueryFactory;
+@@ -255,6 +256,7 @@
+             AsyncRingtonePlayer asyncRingtonePlayer,
+             ViceNotifier viceNotifier) {
+         mContext = context;
++        pContext = context;
+         mLock = lock;
+         mContactsAsyncHelper = contactsAsyncHelper;
+         mCallerInfoAsyncQueryFactory = callerInfoAsyncQueryFactory;
+
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
+@@ -31,6 +31,27 @@
+ import java.util.Set;
+ import java.util.LinkedHashSet;
+ 
++import android.app.ActivityManagerNative;
++import android.content.Context;
++import android.content.pm.UserInfo;
++import android.media.AudioManager;
++import android.os.Binder;
++import android.os.Handler;
++import android.os.IBinder;
++import android.os.Looper;
++import android.os.Message;
++import android.os.RemoteException;
++import android.os.ServiceManager;
++import android.os.SystemProperties;
++import android.os.UserHandle;
++
++import android.telecom.PhoneAccountHandle;
++import android.telephony.SubscriptionManager;
++
++import com.android.internal.util.Preconditions;
++
++import java.util.Objects;
++
+ public class CallAudioManager extends CallsManagerListenerBase {
+ 
+     public interface AudioServiceFactory {
+@@ -56,7 +77,9 @@
+     private Call mForegroundCall;
+     private boolean mIsTonePlaying = false;
+     private InCallTonePlayer mHoldTonePlayer;
+-
++	
++	private AudioManager mAudioManager;
++	
+     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
+             CallsManager callsManager,
+             CallAudioModeStateMachine callAudioModeStateMachine,
+@@ -86,6 +109,43 @@
+ 
+         mPlayerFactory.setCallAudioManager(this);
+         mCallAudioModeStateMachine.setCallAudioManager(this);
++		
++		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
++		
++    }
++
++	private int getPhoneId(Call call) {
++         if (call.getTargetPhoneAccount() != null) {
++             PhoneAccountHandle account = call.getTargetPhoneAccount();
++            try {
++                 int index = Integer.parseInt(account.getId());
++                 int phoneId = SubscriptionManager.getPhoneId(index);
++                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
++                     return phoneId;
++                 }
++             } catch (NumberFormatException e) {
++                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
++             }
++         }
++         return -1;
++    }
++	
++	private void setSimAudio(boolean enable) {
++		if(enable){
++			Call callm = getForegroundCall();
++			int mPhoneID = getPhoneId(callm);
++			if(mPhoneID == 0){
++				mAudioManager.setParameters("phone_type=cp1");
++			} else if (mPhoneID == 1) {
++				mAudioManager.setParameters("phone_type=cp2");
++			}
++			mAudioManager.setParameters("realcall=on");
++			mCallAudioRouteStateMachine.sendMessageWithSessionInfo(CallAudioRouteStateMachine.UPDATE_SYSTEM_AUDIO_ROUTE);
++		}else{
++			mAudioManager.setParameters("realcall=off");
++			mCallAudioRouteStateMachine.sendMessageWithSessionInfo(CallAudioRouteStateMachine.UPDATE_SYSTEM_AUDIO_ROUTE);
++		}
++        
+     }
+ 
+     @Override
+@@ -481,6 +541,7 @@
+             case CallState.ACTIVE:
+             case CallState.CONNECTING:
+                 onCallEnteringActiveDialingOrConnecting();
++				setSimAudio(true);
+                 break;
+             case CallState.RINGING:
+                 onCallEnteringRinging();
+@@ -492,6 +553,9 @@
+                 onCallEnteringActiveDialingOrConnecting();
+                 playRingbackForCall(call);
+                 break;
++			case CallState.DISCONNECTED:
++				setSimAudio(false);
++			break;
+         }
+     }
+ 
+
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
 +++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
