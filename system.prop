@@ -45,6 +45,7 @@ media.aac_51_output_enabled=true
 vidc.enc.narrow.searchrange=1
 qcom.hw.aac.encoder=true
 media.stagefright.legacyencoder=true
+media.stagefright.less-secure=true
 
 # Perf
 ro.vendor.extension_library=/system/vendor/lib/libqti-perfd-client.so
