@@ -43,7 +43,7 @@ media.swhevccodectype=0
 mm.enable.smoothstreaming=true
 media.aac_51_output_enabled=true
 vidc.enc.narrow.searchrange=1
-qcom.hw.aac.encoder=true
+#qcom.hw.aac.encoder=true
 media.stagefright.legacyencoder=true
 media.stagefright.less-secure=true
 
@@ -58,7 +58,7 @@ persist.audio.fluence.speaker=true
 tunnel.audio.encode = false
 audio.offload.buffer.size.kb=32
 audio.offload.min.duration.secs=30
-audio.offload.video=true
+#audio.offload.video=true
 
 # Wi-Fi, Bluetooth
 qcom.bluetooth.soc=smd
