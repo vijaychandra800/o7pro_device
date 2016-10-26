@@ -103,7 +103,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: setMode");
 +			mAudioManager.setMode(AudioManager.MODE_IN_CALL);
 +			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: HAS_FOCUS");
-+            mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
++            setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
 +		}else if(oldState == CallState.DIALING && newState == CallState.ACTIVE){
 +			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: %s -> %s", CallState.toString(oldState), CallState.toString(newState));
 +			if(mPhoneID == 0){
@@ -121,7 +121,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: setMode");
 +			mAudioManager.setMode(AudioManager.MODE_IN_CALL);
 +			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: HAS_FOCUS");
-+            mCallAudioManager.setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
++            setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
 +		}else if(newState == CallState.DISCONNECTED || newState == CallState.ABORTED){
 +			Log.d(LOG_TAG, "setMSIMAudio DISABLE: %s", CallState.toString(newState));
 +			mAudioManager.setParameters("realcall=off");
