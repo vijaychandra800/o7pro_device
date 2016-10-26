@@ -1078,3 +1078,75 @@ diff -ur a/frameworks/av/services/camera/libcameraservice/CameraService.cpp b/fr
      Status ret = Status::ok();
      sp<Client> tmp = nullptr;
 
+diff -ur a/frameworks/base/api/current.txt b/frameworks/base/api/current.txt
+--- a/frameworks/base/api/current.txt
++++ b/frameworks/base/api/current.txt
+@@ -5297,10 +5297,11 @@
+     field public static final java.lang.String ACTION_INTERRUPTION_FILTER_CHANGED = "android.app.action.INTERRUPTION_FILTER_CHANGED";
+     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED = "android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED";
+     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_CHANGED = "android.app.action.NOTIFICATION_POLICY_CHANGED";
+-    field public static final int IMPORTANCE_DEFAULT = 3; // 0x3
+-    field public static final int IMPORTANCE_HIGH = 4; // 0x4
+-    field public static final int IMPORTANCE_LOW = 2; // 0x2
+-    field public static final int IMPORTANCE_MAX = 5; // 0x5
++    field public static final int IMPORTANCE_DEFAULT = 4; // 0x4
++    field public static final int IMPORTANCE_HIGH = 5; // 0x5
++    field public static final int IMPORTANCE_LOW = 3; // 0x3
++    field public static final int IMPORTANCE_MAX = 6; // 0x6
++    field public static final int IMPORTANCE_VERY_LOW = 2; // 0x2
+     field public static final int IMPORTANCE_MIN = 1; // 0x1
+     field public static final int IMPORTANCE_NONE = 0; // 0x0
+     field public static final int IMPORTANCE_UNSPECIFIED = -1000; // 0xfffffc18
+@@ -66405,4 +66406,3 @@
+   }
+ 
+ }
+-
+diff -ur a/frameworks/base/api/system-current.txt b/frameworks/base/api/system-current.txt
+--- a/frameworks/base/api/system-current.txt
++++ b/frameworks/base/api/system-current.txt
+@@ -5445,10 +5445,11 @@
+     field public static final java.lang.String ACTION_INTERRUPTION_FILTER_CHANGED = "android.app.action.INTERRUPTION_FILTER_CHANGED";
+     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED = "android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED";
+     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_CHANGED = "android.app.action.NOTIFICATION_POLICY_CHANGED";
+-    field public static final int IMPORTANCE_DEFAULT = 3; // 0x3
+-    field public static final int IMPORTANCE_HIGH = 4; // 0x4
+-    field public static final int IMPORTANCE_LOW = 2; // 0x2
+-    field public static final int IMPORTANCE_MAX = 5; // 0x5
++    field public static final int IMPORTANCE_DEFAULT = 4; // 0x4
++    field public static final int IMPORTANCE_HIGH = 5; // 0x5
++    field public static final int IMPORTANCE_LOW = 3; // 0x3
++    field public static final int IMPORTANCE_MAX = 6; // 0x6
++    field public static final int IMPORTANCE_VERY_LOW = 2; // 0x2
+     field public static final int IMPORTANCE_MIN = 1; // 0x1
+     field public static final int IMPORTANCE_NONE = 0; // 0x0
+     field public static final int IMPORTANCE_UNSPECIFIED = -1000; // 0xfffffc18
+@@ -69762,4 +69763,3 @@
+   }
+ 
+ }
+-
+diff -ur a/frameworks/base/api/test-current.txt b/frameworks/base/api/test-current.txt
+--- a/frameworks/base/api/test-current.txt
++++ b/frameworks/base/api/test-current.txt
+@@ -5298,10 +5298,11 @@
+     field public static final java.lang.String ACTION_INTERRUPTION_FILTER_CHANGED = "android.app.action.INTERRUPTION_FILTER_CHANGED";
+     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED = "android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED";
+     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_CHANGED = "android.app.action.NOTIFICATION_POLICY_CHANGED";
+-    field public static final int IMPORTANCE_DEFAULT = 3; // 0x3
+-    field public static final int IMPORTANCE_HIGH = 4; // 0x4
+-    field public static final int IMPORTANCE_LOW = 2; // 0x2
+-    field public static final int IMPORTANCE_MAX = 5; // 0x5
++    field public static final int IMPORTANCE_DEFAULT = 4; // 0x4
++    field public static final int IMPORTANCE_HIGH = 5; // 0x5
++    field public static final int IMPORTANCE_LOW = 3; // 0x3
++    field public static final int IMPORTANCE_MAX = 6; // 0x6
++    field public static final int IMPORTANCE_VERY_LOW = 2; // 0x2
+     field public static final int IMPORTANCE_MIN = 1; // 0x1
+     field public static final int IMPORTANCE_NONE = 0; // 0x0
+     field public static final int IMPORTANCE_UNSPECIFIED = -1000; // 0xfffffc18
+@@ -66485,4 +66486,3 @@
+   }
+ 
+ }
+-
