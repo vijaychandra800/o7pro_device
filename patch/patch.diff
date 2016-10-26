@@ -1078,75 +1078,111 @@ diff -ur a/frameworks/av/services/camera/libcameraservice/CameraService.cpp b/fr
      Status ret = Status::ok();
      sp<Client> tmp = nullptr;
 
-diff -ur a/frameworks/base/api/current.txt b/frameworks/base/api/current.txt
---- a/frameworks/base/api/current.txt
-+++ b/frameworks/base/api/current.txt
-@@ -5297,10 +5297,11 @@
-     field public static final java.lang.String ACTION_INTERRUPTION_FILTER_CHANGED = "android.app.action.INTERRUPTION_FILTER_CHANGED";
-     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED = "android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED";
-     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_CHANGED = "android.app.action.NOTIFICATION_POLICY_CHANGED";
--    field public static final int IMPORTANCE_DEFAULT = 3; // 0x3
--    field public static final int IMPORTANCE_HIGH = 4; // 0x4
--    field public static final int IMPORTANCE_LOW = 2; // 0x2
--    field public static final int IMPORTANCE_MAX = 5; // 0x5
-+    field public static final int IMPORTANCE_DEFAULT = 4; // 0x4
-+    field public static final int IMPORTANCE_HIGH = 5; // 0x5
-+    field public static final int IMPORTANCE_LOW = 3; // 0x3
-+    field public static final int IMPORTANCE_MAX = 6; // 0x6
-+    field public static final int IMPORTANCE_VERY_LOW = 2; // 0x2
-     field public static final int IMPORTANCE_MIN = 1; // 0x1
-     field public static final int IMPORTANCE_NONE = 0; // 0x0
-     field public static final int IMPORTANCE_UNSPECIFIED = -1000; // 0xfffffc18
-@@ -66405,4 +66406,3 @@
-   }
+diff -ur a/frameworks/base/core/java/android/app/NotificationManager.java b/frameworks/base/core/java/android/app/NotificationManager.java
+--- a/frameworks/base/core/java/android/app/NotificationManager.java
++++ b/frameworks/base/core/java/android/app/NotificationManager.java
+@@ -212,29 +212,30 @@
+      * Very low notification importance: shows on the status bar, but never
+      * on the lock screen and is not intrusive.
+      */
+-    public static final int IMPORTANCE_VERY_LOW = 2;
++    /** @hide */
++    public static final int IMPORTANCE_VERY_LOW = 6;
  
- }
--
-diff -ur a/frameworks/base/api/system-current.txt b/frameworks/base/api/system-current.txt
---- a/frameworks/base/api/system-current.txt
-+++ b/frameworks/base/api/system-current.txt
-@@ -5445,10 +5445,11 @@
-     field public static final java.lang.String ACTION_INTERRUPTION_FILTER_CHANGED = "android.app.action.INTERRUPTION_FILTER_CHANGED";
-     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED = "android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED";
-     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_CHANGED = "android.app.action.NOTIFICATION_POLICY_CHANGED";
--    field public static final int IMPORTANCE_DEFAULT = 3; // 0x3
--    field public static final int IMPORTANCE_HIGH = 4; // 0x4
--    field public static final int IMPORTANCE_LOW = 2; // 0x2
--    field public static final int IMPORTANCE_MAX = 5; // 0x5
-+    field public static final int IMPORTANCE_DEFAULT = 4; // 0x4
-+    field public static final int IMPORTANCE_HIGH = 5; // 0x5
-+    field public static final int IMPORTANCE_LOW = 3; // 0x3
-+    field public static final int IMPORTANCE_MAX = 6; // 0x6
-+    field public static final int IMPORTANCE_VERY_LOW = 2; // 0x2
-     field public static final int IMPORTANCE_MIN = 1; // 0x1
-     field public static final int IMPORTANCE_NONE = 0; // 0x0
-     field public static final int IMPORTANCE_UNSPECIFIED = -1000; // 0xfffffc18
-@@ -69762,4 +69763,3 @@
-   }
+     /**
+      * Low notification importance: shows everywhere, but is not intrusive.
+      */
+-    public static final int IMPORTANCE_LOW = 3;
++    public static final int IMPORTANCE_LOW = 2;
  
- }
--
-diff -ur a/frameworks/base/api/test-current.txt b/frameworks/base/api/test-current.txt
---- a/frameworks/base/api/test-current.txt
-+++ b/frameworks/base/api/test-current.txt
-@@ -5298,10 +5298,11 @@
-     field public static final java.lang.String ACTION_INTERRUPTION_FILTER_CHANGED = "android.app.action.INTERRUPTION_FILTER_CHANGED";
-     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED = "android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED";
-     field public static final java.lang.String ACTION_NOTIFICATION_POLICY_CHANGED = "android.app.action.NOTIFICATION_POLICY_CHANGED";
--    field public static final int IMPORTANCE_DEFAULT = 3; // 0x3
--    field public static final int IMPORTANCE_HIGH = 4; // 0x4
--    field public static final int IMPORTANCE_LOW = 2; // 0x2
--    field public static final int IMPORTANCE_MAX = 5; // 0x5
-+    field public static final int IMPORTANCE_DEFAULT = 4; // 0x4
-+    field public static final int IMPORTANCE_HIGH = 5; // 0x5
-+    field public static final int IMPORTANCE_LOW = 3; // 0x3
-+    field public static final int IMPORTANCE_MAX = 6; // 0x6
-+    field public static final int IMPORTANCE_VERY_LOW = 2; // 0x2
-     field public static final int IMPORTANCE_MIN = 1; // 0x1
-     field public static final int IMPORTANCE_NONE = 0; // 0x0
-     field public static final int IMPORTANCE_UNSPECIFIED = -1000; // 0xfffffc18
-@@ -66485,4 +66486,3 @@
-   }
+     /**
+      * Default notification importance: shows everywhere, allowed to makes noise,
+      * but does not visually intrude.
+      */
+-    public static final int IMPORTANCE_DEFAULT = 4;
++    public static final int IMPORTANCE_DEFAULT = 3;
  
- }
--
+     /**
+      * Higher notification importance: shows everywhere, allowed to makes noise and peek.
+      */
+-    public static final int IMPORTANCE_HIGH = 5;
++    public static final int IMPORTANCE_HIGH = 4;
+ 
+     /**
+      * Highest notification importance: shows everywhere, allowed to makes noise, peek, and
+      * use full screen intents.
+      */
+-    public static final int IMPORTANCE_MAX = 6;
++    public static final int IMPORTANCE_MAX = 5;
+ 
+     private static INotificationManager sService;
+ 
+diff -ur a/frameworks/base/core/java/android/service/notification/NotificationListenerService.java b/frameworks/base/core/java/android/service/notification/NotificationListenerService.java
+--- a/frameworks/base/core/java/android/service/notification/NotificationListenerService.java
++++ b/frameworks/base/core/java/android/service/notification/NotificationListenerService.java
+@@ -1176,7 +1176,7 @@
+                 CharSequence explanation, String overrideGroupKey) {
+             mKey = key;
+             mRank = rank;
+-            mIsAmbient = importance < IMPORTANCE_VERY_LOW;
++            mIsAmbient = importance == IMPORTANCE_VERY_LOW || importance == IMPORTANCE_MIN;
+             mMatchesInterruptionFilter = matchesInterruptionFilter;
+             mVisibilityOverride = visibilityOverride;
+             mSuppressedVisualEffects = suppressedVisualEffects;
+diff -ur a/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java b/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
+--- a/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
++++ b/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
+@@ -118,6 +118,7 @@
+ import java.util.Locale;
+ 
+ import static android.service.notification.NotificationListenerService.Ranking.IMPORTANCE_HIGH;
++import static android.service.notification.NotificationListenerService.Ranking.IMPORTANCE_MIN;
+ import static android.service.notification.NotificationListenerService.Ranking.IMPORTANCE_VERY_LOW;
+ 
+ public abstract class BaseStatusBar extends SystemUI implements
+@@ -2305,7 +2306,8 @@
+ 
+     public boolean shouldShowOnKeyguard(StatusBarNotification sbn) {
+         return mShowLockscreenNotifications && !mNotificationData.isAmbient(sbn.getKey())
+-            && mNotificationData.getImportance(sbn.getKey()) > IMPORTANCE_VERY_LOW;
++            && !(mNotificationData.getImportance(sbn.getKey()) == IMPORTANCE_VERY_LOW ||
++                 mNotificationData.getImportance(sbn.getKey()) == IMPORTANCE_MIN);
+     }
+ 
+     protected void setZenMode(int mode) {
+diff -ur a/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java b/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java
+--- a/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java
++++ b/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java
+@@ -46,7 +46,9 @@
+ 
+     private static final int VERSION_INIT = 1;
+     private static final int VERSION_ADDED_VERY_LOW_IMPORTANCE = 2;
+-    private static final int VERSION_LATEST = VERSION_ADDED_VERY_LOW_IMPORTANCE;
++    private static final int VERSION_FIXED_VERY_LOW_IMPORTANCE = 3;
++    private static final int VERSION_LATEST = VERSION_FIXED_VERY_LOW_IMPORTANCE;
++    private static final int PREVIOUS_VERY_LOW_IMPORTANCE = 2;
+ 
+     private static final String TAG_RANKING = "ranking";
+     private static final String TAG_PACKAGE = "package";
+@@ -63,7 +65,6 @@
+     private static final int DEFAULT_PRIORITY = Notification.PRIORITY_DEFAULT;
+     private static final int DEFAULT_VISIBILITY = Ranking.VISIBILITY_NO_OVERRIDE;
+     private static final int DEFAULT_IMPORTANCE = Ranking.IMPORTANCE_UNSPECIFIED;
+-    private static final int VERY_LOW_IMPORTANCE = Ranking.IMPORTANCE_VERY_LOW;
+ 
+     private final NotificationSignalExtractor[] mSignalExtractors;
+     private final NotificationComparator mPreliminaryComparator = new NotificationComparator();
+@@ -168,9 +169,10 @@
+                             r = getOrCreateRecord(name, uid);
+                         }
+                         r.importance = safeInt(parser, ATT_IMPORTANCE, DEFAULT_IMPORTANCE);
+-                        if (version < VERSION_ADDED_VERY_LOW_IMPORTANCE
+-                            && r.importance >= VERY_LOW_IMPORTANCE)
+-                          r.importance++;
++                        if (version == VERSION_ADDED_VERY_LOW_IMPORTANCE
++                            && r.importance >= PREVIOUS_VERY_LOW_IMPORTANCE) {
++                          r.importance--;
++                        }
+                         r.priority = safeInt(parser, ATT_PRIORITY, DEFAULT_PRIORITY);
+                         r.visibility = safeInt(parser, ATT_VISIBILITY, DEFAULT_VISIBILITY);
+                     }
