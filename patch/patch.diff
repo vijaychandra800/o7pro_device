@@ -87,19 +87,19 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +		int mPhoneID = getPhoneId(callm);
 +		if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
 +			if(mPhoneID == 0){
-+				mAudioManager.setParameters("phone_type=cp2");	
-+			}else if (mPhoneID == 1){
 +				mAudioManager.setParameters("phone_type=cp1");	
-+			}
-+			mAudioManager.setParameters("realcall=on");
-+		}else if(oldState == CallState.DIALING && newState == CallState.ACTIVE){
-+			if(mPhoneID == 0){
-+				mAudioManager.setParameters("phone_type=cp2");	
 +			}else if (mPhoneID == 1){
-+				mAudioManager.setParameters("phone_type=cp1");		
++				mAudioManager.setParameters("phone_type=cp2");	
 +			}
 +			mAudioManager.setParameters("realcall=on");
-+		}else if(newState == CallState.DISCONNECTED || newState == CallState.ABORTED){
++		}else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
++			if(mPhoneID == 0){
++				mAudioManager.setParameters("phone_type=cp1");	
++			}else if (mPhoneID == 1){
++				mAudioManager.setParameters("phone_type=cp2");		
++			}
++			mAudioManager.setParameters("realcall=on");
++		}else if(newState == CallState.DISCONNECTED){
 +			mAudioManager.setParameters("realcall=off");
 +		}
      }
