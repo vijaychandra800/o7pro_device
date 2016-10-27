@@ -58,7 +58,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
  
      public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
              CallsManager callsManager,
-@@ -86,6 +109,70 @@
+@@ -86,6 +109,46 @@
  
          mPlayerFactory.setCallAudioManager(this);
          mCallAudioModeStateMachine.setCallAudioManager(this);
@@ -83,53 +83,29 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 +    }
 +	
 +	private void setMSIMAudio(int oldState, int newState) {
-+		Log.d(LOG_TAG, "setMSIMAudio: %s -> %s", CallState.toString(oldState), CallState.toString(newState));
 +		Call callm = getForegroundCall();
 +		int mPhoneID = getPhoneId(callm);
 +		if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: %s -> %s", CallState.toString(oldState), CallState.toString(newState));
 +			if(mPhoneID == 0){
-+				Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: ID 0");
-+				mAudioManager.setParameters("phone_type=cp1");	
-+			}else if (mPhoneID == 1){
-+				Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: ID 1");
 +				mAudioManager.setParameters("phone_type=cp2");	
-+			}
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: REALCALL ON");
-+			mAudioManager.setParameters("realcall=on");
-+			
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: requestAudioFocusForCall");
-+			mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: setMode");
-+			mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE INCALL: HAS_FOCUS");
-+            setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
-+		}else if(oldState == CallState.DIALING && newState == CallState.ACTIVE){
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: %s -> %s", CallState.toString(oldState), CallState.toString(newState));
-+			if(mPhoneID == 0){
-+				Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: ID 0");
-+				mAudioManager.setParameters("phone_type=cp1");	
 +			}else if (mPhoneID == 1){
-+				Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: ID 1");
-+				mAudioManager.setParameters("phone_type=cp2");		
++				mAudioManager.setParameters("phone_type=cp1");	
 +			}
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: REALCALL ON");
-+			mAudioManager.setParameters("realcall=on");	
-+			
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: requestAudioFocusForCall");
-+			mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: setMode");
-+			mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+			Log.d(LOG_TAG, "setMSIMAudio ENABLE OUTCALL: HAS_FOCUS");
-+            setCallAudioRouteFocusState(CallAudioRouteStateMachine.HAS_FOCUS);
++			mAudioManager.setParameters("realcall=on");
++		}else if(oldState == CallState.DIALING && newState == CallState.ACTIVE){
++			if(mPhoneID == 0){
++				mAudioManager.setParameters("phone_type=cp2");	
++			}else if (mPhoneID == 1){
++				mAudioManager.setParameters("phone_type=cp1");		
++			}
++			mAudioManager.setParameters("realcall=on");
 +		}else if(newState == CallState.DISCONNECTED || newState == CallState.ABORTED){
-+			Log.d(LOG_TAG, "setMSIMAudio DISABLE: %s", CallState.toString(newState));
 +			mAudioManager.setParameters("realcall=off");
 +		}
      }
  
      @Override
-@@ -111,6 +198,7 @@
+@@ -111,6 +174,7 @@
  
          onCallLeavingState(call, oldState);
          onCallEnteringState(call, newState);
@@ -1077,112 +1053,3 @@ diff -ur a/frameworks/av/services/camera/libcameraservice/CameraService.cpp b/fr
      String8 id = String8::format("%d", cameraId);
      Status ret = Status::ok();
      sp<Client> tmp = nullptr;
-
-diff -ur a/frameworks/base/core/java/android/app/NotificationManager.java b/frameworks/base/core/java/android/app/NotificationManager.java
---- a/frameworks/base/core/java/android/app/NotificationManager.java
-+++ b/frameworks/base/core/java/android/app/NotificationManager.java
-@@ -212,29 +212,30 @@
-      * Very low notification importance: shows on the status bar, but never
-      * on the lock screen and is not intrusive.
-      */
--    public static final int IMPORTANCE_VERY_LOW = 2;
-+    /** @hide */
-+    public static final int IMPORTANCE_VERY_LOW = 6;
- 
-     /**
-      * Low notification importance: shows everywhere, but is not intrusive.
-      */
--    public static final int IMPORTANCE_LOW = 3;
-+    public static final int IMPORTANCE_LOW = 2;
- 
-     /**
-      * Default notification importance: shows everywhere, allowed to makes noise,
-      * but does not visually intrude.
-      */
--    public static final int IMPORTANCE_DEFAULT = 4;
-+    public static final int IMPORTANCE_DEFAULT = 3;
- 
-     /**
-      * Higher notification importance: shows everywhere, allowed to makes noise and peek.
-      */
--    public static final int IMPORTANCE_HIGH = 5;
-+    public static final int IMPORTANCE_HIGH = 4;
- 
-     /**
-      * Highest notification importance: shows everywhere, allowed to makes noise, peek, and
-      * use full screen intents.
-      */
--    public static final int IMPORTANCE_MAX = 6;
-+    public static final int IMPORTANCE_MAX = 5;
- 
-     private static INotificationManager sService;
- 
-diff -ur a/frameworks/base/core/java/android/service/notification/NotificationListenerService.java b/frameworks/base/core/java/android/service/notification/NotificationListenerService.java
---- a/frameworks/base/core/java/android/service/notification/NotificationListenerService.java
-+++ b/frameworks/base/core/java/android/service/notification/NotificationListenerService.java
-@@ -1176,7 +1176,7 @@
-                 CharSequence explanation, String overrideGroupKey) {
-             mKey = key;
-             mRank = rank;
--            mIsAmbient = importance < IMPORTANCE_VERY_LOW;
-+            mIsAmbient = importance == IMPORTANCE_VERY_LOW || importance == IMPORTANCE_MIN;
-             mMatchesInterruptionFilter = matchesInterruptionFilter;
-             mVisibilityOverride = visibilityOverride;
-             mSuppressedVisualEffects = suppressedVisualEffects;
-diff -ur a/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java b/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
---- a/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
-+++ b/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
-@@ -118,6 +118,7 @@
- import java.util.Locale;
- 
- import static android.service.notification.NotificationListenerService.Ranking.IMPORTANCE_HIGH;
-+import static android.service.notification.NotificationListenerService.Ranking.IMPORTANCE_MIN;
- import static android.service.notification.NotificationListenerService.Ranking.IMPORTANCE_VERY_LOW;
- 
- public abstract class BaseStatusBar extends SystemUI implements
-@@ -2305,7 +2306,8 @@
- 
-     public boolean shouldShowOnKeyguard(StatusBarNotification sbn) {
-         return mShowLockscreenNotifications && !mNotificationData.isAmbient(sbn.getKey())
--            && mNotificationData.getImportance(sbn.getKey()) > IMPORTANCE_VERY_LOW;
-+            && !(mNotificationData.getImportance(sbn.getKey()) == IMPORTANCE_VERY_LOW ||
-+                 mNotificationData.getImportance(sbn.getKey()) == IMPORTANCE_MIN);
-     }
- 
-     protected void setZenMode(int mode) {
-diff -ur a/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java b/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java
---- a/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java
-+++ b/frameworks/base/services/core/java/com/android/server/notification/RankingHelper.java
-@@ -46,7 +46,9 @@
- 
-     private static final int VERSION_INIT = 1;
-     private static final int VERSION_ADDED_VERY_LOW_IMPORTANCE = 2;
--    private static final int VERSION_LATEST = VERSION_ADDED_VERY_LOW_IMPORTANCE;
-+    private static final int VERSION_FIXED_VERY_LOW_IMPORTANCE = 3;
-+    private static final int VERSION_LATEST = VERSION_FIXED_VERY_LOW_IMPORTANCE;
-+    private static final int PREVIOUS_VERY_LOW_IMPORTANCE = 2;
- 
-     private static final String TAG_RANKING = "ranking";
-     private static final String TAG_PACKAGE = "package";
-@@ -63,7 +65,6 @@
-     private static final int DEFAULT_PRIORITY = Notification.PRIORITY_DEFAULT;
-     private static final int DEFAULT_VISIBILITY = Ranking.VISIBILITY_NO_OVERRIDE;
-     private static final int DEFAULT_IMPORTANCE = Ranking.IMPORTANCE_UNSPECIFIED;
--    private static final int VERY_LOW_IMPORTANCE = Ranking.IMPORTANCE_VERY_LOW;
- 
-     private final NotificationSignalExtractor[] mSignalExtractors;
-     private final NotificationComparator mPreliminaryComparator = new NotificationComparator();
-@@ -168,9 +169,10 @@
-                             r = getOrCreateRecord(name, uid);
-                         }
-                         r.importance = safeInt(parser, ATT_IMPORTANCE, DEFAULT_IMPORTANCE);
--                        if (version < VERSION_ADDED_VERY_LOW_IMPORTANCE
--                            && r.importance >= VERY_LOW_IMPORTANCE)
--                          r.importance++;
-+                        if (version == VERSION_ADDED_VERY_LOW_IMPORTANCE
-+                            && r.importance >= PREVIOUS_VERY_LOW_IMPORTANCE) {
-+                          r.importance--;
-+                        }
-                         r.priority = safeInt(parser, ATT_PRIORITY, DEFAULT_PRIORITY);
-                         r.visibility = safeInt(parser, ATT_VISIBILITY, DEFAULT_VISIBILITY);
-                     }
