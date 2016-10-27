@@ -1,118 +1,95 @@
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
 +++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
-@@ -195,6 +195,7 @@
-     private final PhoneStateBroadcaster mPhoneStateBroadcaster;
-     private final CallLogManager mCallLogManager;
-     private final Context mContext;
-+    public  final Context pContext;
-     private final TelecomSystem.SyncRoot mLock;
-     private final ContactsAsyncHelper mContactsAsyncHelper;
-     private final CallerInfoAsyncQueryFactory mCallerInfoAsyncQueryFactory;
-@@ -255,6 +256,7 @@
-             AsyncRingtonePlayer asyncRingtonePlayer,
-             ViceNotifier viceNotifier) {
-         mContext = context;
-+        pContext = context;
-         mLock = lock;
-         mContactsAsyncHelper = contactsAsyncHelper;
-         mCallerInfoAsyncQueryFactory = callerInfoAsyncQueryFactory;
-
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioManager.java	Thu May 12 01:31:40 2016
-@@ -31,6 +31,27 @@
- import java.util.Set;
- import java.util.LinkedHashSet;
- 
-+import android.app.ActivityManagerNative;
-+import android.content.Context;
-+import android.content.pm.UserInfo;
-+import android.media.AudioManager;
-+import android.os.Binder;
-+import android.os.Handler;
-+import android.os.IBinder;
-+import android.os.Looper;
-+import android.os.Message;
-+import android.os.RemoteException;
-+import android.os.ServiceManager;
-+import android.os.SystemProperties;
-+import android.os.UserHandle;
-+
+@@ -48,6 +48,8 @@
+ import android.telecom.PhoneAccountHandle;
+ import android.telecom.TelecomManager;
+ import android.telecom.VideoProfile;
 +import android.telecom.PhoneAccountHandle;
 +import android.telephony.SubscriptionManager;
-+
-+import com.android.internal.util.Preconditions;
-+
-+import java.util.Objects;
-+
- public class CallAudioManager extends CallsManagerListenerBase {
+ import android.telephony.PhoneNumberUtils;
+ import android.telephony.TelephonyManager;
+ import android.text.TextUtils;
+@@ -232,6 +234,8 @@
+     private DsdaAdapter mDsdaAdapter = null;
  
-     public interface AudioServiceFactory {
-@@ -56,6 +77,8 @@
-     private Call mForegroundCall;
-     private boolean mIsTonePlaying = false;
-     private InCallTonePlayer mHoldTonePlayer;
+     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
 +	
 +	private AudioManager mAudioManager;
  
-     public CallAudioManager(CallAudioRouteStateMachine callAudioRouteStateMachine,
-             CallsManager callsManager,
-@@ -86,6 +109,46 @@
- 
-         mPlayerFactory.setCallAudioManager(this);
-         mCallAudioModeStateMachine.setCallAudioManager(this);
+     // Two global variables used to handle the Emergency Call when there
+     // is no room available for emergency call. Buffer the Emergency Call
+@@ -322,6 +326,8 @@
+                 new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
+         mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
+         mViceNotificationImpl = viceNotifier.create(mContext, this);
 +		
-+		mAudioManager = (AudioManager) mCallsManager.pContext.getSystemService(Context.AUDIO_SERVICE);
-+    }
++		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+ 
+         mListeners.add(mInCallWakeLockController);
+         mListeners.add(statusBarNotifier);
+@@ -341,6 +347,53 @@
+             onUserSwitch(Process.myUserHandle());
+         }
+     }
 +	
 +	private int getPhoneId(Call call) {
-+         if (call.getTargetPhoneAccount() != null) {
-+             PhoneAccountHandle account = call.getTargetPhoneAccount();
++        if (call.getTargetPhoneAccount() != null) {
++            PhoneAccountHandle account = call.getTargetPhoneAccount();
 +            try {
-+                 int index = Integer.parseInt(account.getId());
-+                 int phoneId = SubscriptionManager.getPhoneId(index);
-+                 if (SubscriptionManager.isValidPhoneId(phoneId)) {
++               int index = Integer.parseInt(account.getId());
++                int phoneId = SubscriptionManager.getPhoneId(index);
++                if (SubscriptionManager.isValidPhoneId(phoneId)) {
 +                     return phoneId;
-+                 }
-+             } catch (NumberFormatException e) {
-+                 Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
-+             }
-+         }
-+         return -1;
++                }
++            } catch (NumberFormatException e) {
++                Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
++            }
++        }
++        return -1;
 +    }
 +	
 +	private void setMSIMAudio(int oldState, int newState) {
-+		Call callm = getForegroundCall();
-+		int mPhoneID = getPhoneId(callm);
++		Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
++		int mPhoneID = getPhoneId(getForegroundCall());
 +		if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
++			Log.i(this, "setMSIMAudio INCOMING CALL");
 +			if(mPhoneID == 0){
++				Log.i(this, "setMSIMAudio INCOMING CALL CP1");
 +				mAudioManager.setParameters("phone_type=cp1");	
 +			}else if (mPhoneID == 1){
++				Log.i(this, "setMSIMAudio INCOMING CALL CP2");
 +				mAudioManager.setParameters("phone_type=cp2");	
 +			}
++			Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
 +			mAudioManager.setParameters("realcall=on");
 +		}else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
++			Log.i(this, "setMSIMAudio OUT CALL");
 +			if(mPhoneID == 0){
++				Log.i(this, "setMSIMAudio OUT CALL CP1");
 +				mAudioManager.setParameters("phone_type=cp1");	
 +			}else if (mPhoneID == 1){
++				Log.i(this, "setMSIMAudio OUT CALL CP2");
 +				mAudioManager.setParameters("phone_type=cp2");		
 +			}
++			Log.i(this, "setMSIMAudio OUT CALL REALCALL ON");
 +			mAudioManager.setParameters("realcall=on");
 +		}else if(newState == CallState.DISCONNECTED){
++			Log.i(this, "setMSIMAudio OUT CALL REALCALL OFF");
 +			mAudioManager.setParameters("realcall=off");
 +		}
-     }
++    }
  
-     @Override
-@@ -111,6 +174,7 @@
- 
-         onCallLeavingState(call, oldState);
-         onCallEnteringState(call, newState);
-+		setMSIMAudio(oldState, newState);
-     }
- 
-     @Override
+     ViceNotificationImpl getViceNotificationImpl() {
+         return mViceNotificationImpl;
+@@ -1979,6 +2032,7 @@
+         int oldState = call.getState();
+         Log.i(this, "setCallState %s -> %s, call: %s", CallState.toString(oldState),
+                 CallState.toString(newState), call);
++		setMSIMAudio(oldState, newState);		
+         if (newState != oldState) {
+             // Unfortunately, in the telephony world the radio is king. So if the call notifies
+             // us that the call is in a particular state, we allow it even if it doesn't make
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
