@@ -10,15 +10,15 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  import android.telephony.PhoneNumberUtils;
  import android.telephony.TelephonyManager;
  import android.text.TextUtils;
-@@ -232,6 +234,8 @@
-     private DsdaAdapter mDsdaAdapter = null;
- 
-     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
+@@ -240,6 +242,8 @@
+     // buffer.
+     private Call mPendingMOEmerCall = null;
+     private Call mDisconnectingCall = null;
 +	
 +	private AudioManager mAudioManager;
  
-     // Two global variables used to handle the Emergency Call when there
-     // is no room available for emergency call. Buffer the Emergency Call
+     /**
+      * Initializes the required Telecom components.
 @@ -322,6 +326,8 @@
                  new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
          mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
@@ -82,14 +82,16 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
      ViceNotificationImpl getViceNotificationImpl() {
          return mViceNotificationImpl;
-@@ -1979,6 +2032,7 @@
-         int oldState = call.getState();
-         Log.i(this, "setCallState %s -> %s, call: %s", CallState.toString(oldState),
-                 CallState.toString(newState), call);
-+		setMSIMAudio(oldState, newState);		
-         if (newState != oldState) {
-             // Unfortunately, in the telephony world the radio is king. So if the call notifies
-             // us that the call is in a particular state, we allow it even if it doesn't make
+@@ -2007,6 +2060,9 @@
+             Trace.endSection();
+         }
+         manageDsdaInCallTones(false);
++		if (call != null) {
++			setMSIMAudio(oldState, newState);
++		}	
+     }
+ 
+     private void updateCanAddCall() {
 
 diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
 --- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
