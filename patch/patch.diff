@@ -10,15 +10,15 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  import android.telephony.PhoneNumberUtils;
  import android.telephony.TelephonyManager;
  import android.text.TextUtils;
-@@ -240,6 +242,8 @@
-     // buffer.
-     private Call mPendingMOEmerCall = null;
-     private Call mDisconnectingCall = null;
+@@ -232,6 +234,8 @@
+     private DsdaAdapter mDsdaAdapter = null;
+ 
+     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
 +	
 +	private AudioManager mAudioManager;
  
-     /**
-      * Initializes the required Telecom components.
+     // Two global variables used to handle the Emergency Call when there
+     // is no room available for emergency call. Buffer the Emergency Call
 @@ -322,6 +326,8 @@
                  new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
          mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
@@ -28,7 +28,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
          mListeners.add(mInCallWakeLockController);
          mListeners.add(statusBarNotifier);
-@@ -341,6 +347,53 @@
+@@ -341,6 +347,56 @@
              onUserSwitch(Process.myUserHandle());
          }
      }
@@ -51,7 +51,10 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +	
 +	private void setMSIMAudio(int oldState, int newState) {
 +		Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
-+		int mPhoneID = getPhoneId(getForegroundCall());
++		int mPhoneID = 0;
++		if(newState != CallState.DISCONNECTED){
++			mPhoneID = getPhoneId(getForegroundCall());
++		}
 +		if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
 +			Log.i(this, "setMSIMAudio INCOMING CALL");
 +			if(mPhoneID == 0){
@@ -82,13 +85,13 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
      ViceNotificationImpl getViceNotificationImpl() {
          return mViceNotificationImpl;
-@@ -2007,6 +2060,9 @@
+@@ -2007,6 +2063,9 @@
              Trace.endSection();
          }
          manageDsdaInCallTones(false);
 +		if (call != null) {
 +			setMSIMAudio(oldState, newState);
-+		}	
++		}
      }
  
      private void updateCanAddCall() {
