@@ -152,9 +152,9 @@ TARGET_QCOM_MEDIA_VARIANT           := caf
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true
-TARGET_USES_OVERLAY 		      := true
-TARGET_HARDWARE_3D		      := false
-TARGET_HAVE_HDMI_OUT 		      := false
+TARGET_USES_OVERLAY 		          := true
+TARGET_HARDWARE_3D		              := false
+TARGET_HAVE_HDMI_OUT 		          := false
 USE_OPENGL_RENDERER                   := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS       := 3
 MAX_EGL_CACHE_KEY_SIZE                := 12*1024
@@ -170,10 +170,10 @@ TARGET_RECOVERY_FSTAB 				:= $(LOCAL_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 			:= true
 BOARD_HAS_LARGE_FILESYSTEM			:= true
 TARGET_RECOVERY_DENSITY 			:= hdpi
-BOARD_HAS_NO_MISC_PARTITION 		:= true
+BOARD_HAS_NO_MISC_PARTITION 		        := true
 BOARD_HAS_NO_SELECT_BUTTON 			:= true
 BOARD_RECOVERY_SWIPE 				:= true
-BOARD_USE_CUSTOM_RECOVERY_FONT 	    := \"roboto_23x41.h\"
+BOARD_USE_CUSTOM_RECOVERY_FONT 	                := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS 				:= true
 #RECOVERY_VARIANT				    := cm
 

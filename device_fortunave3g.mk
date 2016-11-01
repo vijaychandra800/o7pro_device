@@ -87,7 +87,7 @@ PRODUCT_PACKAGES += \
 # Doze
 PRODUCT_PACKAGES += \
     SamsungDoze
-
+	
 # Audio
 PRODUCT_PACKAGES += \
     audiod \
@@ -101,7 +101,7 @@ PRODUCT_PACKAGES += \
     libqcompostprocbundle \
     libqcomvisualizer \
     libqcomvoiceprocessing
-
+	
 # TinyAlsa utils
 PRODUCT_PACKAGES += \
     tinyplay \
@@ -119,10 +119,10 @@ PRODUCT_PACKAGES += \
     libqdutils \
     libqservice \
     libtinyxml
-	
+
 # libril_shim
 PRODUCT_PACKAGES += \
-    libril_shim	
+    libril_shim
 	
 # Power
 PRODUCT_PACKAGES += \
@@ -143,8 +143,8 @@ PRODUCT_PACKAGES += \
 	
 # Camera
 PRODUCT_PACKAGES += \
-    Snap
-	
+    Snap	
+
 # OMX
 PRODUCT_PACKAGES += \
     libextmedia_jni \
@@ -166,8 +166,8 @@ PRODUCT_PACKAGES += \
     qcmediaplayer
 	
 PRODUCT_BOOT_JARS += \
-    qcmediaplayer	
-    
+    qcmediaplayer
+
 # Gello
 PRODUCT_PACKAGES += \
     Gello	
@@ -199,7 +199,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libwcnss_qmi \
     wcnss_service
-
+	
 # Misc
 PRODUCT_PACKAGES += \
     libxml2 \
@@ -222,12 +222,12 @@ PRODUCT_PACKAGES += \
     hostapd \
     libwpa_client \
     wpa_supplicant \
-    wpa_supplicant.conf	
+    wpa_supplicant.conf
 	
 # Storage
 #PRODUCT_PROPERTY_OVERRIDES += \
-#    ro.sys.sdcardfs=true	
-
+#    ro.sys.sdcardfs=true
+		
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp
