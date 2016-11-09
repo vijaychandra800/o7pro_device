@@ -139,8 +139,8 @@ static char *camera_fixup_getparams(int id, const char *settings)
         isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
 
     if(!isVideo){
-		params.set("auto-exposure-values", "spot");
-	}
+	params.set("auto-exposure-values", "center");
+    }
 	
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -177,20 +177,11 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
             params.set(android::CameraParameters::KEY_ISO_MODE, "800");
     }
 	
-    const char *recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
-    bool isVideo = recordingHint && !strcmp(recordingHint, "true");
-
-    if (isVideo) {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
-    } else {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
+    int video_width, video_height;
+    params.getPreviewSize(&video_width, &video_height);
+    if(video_width*video_height <= 960*540){
+	params.set("preview-format", "yuv420p");
     }
-	
-	int video_width, video_height;
-	params.getPreviewSize(&video_width, &video_height);
-	if(video_width*video_height <= 960*540){
-		params.set("preview-format", "yuv420p");
-	}
 	
     android::String8 strParams = params.flatten();
 
