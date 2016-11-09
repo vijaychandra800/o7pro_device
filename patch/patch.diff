@@ -19,16 +19,16 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
      // Two global variables used to handle the Emergency Call when there
      // is no room available for emergency call. Buffer the Emergency Call
-@@ -339,6 +343,8 @@
-         mListeners.add(mHeadsetMediaButton);
-         mListeners.add(mProximitySensorManager);
-         mListeners.add(mViceNotificationImpl);
+@@ -328,6 +332,8 @@
+                 new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
+         mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
+         mViceNotificationImpl = viceNotifier.create(mContext, this);
 +		
 +		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
  
-         // There is no USER_SWITCHED broadcast for user 0, handle it here explicitly.
-         final UserManager userManager = UserManager.get(mContext);
-@@ -347,6 +353,58 @@
+         mListeners.add(mInCallWakeLockController);
+         mListeners.add(statusBarNotifier);
+@@ -347,6 +353,59 @@
              onUserSwitch(Process.myUserHandle());
          }
      }
@@ -79,7 +79,8 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +		}else if(newState == CallState.DISCONNECTED){
 +			Log.i(this, "setMSIMAudio DISCONNECTED OUT CALL REALCALL OFF");
 +			mAudioManager.setParameters("realcall=off");
-+		}else if(newState == CallState.ABORTED){
++		}
++		else if(newState == CallState.ABORTED){
 +			Log.i(this, "setMSIMAudio ABORTED OUT CALL REALCALL OFF");
 +			mAudioManager.setParameters("realcall=off");
 +		}
@@ -87,88 +88,17 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
  
      ViceNotificationImpl getViceNotificationImpl() {
          return mViceNotificationImpl;
-@@ -2075,6 +2133,9 @@
+@@ -2075,6 +2134,10 @@
              Trace.endSection();
          }
          manageDsdaInCallTones(false);
-+		if (call != null) {
++		boolean setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
++		if (call != null && setMsimAudioParams) {
 +			setMSIMAudio(oldState, newState);
 +		}
      }
  
      private void updateCanAddCall() {
-
-diff -ur a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java
---- a/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 20 17:28:46 2016
-+++ b/frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java	Mon Jun 27 10:45:01 2016
-@@ -60,6 +60,8 @@
- import com.android.server.SystemService;
- import com.android.server.UiThread;
- 
-+import java.io.FileOutputStream;
-+import java.io.IOException;
- import java.io.FileDescriptor;
- import java.io.PrintWriter;
- import java.util.ArrayList;
-@@ -224,6 +226,8 @@
-     // Only used by requestDisplayState.  The field is self-synchronized and only
-     // intended for use inside of the requestGlobalDisplayStateInternal function.
-     private final ArrayList<Runnable> mTempDisplayStateWorkQueue = new ArrayList<Runnable>();
-+	
-+	public static final String TS_PATH = "/sys/class/input/input3/enabled";
- 
-     public DisplayManagerService(Context context) {
-         super(context);
-@@ -707,6 +711,36 @@
-         }
-         scheduleTraversalLocked(false);
-     }
-+	
-+	// Writes to sysfs node, returns true if success, false if fail
-+     private boolean write_sysfs(String path, boolean on) {
-+        try {
-+            FileOutputStream fos = new FileOutputStream(path);
-+            byte[] bytes = new byte[2];
-+            bytes[0] = (byte)(on ? '1' : '0');
-+            bytes[1] = '\n';
-+            fos.write(bytes);
-+            fos.close();
-+        } catch (Exception e) {
-+            Slog.i(TAG, "Fail: " + e.getLocalizedMessage());
-+            return false;
-+        }
-+        return true;
-+    }
-+	
-+	// Enables or disables input devices by writing to sysfs path
-+    private void enableDevices(boolean enable) {
-+        boolean ret;
-+        if(enable) {
-+            // Turn on touch input
-+            ret = write_sysfs(TS_PATH, true);
-+            Slog.i(TAG, "Enabled touchscreen, success? " + ret);
-+        } else {
-+            // Turn off touch input
-+            ret = write_sysfs(TS_PATH, false);
-+            Slog.i(TAG, "Disabled touchscreen, success? " + ret);
-+        }
-+    }
- 
-     private void handleDisplayDeviceChanged(DisplayDevice device) {
-         synchronized (mSyncRoot) {
-@@ -720,6 +754,12 @@
-             if (diff == DisplayDeviceInfo.DIFF_STATE) {
-                 Slog.i(TAG, "Display device changed state: \"" + info.name
-                         + "\", " + Display.stateToString(info.state));
-+				if(info.state == Display.STATE_ON){
-+					enableDevices(true);
-+				}
-+				if (info.state == Display.STATE_OFF) {
-+					enableDevices(false);
-+				}		
-             } else if (diff != 0) {
-                 Slog.i(TAG, "Display device changed: " + info);
-             }
 
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
