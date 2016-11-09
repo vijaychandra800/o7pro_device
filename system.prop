@@ -39,14 +39,13 @@ media.stagefright.enable-aac=true
 media.stagefright.enable-qcp=true
 media.stagefright.enable-fma2dp=true
 media.stagefright.enable-scan=true
+media.stagefright.legacyencoder=true
+media.stagefright.less-secure=true
 media.swhevccodectype=0
 mm.enable.smoothstreaming=true
 media.aac_51_output_enabled=true
 vidc.enc.narrow.searchrange=1
 #qcom.hw.aac.encoder=true
-camera2.portability.force_api=1
-media.stagefright.legacyencoder=true
-media.stagefright.less-secure=true
 
 # Perf
 ro.vendor.extension_library=/system/vendor/lib/libqti-perfd-client.so
