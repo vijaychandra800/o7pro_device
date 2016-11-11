@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The CyanogenMod Project
+ * Copyright (c) 2014 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@
 #include <string.h>
 #include <fcntl.h>
 
-#define LOG_TAG "PowerHAL_FORTUNA_Ext"
+#define LOG_TAG "PowerHAL_H_Ext"
 #include <utils/Log.h>
 
-#define TOUCHSCREEN_POWER "/sys/class/input/input3/enabled"
+/* touchkeys */
+#define TK_POWER "/sys/class/input/input7/enabled"
+
+/* touchscreen */
+#define TS_POWER "/sys/class/input/input3/enabled"
 
 static void sysfs_write(char *path, char *s) {
     char buf[80];
@@ -45,7 +49,6 @@ static void sysfs_write(char *path, char *s) {
 
 void cm_power_set_interactive_ext(int on) {
     ALOGD("%s: %s input devices", __func__, on ? "enabling" : "disabling");
-    sysfs_write(TOUCHSCREEN_POWER, on ? "1" : "0");  
+    sysfs_write(TK_POWER, on ? "1" : "0");
+    sysfs_write(TS_POWER, on ? "1" : "0");
 }
-
-
