@@ -126,7 +126,6 @@ AUDIO_FEATURE_ENABLED_FM             := true
 TARGET_HW_DISK_ENCRYPTION            := true
 
 # Build our own PowerHAL
-TARGET_POWERHAL_VARIANT              := qcom
 TARGET_POWERHAL_SET_INTERACTIVE_EXT  := $(LOCAL_PATH)/power/power_fortunave3g_ext.c
 
 # Vold
@@ -152,9 +151,9 @@ TARGET_QCOM_MEDIA_VARIANT           := caf
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true
-TARGET_USES_OVERLAY 		          := true
-TARGET_HARDWARE_3D		              := false
-TARGET_HAVE_HDMI_OUT 		          := false
+TARGET_USES_OVERLAY 		      := true
+TARGET_HARDWARE_3D		      := false
+TARGET_HAVE_HDMI_OUT 		      := false
 USE_OPENGL_RENDERER                   := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS       := 3
 MAX_EGL_CACHE_KEY_SIZE                := 12*1024
