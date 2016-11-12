@@ -1,105 +1,39 @@
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
-@@ -48,6 +48,8 @@
- import android.telecom.PhoneAccountHandle;
- import android.telecom.TelecomManager;
- import android.telecom.VideoProfile;
-+import android.telecom.PhoneAccountHandle;
-+import android.telephony.SubscriptionManager;
- import android.telephony.PhoneNumberUtils;
- import android.telephony.TelephonyManager;
- import android.text.TextUtils;
-@@ -236,6 +238,8 @@
-     private DsdaAdapter mDsdaAdapter = null;
- 
-     private HashMap<String, Boolean> mLchStatus = new HashMap<String, Boolean>();
-+	
-+	private AudioManager mAudioManager;
- 
-     // Two global variables used to handle the Emergency Call when there
-     // is no room available for emergency call. Buffer the Emergency Call
-@@ -328,6 +332,8 @@
-                 new ConnectionServiceRepository(mPhoneAccountRegistrar, mContext, mLock, this);
-         mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
-         mViceNotificationImpl = viceNotifier.create(mContext, this);
-+		
-+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
- 
-         mListeners.add(mInCallWakeLockController);
-         mListeners.add(statusBarNotifier);
-@@ -347,6 +353,59 @@
-             onUserSwitch(Process.myUserHandle());
-         }
-     }
-+	
-+	private int getPhoneId(Call call) {
-+        if (call.getTargetPhoneAccount() != null) {
-+            PhoneAccountHandle account = call.getTargetPhoneAccount();
-+            try {
-+               int index = Integer.parseInt(account.getId());
-+                int phoneId = SubscriptionManager.getPhoneId(index);
-+                if (SubscriptionManager.isValidPhoneId(phoneId)) {
-+                     return phoneId;
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
+@@ -149,8 +149,13 @@
+     private class UnfocusedState extends BaseState {
+         @Override
+         public void enter() {
++            boolean setMsimRealcallParams = SystemProperties
++                    .getBoolean("ro.telephony.samsung.realcall", false);
+             if (mIsInitialized) {
+                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
++                if(setMsimRealcallParams){
++                    mAudioManager.setParameters("realcall=off");
 +                }
-+            } catch (NumberFormatException e) {
-+                Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
-+            }
-+        }
-+        return -1;
-+    }
-+	
-+	private void setMSIMAudio(int oldState, int newState) {
-+		Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
-+		int mPhoneID = 0;
-+		if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
-+			Log.i(this, "setMSIMAudio INCOMING CALL");
-+			mPhoneID = getPhoneId(getForegroundCall());
-+			if(mPhoneID == 0){
-+				Log.i(this, "setMSIMAudio INCOMING CALL CP1");
-+				mAudioManager.setParameters("phone_type=cp1");	
-+			}else if (mPhoneID == 1){
-+				Log.i(this, "setMSIMAudio INCOMING CALL CP2");
-+				mAudioManager.setParameters("phone_type=cp2");	
-+			}
-+			Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
-+			mAudioManager.setParameters("realcall=on");
-+		}else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
-+			Log.i(this, "setMSIMAudio OUT CALL");
-+			mPhoneID = getPhoneId(getForegroundCall());
-+			if(mPhoneID == 0){
-+				Log.i(this, "setMSIMAudio OUT CALL CP1");
-+				mAudioManager.setParameters("phone_type=cp1");	
-+			}else if (mPhoneID == 1){
-+				Log.i(this, "setMSIMAudio OUT CALL CP2");
-+				mAudioManager.setParameters("phone_type=cp2");		
-+			}
-+			Log.i(this, "setMSIMAudio OUT CALL REALCALL ON");
-+			mAudioManager.setParameters("realcall=on");
-+		}else if(newState == CallState.DISCONNECTED){
-+			Log.i(this, "setMSIMAudio DISCONNECTED OUT CALL REALCALL OFF");
-+			mAudioManager.setParameters("realcall=off");
-+		}
-+		else if(newState == CallState.ABORTED){
-+			Log.i(this, "setMSIMAudio ABORTED OUT CALL REALCALL OFF");
-+			mAudioManager.setParameters("realcall=off");
-+		}
-+    }
+                 mAudioManager.abandonAudioFocusForCall();
+                 mAudioManager.setMode(AudioManager.MODE_NORMAL);
  
-     ViceNotificationImpl getViceNotificationImpl() {
-         return mViceNotificationImpl;
-@@ -2075,6 +2134,10 @@
-             Trace.endSection();
-         }
-         manageDsdaInCallTones(false);
-+		boolean setMsimAudioParams = SystemProperties.getBoolean("ro.multisim.set_audio_params", false);
-+		if (call != null && setMsimAudioParams) {
-+			setMSIMAudio(oldState, newState);
-+		}
-     }
+@@ -289,6 +294,8 @@
+             Log.i(LOG_TAG, "Audio focus entering SIM CALL state");
+             boolean setMsimAudioParams = SystemProperties
+                     .getBoolean("ro.multisim.set_audio_params", false);
++            boolean setMsimRealcallParams = SystemProperties
++                    .getBoolean("ro.telephony.samsung.realcall", false);		
+             Call call = mCallAudioManager.getForegroundCall();
  
-     private void updateCanAddCall() {
-
+             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
+@@ -301,6 +308,9 @@
+                     mAudioManager.setParameters("phone_type=cp1");
+                 } else if (phoneId == 1) {
+                     mAudioManager.setParameters("phone_type=cp2");
++                }
++                if(setMsimRealcallParams){
++                    mAudioManager.setParameters("realcall=on");
+                 }
+             }
+ 
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
 +++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
@@ -110,22 +44,22 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
 +			   mAudioManager.setParameters("fm_mode=on");
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
-+               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+               mAudioManager.setSpeakerphoneOn(true);
++               /* mAudioManager.setMode(AudioManager.MODE_IN_CALL); */
++               /* mAudioManager.setSpeakerphoneOn(true); */
             } else {
                 Log.d(LOGTAG, "Audio source set it as headset");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
 +			   mAudioManager.setParameters("fm_mode=on");
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
-+               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+               mAudioManager.setSpeakerphoneOn(false);
++               /* mAudioManager.setMode(AudioManager.MODE_IN_CALL); */
++               /* mAudioManager.setSpeakerphoneOn(false); */
             }
         } else {
                 Log.d(LOGTAG, "A2DP is connected, set audio source to A2DP HS");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
                 mSpeakerPhoneOn = true;
-+			   mAudioManager.setSpeakerphoneOn(true);
++			   /* mAudioManager.setSpeakerphoneOn(true); */
         }
  
         mPlaybackInProgress = true;
@@ -142,7 +76,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
        public void run() {
           Log.v(LOGTAG, "Disabling Speaker");
           AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+		 mAudioManager.setSpeakerphoneOn(false);
++		 /* mAudioManager.setSpeakerphoneOn(false); */
        }
     };
  
@@ -150,7 +84,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
        if ( mSpeakerPhoneOn) {
            mSpeakerPhoneOn = false;
            AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+		  mAudioManager.setSpeakerphoneOn(false);
++		  /* mAudioManager.setSpeakerphoneOn(false); */
        }
     }
  
@@ -158,12 +92,12 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
              } else {
                  Log.d(LOGTAG, "A2DP is not connected, force none");
                  AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+				mAudioManager.setSpeakerphoneOn(false);
++				/* mAudioManager.setSpeakerphoneOn(false); */
              }
         } else if (speakerOn == true) {
             Log.d(LOGTAG, "enabling speaker");
             AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
-+		   mAudioManager.setSpeakerphoneOn(true);
++		   /* mAudioManager.setSpeakerphoneOn(true); */
         }
  
         Log.d(LOGTAG, "speakerOn completed:" + speakerOn);

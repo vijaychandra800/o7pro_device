@@ -126,7 +126,8 @@ AUDIO_FEATURE_ENABLED_FM             := true
 TARGET_HW_DISK_ENCRYPTION            := true
 
 # Build our own PowerHAL
-TARGET_POWERHAL_SET_INTERACTIVE_EXT  := $(LOCAL_PATH)/power/power_fortunave3g_ext.c
+TARGET_POWERHAL_VARIANT              := qcom
+TARGET_POWERHAL_SET_INTERACTIVE_EXT  := $(LOCAL_PATH)/power/power_ext.c
 
 # Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
