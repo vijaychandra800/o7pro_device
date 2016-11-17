@@ -133,12 +133,6 @@ static char *camera_fixup_getparams(int id, const char *settings)
 	
     params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     params.set("effect-values", "none,mono,negative,sepia");
-	
-    int video_width, video_height;
-    params.getPreviewSize(&video_width, &video_height);
-    if(video_width*video_height == 720*540){
-	 params.set("preview-size", "960x540");
-    }
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -173,6 +167,14 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
             params.set(android::CameraParameters::KEY_ISO_MODE, "400");
         else if (strcmp(isoMode, "ISO800") == 0)
             params.set(android::CameraParameters::KEY_ISO_MODE, "800");
+    }
+	
+    int video_width, video_height;
+    params.getPreviewSize(&video_width, &video_height);
+    if(video_width*video_height == 720*540){
+	 params.set("preview-size", "960x540");
+	 params.set("jpeg-thumbnail-width", "512");
+	 params.set("jpeg-thumbnail-height", "288");   
     }
 
     android::String8 strParams = params.flatten();
