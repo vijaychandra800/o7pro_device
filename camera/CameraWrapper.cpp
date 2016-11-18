@@ -172,9 +172,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
     int video_width, video_height;
     params.getPreviewSize(&video_width, &video_height);
     if(video_width*video_height == 720*540){
-	 params.set("preview-size", "960x540");
-	 params.set("jpeg-thumbnail-width", "512");
-	 params.set("jpeg-thumbnail-height", "288");   
+	 params.set("preview-size", "960x540");  
     }
 
     android::String8 strParams = params.flatten();
