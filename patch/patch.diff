@@ -1,39 +1,61 @@
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
-@@ -149,8 +149,13 @@
-     private class UnfocusedState extends BaseState {
-         @Override
-         public void enter() {
-+            boolean setMsimRealcallParams = SystemProperties
-+                    .getBoolean("ro.telephony.samsung.realcall", false);
-             if (mIsInitialized) {
-                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
-+                if(setMsimRealcallParams){
-+                    mAudioManager.setParameters("realcall=off");
-+                }
-                 mAudioManager.abandonAudioFocusForCall();
-                 mAudioManager.setMode(AudioManager.MODE_NORMAL);
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -245,6 +245,8 @@
+     private Call mPendingMOEmerCall = null;
+     private Call mDisconnectingCall = null;
  
-@@ -289,6 +294,8 @@
-             Log.i(LOG_TAG, "Audio focus entering SIM CALL state");
-             boolean setMsimAudioParams = SystemProperties
-                     .getBoolean("ro.multisim.set_audio_params", false);
-+            boolean setMsimRealcallParams = SystemProperties
-+                    .getBoolean("ro.telephony.samsung.realcall", false);		
-             Call call = mCallAudioManager.getForegroundCall();
++    private AudioManager mAudioManager;
++
+     /**
+      * Initializes the required Telecom components.
+      */
+@@ -329,6 +331,8 @@
+         mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
+         mViceNotificationImpl = viceNotifier.create(mContext, this);
  
-             mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
-@@ -301,6 +308,9 @@
-                     mAudioManager.setParameters("phone_type=cp1");
-                 } else if (phoneId == 1) {
-                     mAudioManager.setParameters("phone_type=cp2");
-+                }
-+                if(setMsimRealcallParams){
-+                    mAudioManager.setParameters("realcall=on");
-                 }
-             }
++        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
++
+         mListeners.add(mInCallWakeLockController);
+         mListeners.add(statusBarNotifier);
+         mListeners.add(mCallLogManager);
+@@ -348,6 +352,23 @@
+         }
+     }
  
++    private void setMSIMAudio(int oldState, int newState) {
++        Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
++        if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
++            Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
++            mAudioManager.setParameters("realcall=on");
++        }else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
++            Log.i(this, "setMSIMAudio OUT CALL REALCALL ON");
++            mAudioManager.setParameters("realcall=on");
++        }else if(newState == CallState.DISCONNECTED){
++            Log.i(this, "setMSIMAudio DISCONNECTED OUT CALL REALCALL OFF");
++            mAudioManager.setParameters("realcall=off");
++        }else if(newState == CallState.ABORTED){
++            Log.i(this, "setMSIMAudio ABORTED OUT CALL REALCALL OFF");
++            mAudioManager.setParameters("realcall=off");
++        }
++    }
++
+     ViceNotificationImpl getViceNotificationImpl() {
+         return mViceNotificationImpl;
+     }
+@@ -2075,6 +2096,11 @@
+             Trace.endSection();
+         }
+         manageDsdaInCallTones(false);
++
++        boolean setMsimAudioParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
++        if (call != null && setMsimAudioParams) {
++            setMSIMAudio(oldState, newState);
++        }
+     }
+ 
+     private void updateCanAddCall() {
+
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
 +++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
