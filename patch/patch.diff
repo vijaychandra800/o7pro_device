@@ -1,7 +1,16 @@
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
 +++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
-@@ -245,6 +245,8 @@
+@@ -48,6 +48,8 @@
+ import android.telecom.PhoneAccountHandle;
+ import android.telecom.TelecomManager;
+ import android.telecom.VideoProfile;
++import android.telecom.PhoneAccountHandle;
++import android.telephony.SubscriptionManager;
+ import android.telephony.PhoneNumberUtils;
+ import android.telephony.TelephonyManager;
+ import android.text.TextUtils;
+@@ -245,6 +247,8 @@
      private Call mPendingMOEmerCall = null;
      private Call mDisconnectingCall = null;
  
@@ -10,7 +19,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
      /**
       * Initializes the required Telecom components.
       */
-@@ -329,6 +331,8 @@
+@@ -329,6 +333,8 @@
          mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
          mViceNotificationImpl = viceNotifier.create(mContext, this);
  
@@ -19,18 +28,55 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
          mListeners.add(mInCallWakeLockController);
          mListeners.add(statusBarNotifier);
          mListeners.add(mCallLogManager);
-@@ -348,6 +352,23 @@
+@@ -348,6 +354,60 @@
          }
      }
  
++    private int getPhoneId(Call call) {
++        if (call.getTargetPhoneAccount() != null) {
++            PhoneAccountHandle account = call.getTargetPhoneAccount();
++            try {
++                int index = Integer.parseInt(account.getId());
++                int phoneId = SubscriptionManager.getPhoneId(index);
++                if (SubscriptionManager.isValidPhoneId(phoneId)) {
++                    return phoneId;
++                }
++            } catch (NumberFormatException e) {
++                Log.e(LOG_TAG, e, "Cannot get phoneId from ID value " + account.getId());
++            }
++        }
++        return -1;
++    }
++
 +    private void setMSIMAudio(int oldState, int newState) {
 +        Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
++        int mPhoneID = 0;
 +        if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
++            mPhoneID = getPhoneId(getForegroundCall());
++            if(mPhoneID == 0){
++                Log.i(this, "setMSIMAudio INCOMING CALL CP1");
++                mAudioManager.setParameters("phone_type=cp1");	
++            }else if (mPhoneID == 1){
++                Log.i(this, "setMSIMAudio INCOMING CALL CP2");
++                mAudioManager.setParameters("phone_type=cp2");	
++            }
 +            Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
 +            mAudioManager.setParameters("realcall=on");
++            mAudioManager.setSpeakerphoneOn(true);
++            mAudioManager.setSpeakerphoneOn(false);
 +        }else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
++            mPhoneID = getPhoneId(getForegroundCall());
++            if(mPhoneID == 0){
++                Log.i(this, "setMSIMAudio OUT CALL CP1");
++                mAudioManager.setParameters("phone_type=cp1");	
++            }else if (mPhoneID == 1){
++                Log.i(this, "setMSIMAudio OUT CALL CP2");
++                mAudioManager.setParameters("phone_type=cp2");	
++            }
 +            Log.i(this, "setMSIMAudio OUT CALL REALCALL ON");
 +            mAudioManager.setParameters("realcall=on");
++            mAudioManager.setSpeakerphoneOn(true);
++            mAudioManager.setSpeakerphoneOn(false);
 +        }else if(newState == CallState.DISCONNECTED){
 +            Log.i(this, "setMSIMAudio DISCONNECTED OUT CALL REALCALL OFF");
 +            mAudioManager.setParameters("realcall=off");
@@ -43,7 +89,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
      ViceNotificationImpl getViceNotificationImpl() {
          return mViceNotificationImpl;
      }
-@@ -2075,6 +2096,11 @@
+@@ -2075,6 +2135,11 @@
              Trace.endSection();
          }
          manageDsdaInCallTones(false);
