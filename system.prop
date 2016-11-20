@@ -92,5 +92,4 @@ ro.config.zram=true
 ro.product.model=SM-G530H
 
 # Samsung OEM
-ro.multisim.set_audio_params=true
 ro.telephony.samsung.realcall=true
