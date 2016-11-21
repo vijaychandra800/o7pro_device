@@ -42,7 +42,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +                    return phoneId;
 +                }
 +            } catch (NumberFormatException e) {
-+                Log.e(LOG_TAG, e, "Cannot get phoneId from ID value " + account.getId());
++                Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
 +            }
 +        }
 +        return -1;
