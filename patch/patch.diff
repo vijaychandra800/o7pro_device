@@ -62,8 +62,6 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +            }
 +            Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
 +            mAudioManager.setParameters("realcall=on");
-+            mAudioManager.setSpeakerphoneOn(true);
-+            mAudioManager.setSpeakerphoneOn(false);
 +        }else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
 +            mPhoneID = getPhoneId(getForegroundCall());
 +            if(mPhoneID == 0){
@@ -75,8 +73,6 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +            }
 +            Log.i(this, "setMSIMAudio OUT CALL REALCALL ON");
 +            mAudioManager.setParameters("realcall=on");
-+            mAudioManager.setSpeakerphoneOn(true);
-+            mAudioManager.setSpeakerphoneOn(false);
 +        }else if(newState == CallState.DISCONNECTED){
 +            Log.i(this, "setMSIMAudio DISCONNECTED OUT CALL REALCALL OFF");
 +            mAudioManager.setParameters("realcall=off");
