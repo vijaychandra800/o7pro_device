@@ -28,7 +28,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
          mListeners.add(mInCallWakeLockController);
          mListeners.add(statusBarNotifier);
          mListeners.add(mCallLogManager);
-@@ -348,6 +354,60 @@
+@@ -348,6 +354,56 @@
          }
      }
  
@@ -48,11 +48,11 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +        return -1;
 +    }
 +
-+    private void setMSIMAudio(int oldState, int newState) {
++    private void setMSIMAudio(Call call, int oldState, int newState) {
 +        Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
 +        int mPhoneID = 0;
 +        if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
-+            mPhoneID = getPhoneId(getForegroundCall());
++            mPhoneID = getPhoneId(call);
 +            if(mPhoneID == 0){
 +                Log.i(this, "setMSIMAudio INCOMING CALL CP1");
 +                mAudioManager.setParameters("phone_type=cp1");	
@@ -62,8 +62,8 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 +            }
 +            Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
 +            mAudioManager.setParameters("realcall=on");
-+        }else if(oldState == CallState.DIALING && newState == CallState.ACTIVE){ /* OUTCALL */
-+            mPhoneID = getPhoneId(getForegroundCall());
++        }else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
++            mPhoneID = getPhoneId(call);
 +            if(mPhoneID == 0){
 +                Log.i(this, "setMSIMAudio OUT CALL CP1");
 +                mAudioManager.setParameters("phone_type=cp1");	
@@ -85,14 +85,14 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
      ViceNotificationImpl getViceNotificationImpl() {
          return mViceNotificationImpl;
      }
-@@ -2075,6 +2135,11 @@
+@@ -2075,6 +2131,11 @@
              Trace.endSection();
          }
          manageDsdaInCallTones(false);
 +
 +        boolean setMsimAudioParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
 +        if (call != null && setMsimAudioParams) {
-+            setMSIMAudio(oldState, newState);
++            setMSIMAudio(call, oldState, newState);
 +        }
      }
  
