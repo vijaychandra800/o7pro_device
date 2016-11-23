@@ -1,102 +1,28 @@
-diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
---- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
-+++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
-@@ -48,6 +48,8 @@
- import android.telecom.PhoneAccountHandle;
- import android.telecom.TelecomManager;
- import android.telecom.VideoProfile;
-+import android.telecom.PhoneAccountHandle;
-+import android.telephony.SubscriptionManager;
- import android.telephony.PhoneNumberUtils;
- import android.telephony.TelephonyManager;
- import android.text.TextUtils;
-@@ -245,6 +247,8 @@
-     private Call mPendingMOEmerCall = null;
-     private Call mDisconnectingCall = null;
- 
-+    private AudioManager mAudioManager;
-+
-     /**
-      * Initializes the required Telecom components.
-      */
-@@ -329,6 +333,8 @@
-         mInCallWakeLockController = inCallWakeLockControllerFactory.create(context, this);
-         mViceNotificationImpl = viceNotifier.create(mContext, this);
- 
-+        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-+
-         mListeners.add(mInCallWakeLockController);
-         mListeners.add(statusBarNotifier);
-         mListeners.add(mCallLogManager);
-@@ -348,6 +354,56 @@
-         }
-     }
- 
-+    private int getPhoneId(Call call) {
-+        if (call.getTargetPhoneAccount() != null) {
-+            PhoneAccountHandle account = call.getTargetPhoneAccount();
-+            try {
-+                int index = Integer.parseInt(account.getId());
-+                int phoneId = SubscriptionManager.getPhoneId(index);
-+                if (SubscriptionManager.isValidPhoneId(phoneId)) {
-+                    return phoneId;
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
+@@ -150,8 +150,13 @@
+         @Override
+         public void enter() {
+             if (mIsInitialized) {
++                boolean setMsimAudioParams = SystemProperties
++                    .getBoolean("ro.multisim.set_audio_params", false);
+                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
+                 mAudioManager.abandonAudioFocusForCall();
++                if (setMsimAudioParams) {
++                    mAudioManager.setParameters("realcall=off");
 +                }
-+            } catch (NumberFormatException e) {
-+                Log.e(this, e, "Cannot get phoneId from ID value " + account.getId());
-+            }
-+        }
-+        return -1;
-+    }
-+
-+    private void setMSIMAudio(Call call, int oldState, int newState) {
-+        Log.i(this, "setMSIMAudio %s -> %s", CallState.toString(oldState), CallState.toString(newState));
-+        int mPhoneID = 0;
-+        if(oldState == CallState.RINGING && newState == CallState.ACTIVE){
-+            mPhoneID = getPhoneId(call);
-+            if(mPhoneID == 0){
-+                Log.i(this, "setMSIMAudio INCOMING CALL CP1");
-+                mAudioManager.setParameters("phone_type=cp1");	
-+            }else if (mPhoneID == 1){
-+                Log.i(this, "setMSIMAudio INCOMING CALL CP2");
-+                mAudioManager.setParameters("phone_type=cp2");	
-+            }
-+            Log.i(this, "setMSIMAudio INCOMING CALL REALCALL ON");
-+            mAudioManager.setParameters("realcall=on");
-+        }else if(oldState == CallState.DIALING && newState == CallState.DIALING){ /* OUTCALL */
-+            mPhoneID = getPhoneId(call);
-+            if(mPhoneID == 0){
-+                Log.i(this, "setMSIMAudio OUT CALL CP1");
-+                mAudioManager.setParameters("phone_type=cp1");	
-+            }else if (mPhoneID == 1){
-+                Log.i(this, "setMSIMAudio OUT CALL CP2");
-+                mAudioManager.setParameters("phone_type=cp2");	
-+            }
-+            Log.i(this, "setMSIMAudio OUT CALL REALCALL ON");
-+            mAudioManager.setParameters("realcall=on");
-+        }else if(newState == CallState.DISCONNECTED){
-+            Log.i(this, "setMSIMAudio DISCONNECTED OUT CALL REALCALL OFF");
-+            mAudioManager.setParameters("realcall=off");
-+        }else if(newState == CallState.ABORTED){
-+            Log.i(this, "setMSIMAudio ABORTED OUT CALL REALCALL OFF");
-+            mAudioManager.setParameters("realcall=off");
-+        }
-+    }
-+
-     ViceNotificationImpl getViceNotificationImpl() {
-         return mViceNotificationImpl;
-     }
-@@ -2075,6 +2131,11 @@
-             Trace.endSection();
-         }
-         manageDsdaInCallTones(false);
-+
-+        boolean setMsimAudioParams = SystemProperties.getBoolean("ro.telephony.samsung.realcall", false);
-+        if (call != null && setMsimAudioParams) {
-+            setMSIMAudio(call, oldState, newState);
-+        }
-     }
+                 mAudioManager.setMode(AudioManager.MODE_NORMAL);
  
-     private void updateCanAddCall() {
+                 mMostRecentMode = AudioManager.MODE_NORMAL;
+@@ -297,6 +302,7 @@
+             if (call != null && setMsimAudioParams) {
+                 int phoneId = getPhoneId(call);
+                 Log.d(LOG_TAG, "setAudioParameters phoneId=" + phoneId);
++                mAudioManager.setParameters("realcall=on");
+                 if (phoneId == 0) {
+                     mAudioManager.setParameters("phone_type=cp1");
+                 } else if (phoneId == 1) {
 
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
