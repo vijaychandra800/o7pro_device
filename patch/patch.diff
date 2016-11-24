@@ -6,7 +6,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
          public void enter() {
              if (mIsInitialized) {
 +                boolean setRealcallAudioParams = SystemProperties
-+                    .getBoolean("ro.multisim.set_audio_params", false);
++                    .getBoolean("ro.telephony.samsung.realcall", false);
                  Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
                  mAudioManager.abandonAudioFocusForCall();
 +                if (setRealcallAudioParams) {
