@@ -85,8 +85,8 @@ PRODUCT_PACKAGES += \
     cm_charger_res_images
 
 # Doze
-PRODUCT_PACKAGES += \
-    SamsungDoze
+#PRODUCT_PACKAGES += \
+#    SamsungDoze
 	
 # Audio
 PRODUCT_PACKAGES += \
