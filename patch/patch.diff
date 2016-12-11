@@ -1,13 +1,47 @@
+diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java
+--- a/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Wed Apr 20 08:50:20 2016
++++ b/packages/services/Telecomm/src/com/android/server/telecom/CallsManager.java	Thu May 12 01:31:40 2016
+@@ -247,6 +247,8 @@
+     // buffer.
+     private Call mPendingMOEmerCall = null;
+     private Call mDisconnectingCall = null;
++	
++	public TelephonyManager mTm;
+ 
+     /**
+      * Initializes the required Telecom components.
+@@ -319,10 +321,12 @@
+                 context, mLock, this, systemStateProvider, defaultDialerAdapter, mTimeoutsAdapter);
+         mRinger = new Ringer(playerFactory, context, systemSettingsUtil, asyncRingtonePlayer,
+                 ringtoneFactory, systemVibrator, mInCallController);
++				
++		mTm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);		
+ 
+         mCallAudioManager = new CallAudioManager(callAudioRouteStateMachine,
+                 this,new CallAudioModeStateMachine((AudioManager)
+-                        mContext.getSystemService(Context.AUDIO_SERVICE)),
++                        mContext.getSystemService(Context.AUDIO_SERVICE), mTm),
+                 playerFactory, mRinger, new RingbackPlayer(playerFactory), mDtmfLocalTonePlayer);
+ 
+         mHeadsetMediaButton = headsetMediaButtonFactory.create(context, this, mLock);
+
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
 +++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
-@@ -150,8 +150,13 @@
-         @Override
+@@ -21,6 +21,7 @@
+ import android.os.SystemProperties;
+ import android.telecom.PhoneAccountHandle;
+ import android.telephony.SubscriptionManager;
++import android.telephony.TelephonyManager;
+ import android.util.SparseArray;
+ 
+ import com.android.internal.util.IState;
+@@ -151,7 +152,12 @@
          public void enter() {
              if (mIsInitialized) {
+                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
 +                boolean setRealcallAudioParams = SystemProperties
 +                    .getBoolean("ro.telephony.samsung.realcall", false);
-                 Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
                  mAudioManager.abandonAudioFocusForCall();
 +                if (setRealcallAudioParams) {
 +                    mAudioManager.setParameters("realcall=off");
@@ -15,25 +49,53 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  mAudioManager.setMode(AudioManager.MODE_NORMAL);
  
                  mMostRecentMode = AudioManager.MODE_NORMAL;
-@@ -289,6 +294,8 @@
+@@ -292,6 +298,8 @@
              Log.i(LOG_TAG, "Audio focus entering SIM CALL state");
              boolean setMsimAudioParams = SystemProperties
                      .getBoolean("ro.multisim.set_audio_params", false);
 +            boolean setRealcallAudioParams = SystemProperties
-+                    .getBoolean("ro.telephony.samsung.realcall", false);
++                    .getBoolean("ro.telephony.samsung.realcall", false);		
              Call call = mCallAudioManager.getForegroundCall();
  
              mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
-@@ -302,6 +309,9 @@
+@@ -305,6 +313,9 @@
                  } else if (phoneId == 1) {
                      mAudioManager.setParameters("phone_type=cp2");
                  }
-+            }
-+            if(setRealcallAudioParams){
-+                mAudioManager.setParameters("realcall=on");
++                if(setRealcallAudioParams){
++                    mAudioManager.setParameters("realcall=on");
++                }
              }
  
              mAudioManager.setMode(AudioManager.MODE_IN_CALL);
+@@ -366,7 +377,10 @@
+             if (call.getTargetPhoneAccount() != null) {
+                 PhoneAccountHandle account = call.getTargetPhoneAccount();
+                 try {
+-                    int index = Integer.parseInt(account.getId());
++                    int index = 0;
++                    if (account != null && account.hasCapabilities(PhoneAccount.CAPABILITY_SIM_SUBSCRIPTION)) {
++                        index = mTm.getSubIdForPhoneAccount(account);
++                    }
+                     int phoneId = SubscriptionManager.getPhoneId(index);
+                     if (SubscriptionManager.isValidPhoneId(phoneId)) {
+                         return phoneId;
+@@ -507,11 +521,14 @@
+ 
+     private int mMostRecentMode;
+     private boolean mIsInitialized = false;
++	
++	public TelephonyManager mTm;
+ 
+-    public CallAudioModeStateMachine(AudioManager audioManager) {
++    public CallAudioModeStateMachine(AudioManager audioManager, TelephonyManager Tm) {
+         super(CallAudioModeStateMachine.class.getSimpleName());
+         mAudioManager = audioManager;
+         mMostRecentMode = AudioManager.MODE_NORMAL;
++		mTm = Tm;
+ 
+         addState(mUnfocusedState);
+         addState(mRingingFocusState);
 
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
