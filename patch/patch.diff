@@ -28,15 +28,19 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallsManage
 diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java
 --- a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Wed Apr 20 08:50:20 2016
 +++ b/packages/services/Telecomm/src/com/android/server/telecom/CallAudioModeStateMachine.java	Thu May 12 01:31:40 2016
-@@ -21,6 +21,7 @@
+@@ -20,8 +20,11 @@
+ import android.os.Message;
  import android.os.SystemProperties;
  import android.telecom.PhoneAccountHandle;
++import android.telecom.PhoneAccount;
  import android.telephony.SubscriptionManager;
 +import android.telephony.TelephonyManager;
  import android.util.SparseArray;
++import java.util.Objects;
  
  import com.android.internal.util.IState;
-@@ -151,7 +152,12 @@
+ import com.android.internal.util.State;
+@@ -151,7 +154,12 @@
          public void enter() {
              if (mIsInitialized) {
                  Log.i(LOG_TAG, "Abandoning audio focus: now UNFOCUSED");
@@ -49,7 +53,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  mAudioManager.setMode(AudioManager.MODE_NORMAL);
  
                  mMostRecentMode = AudioManager.MODE_NORMAL;
-@@ -292,6 +298,8 @@
+@@ -292,6 +300,8 @@
              Log.i(LOG_TAG, "Audio focus entering SIM CALL state");
              boolean setMsimAudioParams = SystemProperties
                      .getBoolean("ro.multisim.set_audio_params", false);
@@ -58,7 +62,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
              Call call = mCallAudioManager.getForegroundCall();
  
              mAudioManager.requestAudioFocusForCall(AudioManager.STREAM_VOICE_CALL,
-@@ -305,6 +313,9 @@
+@@ -305,6 +315,9 @@
                  } else if (phoneId == 1) {
                      mAudioManager.setParameters("phone_type=cp2");
                  }
@@ -68,19 +72,30 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
              }
  
              mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-@@ -366,7 +377,10 @@
+@@ -366,13 +379,20 @@
              if (call.getTargetPhoneAccount() != null) {
                  PhoneAccountHandle account = call.getTargetPhoneAccount();
                  try {
 -                    int index = Integer.parseInt(account.getId());
 +                    int index = 0;
 +                    if (account != null && account.hasCapabilities(PhoneAccount.CAPABILITY_SIM_SUBSCRIPTION)) {
-+                        index = mTm.getSubIdForPhoneAccount(account);
++                        for (PhoneAccount m : mState.accounts) {
++                            if (Objects.equals(account, m.getAccountHandle())) {
++                                index = mTm.getSubIdForPhoneAccount(m);
++                            }
++                        }
 +                    }
                      int phoneId = SubscriptionManager.getPhoneId(index);
                      if (SubscriptionManager.isValidPhoneId(phoneId)) {
                          return phoneId;
-@@ -507,11 +521,14 @@
+                     }
+                 } catch (NumberFormatException e) {
+-                    Log.e(LOG_TAG, e, "Cannot get phoneId from ID value " + account.getId());
++                    Log.e(LOG_TAG, e, "Cannot get phoneId from ID value");
+                 }
+             }
+             return -1;
+@@ -507,11 +527,14 @@
  
      private int mMostRecentMode;
      private boolean mIsInitialized = false;
