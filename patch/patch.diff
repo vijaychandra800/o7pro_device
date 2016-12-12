@@ -78,7 +78,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  try {
 -                    int index = Integer.parseInt(account.getId());
 +                    int index = 0;
-+                    if (account != null && account.hasCapabilities(PhoneAccount.CAPABILITY_SIM_SUBSCRIPTION)) {
++                    if (account != null) {
 +                        for (PhoneAccount m : mState.accounts) {
 +                            if (Objects.equals(account, m.getAccountHandle())) {
 +                                index = mTm.getSubIdForPhoneAccount(m);
