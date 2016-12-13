@@ -33,7 +33,7 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
              }
  
              mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-@@ -364,15 +374,14 @@
+@@ -364,15 +374,25 @@
  
          private int getPhoneId(Call call) {
              if (call.getTargetPhoneAccount() != null) {
@@ -41,8 +41,19 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  try {
 -                    int index = Integer.parseInt(account.getId());
 -                    int phoneId = SubscriptionManager.getPhoneId(index);
-+                        int phoneId = 0; /* SubscriptionManager.getPhoneId(
-+                        Integer.valueOf(call.getTargetPhoneAccount().getId())); */
++                    int phoneId = 0;
++                    SubscriptionInfo SimInfo1 = SubscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(0);
++                    SubscriptionInfo SimInfo2 = SubscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(1);
++                    long ID1 = Long.valueOf(SimInfo1.getSubscriptionId);
++                    long ID2 = Long.valueOf(SimInfo2.getSubscriptionId);
++                    long phone = Long.valueOf(call.getTargetPhoneAccount().getId());
++                    if(ID1 == phone){
++                       phoneId = 0;
++                       Log.i(LOG_TAG, "SIM CALL state phoneId = 0");
++                    }else if(ID2 == phone){
++                       phoneId = 1;
++                       Log.i(LOG_TAG, "SIM CALL state phoneId = 1");
++                    }
                      if (SubscriptionManager.isValidPhoneId(phoneId)) {
                          return phoneId;
                      }
