@@ -41,8 +41,8 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMo
                  try {
 -                    int index = Integer.parseInt(account.getId());
 -                    int phoneId = SubscriptionManager.getPhoneId(index);
-+                        int phoneId = SubscriptionManager.getPhoneId(
-+                        Integer.valueOf(call.getTargetPhoneAccount().getId()));
++                        int phoneId = 0; /* SubscriptionManager.getPhoneId(
++                        Integer.valueOf(call.getTargetPhoneAccount().getId())); */
                      if (SubscriptionManager.isValidPhoneId(phoneId)) {
                          return phoneId;
                      }
