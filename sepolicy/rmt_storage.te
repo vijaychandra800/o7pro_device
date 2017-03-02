@@ -1,0 +1,2 @@
+allow rmt_storage log_device:chr_file { write open };
+

@@ -1,0 +1,2 @@
+allow servicemanager log_device:chr_file { write open };
+

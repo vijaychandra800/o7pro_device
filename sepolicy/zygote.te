@@ -1,0 +1,2 @@
+allow zygote log_device:chr_file { write open };
+
