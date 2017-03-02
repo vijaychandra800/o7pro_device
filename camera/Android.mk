@@ -1,4 +1,4 @@
-ifeq ($(TARGET_DEVICE),fortunave3g)
+ifeq ($(TARGET_DEVICE),o7prolte)
 
 ifeq ($(TARGET_PROVIDES_CAMERA_HAL),true)
 

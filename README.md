@@ -1,21 +1,21 @@
-# Device tree for Samsung Grand Prime SM-G530H (XCU)
+# Device tree for Samsung On7 pro SM-G600FY
 
 ### Specs (Physically inspected):
-  - CPU: Qualcomm MSM8216 Snapdragon 410, 1200 MHz
-  - Codename: FORTUNAVE3G
+  - CPU: Qualcomm MSM8216 Snapdragon 410, 3000 MHz
+  - Codename: o7prolte
   - Display Panel:
-  - Display Resolution: 960x540
+  - Display Resolution: 1280x720
   - EMMC:
   - Family:
   - GPU: Qualcomm Adreno 306
   - Misc: WIFI/Tether, Bluetooth, HSPA, GPS, FM-Radio
   - PMU:
-  - Camera(8MP): S.LSI. S5K4H5YB
+  - Camera(13MP): S.LSI. S5K4H5YB
   - Camera(5MP): S.LSI. S5K5E3YX
   - Platform: MSM8916
-  - RAM: 1Gb
+  - RAM: 2Gb
   - Sensor: K303C, GP2A002
-  - Shipped with Android 5.0.2
+  - Shipped with Android 6.0.1
   - SoC:
   - Touch Panel:
   - WIFI/Bluetooth/FM-Radio:

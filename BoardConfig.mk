@@ -2,14 +2,14 @@
 -include device/samsung/qcom-common/BoardConfigCommon.mk
 
 # Inherit from the proprietary version
--include vendor/samsung/fortunave3g/BoardConfigVendor.mk
+-include vendor/samsung/o7prolte/BoardConfigVendor.mk
 
-LOCAL_PATH := device/samsung/fortunave3g
+LOCAL_PATH := device/samsung/o7prolte
 
 #BLOCK_BASED_OTA := false
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := samsung_sm_g530h,fortunave3g,fortuna3g
+TARGET_OTA_ASSERT_DEVICE := o7prolte,SM-G600FY,G600FY
 
 # Platform
 TARGET_BOARD_PLATFORM           := msm8916
@@ -46,8 +46,8 @@ BOARD_RAMDISK_OFFSET         := 0x02000000
 BOARD_KERNEL_TAGS_OFFSET     := 0x01e00000
 BOARD_KERNEL_PAGESIZE        := 2048
 BOARD_KERNEL_SEPARATED_DT    := true
-TARGET_KERNEL_SOURCE         := kernel/samsung/fortunaxx3g
-TARGET_KERNEL_CONFIG             := msm8916_fortunave3g_eur_defconfig
+TARGET_KERNEL_SOURCE         := kernel/samsung/o7prolte
+TARGET_KERNEL_CONFIG             := o7prolte_defconfig
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
@@ -93,7 +93,7 @@ BOARD_HAVE_BLUETOOTH_QCOM                   := true
 BLUETOOTH_HCI_USE_MCT                       := true
 
 # Custom RIL class
-BOARD_RIL_CLASS                     := ../../../device/samsung/fortunave3g/ril/
+BOARD_RIL_CLASS                     := ../../../device/samsung/o7prolte/ril/
 PROTOBUF_SUPPORTED                  := true
 #USE_DEVICE_SPECIFIC_DATASERVICES    := true
 
@@ -102,8 +102,8 @@ EXTENDED_FONT_FOOTPRINT             := true
 
 # Vendor Init
 TARGET_UNIFIED_DEVICE                := true
-TARGET_INIT_VENDOR_LIB               := libinit_fortunave3g
-TARGET_RECOVERY_DEVICE_MODULES       := libinit_fortunave3g
+TARGET_INIT_VENDOR_LIB               := libinit_o7prolte
+TARGET_RECOVERY_DEVICE_MODULES       := libinit_o7prolte
 
 # Audio
 BOARD_USES_ALSA_AUDIO                := true
@@ -191,4 +191,4 @@ TARGET_RELEASETOOLS_EXTENSIONS      := $(LOCAL_PATH)
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
-   device/samsung/fortunave3g/sepolicy
+   device/samsung/o7prolte/sepolicy

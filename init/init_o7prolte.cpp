@@ -51,11 +51,11 @@ void vendor_load_properties()
 
     property_get("ro.bootloader", bootloader);
 
-    property_set("ro.build.fingerprint", "samsung/fortuna3gxx/fortuna3g:5.0.2/LRX22G/G530HXXU2BPG1:user/release-keys");
-    property_set("ro.build.description", "fortuna3gxx-user 5.0.2 LRX22G G530HXXU2BPG1 release-keys");
+    property_set("ro.build.fingerprint", "samsung/o7proltedd/o7prolte:6.0.1/MMB29M/G600FYDDU1BPL2:user/release-keys");
+    property_set("ro.build.description", "o7proltedd-user 6.0.1 MMB29M G600FYDDU1BPL2 release-keys");
     
-	property_set("ro.product.model", "SM-G530H");
-    property_set("ro.product.device", "fortunave3g");
+	property_set("ro.product.model", "SM-G600FY");
+    property_set("ro.product.device", "o7prolte");
    
     property_get("ro.product.device", device);
     strlcpy(devicename, device, sizeof(devicename));
