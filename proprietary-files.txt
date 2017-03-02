@@ -142,7 +142,7 @@ lib/libsomxnaace.so
 lib/hw/sensors.msm8916.so
 lib/hw/gps.default.so
 lib/hw/audio.primary.msm8916.so
-lib/hw/camera.msm8916.so
+lib/hw/camera.msm8916.so:lib/hw/camera.vendor.msm8916.so
 lib/libawb_algo_rear_al.so
 lib/libcommonpawrapper.so
 lib/libsomxaacd.so
