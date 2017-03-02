@@ -165,10 +165,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     qcmediaplayer
 	
-# Gello
-PRODUCT_PACKAGES += \
-    Gello	
-
 # FM
 PRODUCT_PACKAGES += \
     FM2 \
