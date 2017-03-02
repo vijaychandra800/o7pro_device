@@ -23,6 +23,7 @@ ro.multisim.simslotcount=2
 persist.radio.add_power_save=1
 ro.telephony.ril.config=simactivation
 ro.ril.telephony.mqanelements=6
+rilswitch.vendorlibpath=/system/lib/libsec-ril.so
 
 # Data modules (For evolution RIL model)
 ro.use_data_netmgrd=false
