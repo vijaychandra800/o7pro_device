@@ -158,8 +158,8 @@ MAX_EGL_CACHE_SIZE                    := 2048*1024
 OVERRIDE_RS_DRIVER                    := libRSDriver.so
 
 # Boot animation
-TARGET_SCREEN_WIDTH                 := 540
-TARGET_SCREEN_HEIGHT                := 960
+TARGET_SCREEN_WIDTH                 := 720
+TARGET_SCREEN_HEIGHT                := 1280
 
 # Recovery
 TARGET_RECOVERY_FSTAB 				:= $(LOCAL_PATH)/rootdir/fstab.qcom

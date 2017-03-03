@@ -119,7 +119,12 @@ PRODUCT_PACKAGES += \
     libqdutils \
     libqservice \
     libtinyxml
-	
+
+# Ril
+PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/dsi_config.xml:system/etc/data/dsi_config.xml
+PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/netmgr_config.xml:system/etc/data/netmgr_config.xml
+PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/qmi_config.xml:system/etc/data/qmi_config.xml 
+
 # libril_shim
 PRODUCT_PACKAGES += \
     libril_shim	
@@ -138,18 +143,17 @@ PRODUCT_PACKAGES += \
     
 # Camera
 PRODUCT_PACKAGES += \
-    Snap \
     libmm-qcamera \
     camera.msm8916
 	
 # OMX
 PRODUCT_PACKAGES += \
     libextmedia_jni \
-	libqcmediaplayer \
+    libqcmediaplayer \
     libc2dcolorconvert \
     libOmxVidcCommon \
-	libOmxVdecHevc \
-	libOmxVdpp \
+    libOmxVdecHevc \
+    libOmxVdpp \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -157,7 +161,7 @@ PRODUCT_PACKAGES += \
     libOmxQcelp13Enc \
     libOmxVdec \
     libOmxVenc \
-	libdivxdrmdecrypt \
+    libdivxdrmdecrypt \
     libstagefrighthw \
     libdashplayer \
     qcmediaplayer
@@ -246,7 +250,7 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
 # Dalvik heap config
-$(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 # Texture config.
 $(call inherit-product, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)

@@ -450,9 +450,6 @@ lib/libaudio-ril.so
 lib/libsecril-client.so
 lib/libsec-ril-dsds.so
 vendor/lib/libril-qcril-hook-oem.so
-etc/data/netmgr_config.xml
-etc/data/qmi_config.xml
-etc/data/dsi_config.xml
 CSCVersion.txt
 SW_Configuration.xml
 tima_measurement_info
