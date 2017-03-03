@@ -80,7 +80,6 @@ lib/libQmageDecoder.so
 lib/libatomcore.so
 lib/libsomxadpcmd.so
 lib/libaudio-resampler.so
-lib/libaudio-ril.so
 lib/libsamsungpowersound.so
 lib/libsfextcp.so
 lib/libomission_avoidance.so
@@ -365,9 +364,7 @@ vendor/lib/libSecureSampleAuthClient.so
 vendor/lib/libchromatix_s5k5e3yx_wide_snapshot.so
 vendor/lib/libmmcamera2_is.so
 vendor/lib/libmmcamera2_q3a_core.so
-vendor/lib/libril-qcril-hook-oem.so
 lib/libprotobuf-cpp-full.so
-lib/libsec-ril.so
 vendor/lib/libmmcamera2_cpp_module.so
 vendor/lib/libavenhancements.so
 vendor/lib/libI420colorconvert.so
@@ -442,8 +439,14 @@ vendor/lib/libmmcamera_imglib.so
 lib/lib_Samsung_AudioZoom_v102.so
 lib/libsamsungRecord_zoom.so
 lib/libsecnativefeature.so
-lib/libsec-ril-dsds.so
 lib/libSamsungPostProcessConvertor.so
 lib/libsecaudioinfo.so
-lib/libsecril-client.so
 
+bin/rild
+lib/libsec-ril.so
+lib/libril.so
+lib/librilutils.so
+lib/libaudio-ril.so
+lib/libsecril-client.so
+lib/libsec-ril-dsds.so
+vendor/lib/libril-qcril-hook-oem.so
