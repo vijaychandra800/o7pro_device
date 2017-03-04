@@ -257,10 +257,6 @@ $(call inherit-product, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-ifeq ($(TARGET_BUILD_VARIANT),user)      
-else      
-endif
-
 # Set those variables here to overwrite the inherited values.
 PRODUCT_DEVICE := o7prolte
 PRODUCT_NAME := cm_o7prolte
