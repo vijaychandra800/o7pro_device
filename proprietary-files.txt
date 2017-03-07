@@ -435,7 +435,7 @@ vendor/lib/libqmi.so
 vendor/lib/libqmi_client_helper.so
 vendor/lib/libSecureUILib.so
 vendor/lib/libmmcamera_imglib.so
-
+lib/libcamera_client.so
 lib/lib_Samsung_AudioZoom_v102.so
 lib/libsamsungRecord_zoom.so
 lib/libsecnativefeature.so
