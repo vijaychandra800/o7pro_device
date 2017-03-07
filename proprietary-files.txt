@@ -453,3 +453,11 @@ vendor/lib/libril-qcril-hook-oem.so
 CSCVersion.txt
 SW_Configuration.xml
 tima_measurement_info
+
+etc/Hdmi_cal.acdb
+etc/Handset_cal.acdb
+etc/Headset_cal.acdb
+etc/Speaker_cal.acdb
+etc/Bluetooth_cal.acdb
+etc/General_cal.acdb
+etc/Global_cal.acdb
