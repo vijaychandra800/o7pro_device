@@ -125,10 +125,6 @@ PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/dsi_config.xml:system
 PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/netmgr_config.xml:system/etc/data/netmgr_config.xml
 PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/qmi_config.xml:system/etc/data/qmi_config.xml 
 
-# libril_shim
-PRODUCT_PACKAGES += \
-    libril_shim	
-	
 # Power
 PRODUCT_PACKAGES += \
     power.msm8916
