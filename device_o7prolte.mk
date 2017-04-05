@@ -1,14 +1,14 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Also get non-open-source specific aspects if available
-$(call inherit-product-if-exists, vendor/samsung/fortunave3g/fortunave3g-common-vendor.mk)
+$(call inherit-product-if-exists, vendor/samsung/o7prolte/o7prolte-vendor.mk)
 
 # Screen density
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 # Common overlay
-DEVICE_PACKAGE_OVERLAYS += device/samsung/fortunave3g/overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/o7prolte/overlay
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -120,6 +120,11 @@ PRODUCT_PACKAGES += \
     libqservice \
     libtinyxml
 
+# Ril
+PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/dsi_config.xml:system/etc/data/dsi_config.xml
+PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/netmgr_config.xml:system/etc/data/netmgr_config.xml
+PRODUCT_COPY_FILES += device/samsung/o7prolte/configs/data/qmi_config.xml:system/etc/data/qmi_config.xml 
+
 # libril_shim
 PRODUCT_PACKAGES += \
     libril_shim
@@ -139,20 +144,16 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
 	libmm-qcamera \
-    camera.msm8916
-	
-# Camera
-PRODUCT_PACKAGES += \
-    Snap	
+    camera.msm8916	
 
 # OMX
 PRODUCT_PACKAGES += \
     libextmedia_jni \
-	libqcmediaplayer \
+    libqcmediaplayer \
     libc2dcolorconvert \
     libOmxVidcCommon \
-	libOmxVdecHevc \
-	libOmxVdpp \
+    libOmxVdecHevc \
+    libOmxVdpp \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -160,17 +161,13 @@ PRODUCT_PACKAGES += \
     libOmxQcelp13Enc \
     libOmxVdec \
     libOmxVenc \
-	libdivxdrmdecrypt \
+    libdivxdrmdecrypt \
     libstagefrighthw \
     libdashplayer \
     qcmediaplayer
 	
 PRODUCT_BOOT_JARS += \
     qcmediaplayer
-
-# Gello
-PRODUCT_PACKAGES += \
-    Gello	
 
 # FM
 PRODUCT_PACKAGES += \
@@ -256,7 +253,7 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
 # Dalvik heap config
-$(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 # Texture config.
 $(call inherit-product, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
@@ -268,7 +265,7 @@ else
 endif
 
 # Set those variables here to overwrite the inherited values.
-PRODUCT_DEVICE := fortunave3g
-PRODUCT_NAME := cm_fortunave3g
+PRODUCT_DEVICE := o7prolte
+PRODUCT_NAME := cm_o7prolte
 PRODUCT_BRAND := samsung
 PRODUCT_MANUFACTURER := samsung

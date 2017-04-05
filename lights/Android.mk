@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ifeq ($(TARGET_DEVICE),fortunave3g)
+ifeq ($(TARGET_DEVICE),o7prolte)
 
 LOCAL_PATH:= $(call my-dir)
 # HAL module implemenation stored in

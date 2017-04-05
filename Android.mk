@@ -1,4 +1,4 @@
-ifeq ($(TARGET_DEVICE),fortunave3g)
+ifeq ($(TARGET_DEVICE),o7prolte)
 LOCAL_PATH := $(call my-dir)
 include $(all-subdir-makefiles)
 include $(CLEAR_VARS)
