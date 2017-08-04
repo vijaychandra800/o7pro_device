@@ -9,7 +9,7 @@ LOCAL_PATH := device/samsung/o7prolte
 #BLOCK_BASED_OTA := false
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := o7prolte,SM-G600FY,G600FY
+TARGET_OTA_ASSERT_DEVICE := o7lte,o7prolte,SM-G600FY,G600FY
 
 # Platform
 TARGET_BOARD_PLATFORM           := msm8916
@@ -96,6 +96,7 @@ BLUETOOTH_HCI_USE_MCT                       := true
 BOARD_RIL_CLASS                     := ../../../device/samsung/o7prolte/ril/
 PROTOBUF_SUPPORTED                  := true
 #USE_DEVICE_SPECIFIC_DATASERVICES    := true
+TARGET_RIL_VARIANT := caf
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT             := true
